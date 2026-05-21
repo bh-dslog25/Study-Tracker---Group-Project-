@@ -3,10 +3,9 @@
   "name": "study_tracker_backend",
   "version": "1.0.0",
   "description": "Backend API cho hệ thống Study Tracker",
-  "type": "module",
   "scripts": {
-    "start": "node backend/src/server.js",
-    "dev": "nodemon backend/src/server.js",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
     "migrate": "node src/config/migrate.js"
   },
   "dependencies": {

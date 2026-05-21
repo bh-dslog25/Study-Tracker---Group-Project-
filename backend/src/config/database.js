@@ -1,10 +1,6 @@
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { Sequelize } from 'sequelize';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const dotenv = require('dotenv');
+const path = require('path');
+const { Sequelize } = require('sequelize');
 
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
@@ -22,7 +18,7 @@ const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD,
   logging: false,
 });
 
-const connectDatabase = async () => {
+const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connected successfully.');
@@ -32,4 +28,4 @@ const connectDatabase = async () => {
   }
 };
 
-export { sequelize, connectDatabase };
+module.exports = { sequelize, connectDB };
