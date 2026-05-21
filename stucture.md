@@ -1,12 +1,6 @@
-
-
 study-tracker/
 │
 ├── backend/
-│   │
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   └── migrations/
 │   │
 │   ├── src/
 │   │   │
@@ -20,6 +14,11 @@ study-tracker/
 │   │   │
 │   │   ├── middleware/
 │   │   │   └── authMiddleware.js
+│   │   │
+│   │   ├── models/
+│   │   │   ├── userModel.js
+│   │   │   ├── goalModel.js
+│   │   │   └── taskModel.js
 │   │   │
 │   │   ├── routes/
 │   │   │   ├── authRoutes.js

@@ -1,0 +1,28 @@
+
+{ 
+  "name": "study_tracker_backend",
+  "version": "1.0.0",
+  "description": "Backend API cho hệ thống Study Tracker",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "dev": "nodemon backend/src/server.js",
+    "migrate": "node src/config/migrate.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^5.2.1",
+    "express_validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",    
+    "mysql2": "^3.22.3",
+    "sequelize": "^6.37.8",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "sequelize-cli": "^6.6.5"
+  }
+}

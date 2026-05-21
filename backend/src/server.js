@@ -1,13 +1,36 @@
-const express = require("express");
+// server.js
+require('dotenv').config();
+const app = require('../src/app.js');
+const { connectDB } = require('../src/config/database.js');
+const logger = require('../src/utils/logger.js');
 
-const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+const start = async () => {
+  try {
+    await connectDB();
 
-app.get("/", (req, res) => {
-  res.send("API Running");
-});
+    const server = app.listen(PORT, () => {
+      logger.info(`Server đang chạy tại http://localhost:${PORT}`);
+      logger.info(`Môi trường: ${process.env.NODE_ENV || 'development'}`);
+    });
 
-app.listen(5000, () => {
-  console.log("Server running");
-});
+    // Graceful shutdown
+    const shutdown = (signal) => {
+      logger.info(`\n${signal} nhận được — đang tắt server...`);
+      server.close(() => {
+        logger.info('Server đã đóng kết nối');
+        process.exit(0);
+      });
+    };
+
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
+    process.on('SIGINT',  () => shutdown('SIGINT'));
+
+  } catch (error) {
+    logger.error('Khởi động server thất bại:', error.message);
+    process.exit(1);
+  }
+};
+
+start();
