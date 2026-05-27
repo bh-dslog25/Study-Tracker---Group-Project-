@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>StudyTracker - Dashboard</title>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <script>
+                tailwind.config = {
+                        theme: {
+                                extend: {
+                                        colors: {
+                                                "primary": "#3525cd",
+                                                "primary-container": "#4f46e5",
+                                                "background": "#f0f3ff",
+                                                "surface": "#ffffff",
+                                                "on-background": "#151c27",
+                                                "on-surface-variant": "#464555",
+                                                "outline-variant": "#dce2f3"
+                                        },
+                                        fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                                }
+                        }
+                }
+        </script>
+        <style>
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+                .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        </style>
+</head>
+<body class="bg-background text-on-background antialiased flex h-screen w-screen p-4 overflow-hidden justify-center items-center">
+
+        <div class="w-full max-w-[1280px] h-[90vh] bg-surface rounded-3xl shadow-2xl border border-outline-variant flex overflow-hidden">
+
+                <aside class="w-64 h-full bg-[#f8fafc] border-r border-outline-variant flex flex-col p-6 justify-between flex-shrink-0">
+                        <div>
+                                <div class="flex items-center gap-3 mb-8">
+                                        <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-surface">
+                                                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">book</span>
+                                        </div>
+                                        <div>
+                                                <h1 class="text-lg font-bold text-primary leading-none">StudyTracker</h1>
+                                                <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Deep Work Mode</span>
+                                        </div>
+                                </div>
+
+                                <nav id="sidebar-nav" class="flex flex-col gap-1">
+                                        <a class="menu-item flex items-center gap-3 bg-primary text-surface px-4 py-2.5 rounded-xl shadow-sm font-medium text-sm transition-all" href="#" data-target="dashboard">
+                                                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                                                <span>Dashboard</span>
+                                        </a>
+                                        <a class="menu-item flex items-center gap-3 text-on-surface-variant hover:bg-slate-100 px-4 py-2.5 rounded-xl font-medium text-sm transition-all" href="#" data-target="tasks">
+                                                <span class="material-symbols-outlined text-[20px]">checklist</span>
+                                                <span>Tasks</span>
+                                        </a>
+                                        <a class="menu-item flex items-center gap-3 text-on-surface-variant hover:bg-slate-100 px-4 py-2.5 rounded-xl font-medium text-sm transition-all" href="#" data-target="timer">
+                                                <span class="material-symbols-outlined text-[20px]">timer</span>
+                                                <span>Time Tracker</span>
+                                        </a>
+                                        <a class="menu-item flex items-center gap-3 text-on-surface-variant hover:bg-slate-100 px-4 py-2.5 rounded-xl font-medium text-sm transition-all" href="#" data-target="goals">
+                                                <span class="material-symbols-outlined text-[20px]">target</span>
+                                                <span>Goals</span>
+                                        </a>
+                                        <a class="menu-item flex items-center gap-3 text-on-surface-variant hover:bg-slate-100 px-4 py-2.5 rounded-xl font-medium text-sm transition-all" href="#" data-target="calendar">
+                                                <span class="material-symbols-outlined text-[20px]">calendar_today</span>
+                                                <span>Calendar</span>
+                                        </a>
+                                </nav>
+                        </div>
+
+                        <div class="flex flex-col gap-4">
+                                <a class="menu-item flex items-center gap-3 text-on-surface-variant hover:bg-slate-100 px-4 py-2 rounded-xl font-medium text-sm transition-all" href="#" data-target="settings">
+                                        <span class="material-symbols-outlined text-[20px]">settings</span>
+                                        <span>Settings</span>
+                                </a>
+                                <button id="focus-session-btn" class="w-full bg-primary hover:bg-primary-container text-surface py-3 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-md transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                                        Start Focus Session
+                                </button>
+                        </div>
+                </aside>
+
+                <main class="flex-1 h-full flex flex-col p-8 overflow-y-auto bg-slate-50/50">
+                        <header class="flex justify-between items-center mb-8">
+                                <div>
+                                        <h2 class="text-2xl font-bold text-on-background">Welcome back, Scholar</h2>
+                                        <p class="text-sm text-on-surface-variant mt-1">Here is your academic overview for today.</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                        <button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center bg-surface hover:bg-slate-50 transition-colors text-on-surface-variant">
+                                                <span class="material-symbols-outlined">notifications</span>
+                                        </button>
+                                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-outline-variant shadow-sm" />
+                                </div>
+                        </header>
+
+                        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <div class="bg-surface border border-outline-variant p-6 rounded-2xl shadow-sm relative overflow-hidden">
+                                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+                                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
+                                        </div>
+                                        <span class="absolute top-6 right-6 bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-bold flex items-center gap-0.5">
+                                                <span class="material-symbols-outlined text-[12px] font-bold">arrow_upward</span>12%
+                                        </span>
+                                        <h3 class="text-4xl font-bold text-on-background">42h</h3>
+                                        <p class="text-xs text-on-surface-variant font-medium mt-1">Total Study Hours</p>
+                                </div>
+                                <div class="bg-surface border border-outline-variant p-6 rounded-2xl shadow-sm">
+                                        <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
+                                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                        </div>
+                                        <h3 class="text-4xl font-bold text-on-background">18</h3>
+                                        <p class="text-xs text-on-surface-variant font-medium mt-1">Tasks Completed</p>
+                                </div>
+                                <div class="bg-surface border border-outline-variant p-6 rounded-2xl shadow-sm">
+                                        <div class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
+                                                <span class="material-symbols-outlined text-[18px]">trending_up</span>
+                                        </div>
+                                        <h3 class="text-4xl font-bold text-on-background">75%</h3>
+                                        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+                                                <div class="bg-primary h-full rounded-full" style="width: 75%"></div>
+                                        </div>
+                                </div>
+                        </section>
+
+                        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 min-h-[320px]">
+                                <div class="lg:col-span-2 bg-surface border border-outline-variant p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+                                        <div class="flex justify-between items-center">
+                                                <h4 class="font-bold text-on-background">Weekly Study Activity</h4>
+                                                <button class="text-xs border border-outline-variant px-3 py-1.5 rounded-xl bg-slate-50 font-medium flex items-center gap-1 text-on-surface-variant">
+                                                        This Week <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                                                </button>
+                                        </div>
+                                        <div class="flex justify-between items-end h-40 px-4 mt-4 border-b border-slate-100 pb-2">
+                                                <div class="chart-bar w-8 bg-slate-100 h-24 rounded-t-md hover:bg-primary transition-colors cursor-pointer" data-hours="6h"></div>
+                                                <div class="chart-bar w-8 bg-slate-100 h-16 rounded-t-md hover:bg-primary transition-colors cursor-pointer" data-hours="4h"></div>
+                                                <div class="chart-bar w-8 bg-slate-100 h-28 rounded-t-md hover:bg-primary transition-colors cursor-pointer" data-hours="7h"></div>
+                                                <div class="chart-bar w-8 bg-primary h-36 rounded-t-md" data-hours="9h"></div>
+                                                <div class="chart-bar w-8 bg-slate-100 h-12 rounded-t-md hover:bg-primary transition-colors cursor-pointer" data-hours="3h"></div>
+                                                <div class="chart-bar w-8 bg-slate-100 h-20 rounded-t-md hover:bg-primary transition-colors cursor-pointer" data-hours="5h"></div>
+                                                <div class="chart-bar w-8 bg-slate-100 h-8 rounded-t-md hover:bg-primary transition-colors cursor-pointer" data-hours="2h"></div>
+                                        </div>
+                                        <div class="flex justify-between text-center text-xs text-on-surface-variant font-medium px-4 mt-2">
+                                                <span class="w-8">Mon</span><span class="w-8">Tue</span><span class="w-8">Wed</span><span class="w-8 text-primary font-bold">Thu</span><span class="w-8">Fri</span><span class="w-8">Sat</span><span class="w-8">Sun</span>
+                                        </div>
+                                </div>
+
+                                <div id="main-goal-section" class="bg-surface border border-outline-variant p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center relative min-h-[300px]">
+                                        <div class="w-full flex justify-between items-center absolute top-6 px-6">
+                                                <h4 class="font-bold text-on-background text-sm">Current Goal</h4>
+                                                <span id="open-goal-modal-btn" class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">more_horiz</span>
+                                        </div>
+                                        <div id="goal-display-container" class="w-full flex flex-col items-center justify-center mt-6"></div>
+                                </div>
+                        </section>
+
+                        <section class="bg-surface border border-outline-variant p-6 rounded-2xl shadow-sm">
+                                <div class="flex justify-between items-center mb-4">
+                                        <h4 class="font-bold text-on-background">Upcoming Tasks</h4>
+                                        <div class="flex items-center gap-3">
+                                                <button id="dashboard-add-task-btn" class="text-xs font-semibold text-primary hover:text-primary-container flex items-center gap-0.5">
+                                                        <span class="material-symbols-outlined text-[16px]">add</span>Add Task
+                                                </button>
+                                                <a href="#" class="text-xs font-semibold text-slate-400 hover:underline">View All</a>
+                                        </div>
+                                </div>
+                                <div class="flex items-center justify-between p-4 border border-outline-variant bg-slate-50/50 rounded-xl transition-all hover:bg-slate-50">
+                                        <div class="flex items-center gap-4">
+                                                <input type="checkbox" id="task-1" class="task-checkbox w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary cursor-pointer">
+                                                <label for="task-1" class="cursor-pointer">
+                                                        <p class="text-sm font-semibold text-on-background id-task-title">Complete Practice Test 3</p>
+                                                        <span class="text-xs text-on-surface-variant">Reading Comprehension Section</span>
+                                                </label>
+                                        </div>
+                                        <div class="text-right flex flex-col items-end gap-1.5">
+                                                <span class="bg-red-50 text-red-600 font-bold text-[10px] px-2 py-0.5 rounded">High Priority</span>
+                                                <p class="text-xs text-on-surface-variant flex items-center gap-1">
+                                                        <span class="material-symbols-outlined text-[14px]">schedule</span>Today, 2:00 PM
+                                                </p>
+                                        </div>
+                                </div>
+                        </section>
+                </main>
+        </div>
+
+        <div id="add-goal-modal" class="fixed inset-0 bg-on-background/40 z-50 flex items-center justify-center hidden backdrop-blur-[2px] transition-all">
+                <div class="bg-surface rounded-3xl w-full max-w-[520px] max-h-[85vh] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-outline-variant flex flex-col overflow-hidden transform scale-95 transition-transform duration-200">
+                        <div class="flex justify-between items-center px-6 py-4 border-b border-outline-variant">
+                                <h3 id="modal-mode-title" class="text-base font-bold text-on-background">Add New Goal</h3>
+                                <button id="modal-close-x" class="text-on-surface-variant hover:bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">close</span>
+                                </button>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+                                <form id="goal-form" class="flex flex-col gap-4">
+                                        <div class="flex flex-col gap-1.5">
+                                                <label for="goal-title" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Goal Title</label>
+                                                <input type="text" id="goal-title" name="goal-title" required placeholder="e.g., Master Data Analysis" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-on-background placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors">
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-4">
+                                                <div class="flex flex-col gap-1.5">
+                                                        <label for="goal-date" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Target Date</label>
+                                                        <input type="date" id="goal-date" name="goal-date" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-on-surface-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors">
+                                                </div>
+                                                <div class="flex flex-col gap-1.5">
+                                                        <label for="goal-category" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Category</label>
+                                                        <div class="relative">
+                                                                <select id="goal-category" name="goal-category" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors appearance-none bg-surface text-on-surface-variant cursor-pointer">
+                                                                        <option value="" disabled selected>Select a category</option>
+                                                                        <option value="Academic">Academic (Học tập)</option>
+                                                                        <option value="Language">Language (Ngoại ngữ)</option>
+                                                                        <option value="Skills">Skills (Kỹ năng)</option>
+                                                                        <option value="Personal">Personal (Cá nhân)</option>
+                                                                        <option value="Other">Other (Cái khác)</option>
+                                                                </select>
+                                                                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+                                                        </div>
+                                                </div>
+                                        </div>
+
+                                        <div class="flex flex-col gap-1.5">
+                                                <label for="goal-desc" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Objective Description</label>
+                                                <textarea id="goal-desc" name="goal-desc" rows="3" placeholder="Briefly describe what achieving this goal looks like..." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-on-background placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"></textarea>
+                                        </div>
+
+                                        <div id="goal-progress-container" class="hidden flex flex-col gap-2 bg-[#f8fafc] p-4 rounded-2xl border border-outline-variant">
+                                                <div class="flex justify-between items-center text-xs font-bold text-on-surface-variant">
+                                                        <span class="flex items-center gap-1">
+                                                                <span class="material-symbols-outlined text-[16px] text-primary">trending_up</span> Progress Rate
+                                                        </span>
+                                                        <span id="goal-progress-percent" class="text-primary">0%</span>
+                                                </div>
+                                                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                                        <div id="goal-progress-bar" class="bg-primary h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                                                </div>
+                                        </div>
+
+                                        <div class="flex justify-end gap-2.5 pt-2">
+                                                <button type="button" id="modal-cancel-btn" class="px-4 py-2 border border-slate-200 bg-surface rounded-xl text-sm font-semibold text-on-surface-variant hover:bg-slate-50 transition-colors">Cancel</button>
+                                                <button type="submit" id="submit-goal-btn" class="px-4 py-2 bg-primary hover:bg-primary-container text-surface rounded-xl text-sm font-semibold shadow-md transition-all">Create Goal</button>
+                                        </div>
+                                </form>
+
+                                <div id="task-section" class="hidden border-t border-outline-variant pt-4 flex flex-col gap-3.5">
+                                        <h4 class="text-xs font-bold text-on-background uppercase tracking-wider flex items-center gap-1.5">
+                                                <span class="material-symbols-outlined text-[18px] text-primary">assignment_turned_in</span>Action Tasks
+                                        </h4>
+                                        <div class="flex gap-2">
+                                                <input type="text" id="new-task-title" placeholder="Add a new sub-task..." class="flex-1 border border-slate-200 rounded-xl px-4 py-2 text-sm text-on-background placeholder:text-slate-400 focus:border-primary outline-none">
+                                                <button type="button" id="add-task-btn" class="bg-slate-50 hover:bg-slate-100 text-primary font-bold px-4 rounded-xl text-sm flex items-center gap-1 transition-colors border border-outline-variant">
+                                                        <span class="material-symbols-outlined text-[18px]">add</span> Add
+                                                </button>
+                                        </div>
+                                        <div id="modal-task-list" class="flex flex-col gap-2 max-h-[180px] overflow-y-auto pr-1"></div>
+                                </div>
+                        </div>
+                </div>
+        </div>
+
+        <div id="add-task-modal" class="fixed inset-0 bg-on-background/40 z-50 flex items-center justify-center hidden backdrop-blur-[2px] transition-all">
+                <div class="bg-surface rounded-[20px] w-full max-w-[500px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-outline-variant flex flex-col overflow-hidden transform scale-95 transition-transform duration-200">
+                        <div class="flex justify-between items-center px-6 py-5 border-b border-outline-variant">
+                                <h3 class="text-[18px] font-bold text-on-background">New Task</h3>
+                                <button id="task-modal-close-x" class="text-on-surface-variant hover:bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">close</span>
+                                </button>
+                        </div>
+
+                        <form id="new-task-form" class="flex flex-col overflow-hidden">
+                                <div class="p-6 flex flex-col gap-5">
+                                        <div class="flex flex-col gap-2">
+                                                <label for="task-goal-association" class="text-xs font-bold text-on-background uppercase tracking-wider">Select Goal</label>
+                                                <div class="relative">
+                                                        <select id="task-goal-association" name="task-goal-association" required class="w-full border border-slate-300 rounded-[10px] pl-4 pr-10 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none appearance-none bg-surface text-on-surface-variant cursor-pointer">
+                                                                <option value="" disabled selected>Chọn mục tiêu liên quan...</option>
+                                                                <option value="1">Master Data Analysis</option>
+                                                        </select>
+                                                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+                                                </div>
+                                        </div>
+
+                                        <div class="flex flex-col gap-2">
+                                                <label class="text-xs font-bold text-on-background uppercase tracking-wider">Task Items</label>
+                                                <div class="flex gap-2">
+                                                        <input type="text" id="sub-task-input" placeholder="Nhập tên việc cần làm (nhấn + để thêm)..." class="flex-1 border border-slate-300 rounded-[10px] px-4 py-3 text-sm outline-none focus:border-primary">
+                                                        <button type="button" id="add-sub-task-btn" class="bg-slate-100 hover:bg-slate-200 text-primary p-3 rounded-[10px] flex items-center justify-center transition-colors">
+                                                                <span class="material-symbols-outlined">add</span>
+                                                        </button>
+                                                </div>
+                                                <ul id="sub-tasks-list" class="flex flex-col gap-2 mt-1"></ul>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-4">
+                                                <div class="flex flex-col gap-2">
+                                                        <label for="task-deadline" class="text-xs font-bold text-on-background">Deadline</label>
+                                                        <input type="date" id="task-deadline" name="task-deadline" class="w-full border border-slate-300 rounded-[10px] px-4 py-3 text-sm text-on-surface-variant outline-none focus:border-primary">
+                                                </div>
+                                                <div class="flex flex-col gap-2">
+                                                        <label class="text-xs font-bold text-on-background">Priority</label>
+                                                        <input type="hidden" id="task-priority" name="task-priority" value="medium">
+                                                        <div class="flex gap-2">
+                                                                <button type="button" data-priority="low" class="priority-btn flex-1 py-2.5 rounded-[10px] border border-slate-300 text-[10px] font-bold">Low</button>
+                                                                <button type="button" data-priority="medium" class="priority-btn flex-1 py-2.5 rounded-[10px] border border-primary bg-primary text-surface text-[10px] font-bold">Med</button>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <div class="px-6 py-4 border-t border-outline-variant flex justify-end gap-3 bg-surface w-full">
+                                        <button type="button" id="task-cancel-btn" class="px-5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold text-on-surface-variant">Cancel</button>
+                                        <button type="submit" class="px-5 py-2.5 bg-primary text-surface rounded-xl text-sm font-semibold shadow-md">Create Task</button>
+                                </div>
+                        </form> 
+                </div>
+        </div>
+
+        <div id="toast-success" class="fixed bottom-6 right-6 bg-surface border border-green-100 shadow-2xl rounded-2xl p-4 flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-500 z-[100] border-l-4 border-l-green-500">
+                <div class="bg-green-100 text-green-600 rounded-full w-8 h-8 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                </div>
+                <div>
+                        <h5 class="text-sm font-bold text-gray-900">Thành công!</h5>
+                        <p class="text-xs text-gray-500">Mục tiêu mới đã được khởi tạo.</p>
+                </div>
+        </div>
+
+        <script src="script.js"></script>
+        <script src="newgoal.js"></script>
+        <script src="task.js"></script>
+</body>
+</html>
