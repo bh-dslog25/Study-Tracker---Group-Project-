@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Time Tracker - StudyTracker</title>
+
+<link rel="icon" href="logo.png" type="image/png" style="width: 100%;"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#001f26",
+                        "outline": "#777587",
+                        "on-background": "#151c27",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container": "#e7eefe",
+                        "on-surface-variant": "#464555",
+                        "secondary": "#006c49",
+                        "surface-container-high": "#e2e8f8",
+                        "outline-variant": "#c7c4d8",
+                        "surface-variant": "#dce2f3",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-highest": "#dce2f3",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed": "#e2dfff",
+                        "on-primary-fixed": "#0f0069",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#4d44e3",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d3daea",
+                        "secondary-container": "#6cf8bb",
+                        "inverse-surface": "#2a313d",
+                        "on-tertiary-container": "#93e8ff",
+                        "on-secondary-fixed-variant": "#005236",
+                        "primary": "#3525cd",
+                        "tertiary-container": "#006a7c",
+                        "on-secondary-container": "#00714d",
+                        "surface-container-low": "#f0f3ff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "secondary-fixed": "#6ffbbe",
+                        "primary-container": "#4f46e5",
+                        "tertiary": "#00505f",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#c3c0ff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "surface": "#f9f9ff",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-error": "#ffffff",
+                        "on-surface": "#151c27",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-primary-container": "#dad7ff",
+                        "tertiary-fixed": "#acedff",
+                        "background": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "1.5rem",
+                        "margin": "2rem",
+                        "lg": "2rem",
+                        "gutter": "1.5rem",
+                        "max-width": "1280px",
+                        "unit": "4px",
+                        "xl": "3rem",
+                        "xs": "0.5rem",
+                        "sm": "1rem"
+                    },
+                    "fontFamily": {
+                        "h2": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "h3": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "h2": ["24px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-sm": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar (from Shared Components JSON) -->
+<nav class="hidden md:flex flex-col h-full py-lg gap-md fixed left-0 top-0 w-64 bg-surface-container-lowest border-r border-outline-variant shadow-sm z-50">
+<!-- Header -->
+<div class="px-md mb-md flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="school" style="font-variation-settings: 'FILL' 1;">school</span>
+</div>
+<div>
+<h2 class="font-h2 text-h2 font-bold text-primary">StudyTracker</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Deep Work Mode</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 px-sm flex flex-col gap-xs">
+<!-- Dashboard (Inactive) -->
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-xs hover:text-primary hover:bg-surface-container-high transition-all duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md font-medium">Dashboard</span>
+</a>
+<!-- Tasks (Inactive) -->
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-xs hover:text-primary hover:bg-surface-container-high transition-all duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="font-body-md text-body-md font-medium">Tasks</span>
+</a>
+<!-- Time Tracker (Active) -->
+<a class="flex items-center gap-sm bg-primary-container text-on-primary-container rounded-lg px-md py-xs translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="timer" style="font-variation-settings: 'FILL' 1;">timer</span>
+<span class="font-body-md text-body-md font-medium">Time Tracker</span>
+</a>
+<!-- Goals (Inactive) -->
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-xs hover:text-primary hover:bg-surface-container-high transition-all duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="target">target</span>
+<span class="font-body-md text-body-md font-medium">Goals</span>
+</a>
+<!-- Calendar (Inactive) -->
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-xs hover:text-primary hover:bg-surface-container-high transition-all duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-md text-body-md font-medium">Calendar</span>
+</a>
+<!-- Settings (Inactive) -->
+<a class="flex items-center gap-sm text-on-surface-variant px-md py-xs hover:text-primary hover:bg-surface-container-high transition-all duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md font-medium">Settings</span>
+</a>
+</div>
+<!-- CTA -->
+<div class="px-md mt-auto">
+<button class="w-full bg-primary text-on-primary font-body-md text-body-md font-medium py-sm rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                Start Focus Session
+            </button>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 md:ml-64 flex flex-col overflow-y-auto w-full relative">
+<div class="max-w-max-width mx-auto w-full h-full flex flex-col xl:flex-row items-center xl:items-start justify-center gap-xl p-lg md:p-margin xl:pt-[102px]">
+<!-- Focus Area: Timer & Current Task -->
+<div class="flex-1 flex flex-col items-center justify-center w-full max-w-lg">
+<!-- Task Context -->
+<div class="text-center mb-lg">
+<p class="font-label-md text-label-md text-outline tracking-widest mb-xs uppercase">Currently working on</p>
+<h1 id="current-task-title" class="font-h1 text-h1 text-on-surface">Data Structures Review</h1>
+<div class="mt-xs inline-flex items-center gap-xs bg-surface-container rounded-full px-sm py-unit border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Project: CS301</span>
+</div>
+</div>
+<!-- Large Digital Timer with Progress Ring -->
+<div class="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center mb-xl">
+<svg class="absolute inset-0 w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<!-- Background Track -->
+<circle class="stroke-surface-container-high" cx="50" cy="50" fill="none" r="46" stroke-width="2"></circle>
+<!-- Progress Fill (approx 60%) -->
+<circle id="progress-circle" class="stroke-secondary-container transition-all duration-1000 ease-linear" cx="50" cy="50" fill="none" r="46" stroke-dasharray="289" stroke-dashoffset="0" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<div class="z-10 flex flex-col items-center justify-center">
+<span id="timer-display" class="font-display text-display text-primary tracking-tighter" style="font-variant-numeric: tabular-nums;">25:00</span>
+<span class="font-label-md text-label-md text-on-surface-variant mt-unit">Session 1 of 4</span>
+</div>
+</div>
+
+
+<!-- Timer Controls -->
+
+
+<div class="flex items-center justify-center gap-md">
+
+<!-- Stop Button -->
+
+<button id="stop-btn" class="w-14 h-14 rounded-full border-2 border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all">
+<span class="material-symbols-outlined text-[28px]" data-icon="stop">stop</span>
+</button>
+
+<!-- Pause/Resume Button (Prominent) -->
+
+<button id="play-pause-btn" class="w-20 h-20 rounded-full bg-primary text-on-primary shadow-[0px_8px_16px_-4px_rgba(53,37,205,0.3)] hover:translate-y-[1px] hover:shadow-[0px_4px_8px_-2px_rgba(53,37,205,0.3)] transition-all flex items-center justify-center">
+<span id="play-pause-icon" class="material-symbols-outlined text-[36px]" data-icon="pause" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+
+<!-- Skip Button -->
+
+<button id="skip-btn" class="w-14 h-14 rounded-full border-2 border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all">
+<span class="material-symbols-outlined text-[28px]" data-icon="skip_next">skip_next</span>
+</button>
+
+</div>
+</div>
+<!-- Secondary Area: Session History Sidebar -->
+<aside class="w-full xl:w-80 bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm xl:sticky xl:top-[102px]">
+<div class="flex items-center justify-between mb-md pb-xs border-b border-surface-container-high">
+<h3 class="font-h3 text-h3 text-on-surface">Session History</h3>
+<button class="text-primary hover:bg-surface-container rounded-full p-xs transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<div id="session-history-list" class="flex flex-col gap-sm">
+<!-- History Item 1 -->
+<div class="flex items-start gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-default">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md font-medium text-on-surface truncate">Algorithms Practice</p>
+<p class="font-label-sm text-label-sm text-outline mt-unit">09:00 AM - 09:45 AM</p>
+</div>
+<div class="text-right">
+<span class="font-h3 text-h3 text-primary">45m</span>
+</div>
+</div>
+<!-- History Item 2 -->
+<div class="flex items-start gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-default">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md font-medium text-on-surface truncate">Read Chapter 4</p>
+<p class="font-label-sm text-label-sm text-outline mt-unit">Yesterday, 03:15 PM</p>
+</div>
+<div class="text-right">
+<span class="font-h3 text-h3 text-primary">30m</span>
+</div>
+</div>
+<!-- History Item 3 -->
+<div class="flex items-start gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-default opacity-70">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-outline">
+<span class="material-symbols-outlined" data-icon="cancel">cancel</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md font-medium text-on-surface truncate line-through">Draft Essay Outline</p>
+<p class="font-label-sm text-label-sm text-error mt-unit">Interrupted</p>
+</div>
+<div class="text-right">
+<span class="font-h3 text-h3 text-on-surface-variant">12m</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-sm py-sm font-label-md text-label-md text-primary hover:bg-surface-container rounded-lg transition-colors text-center">
+                    View All History
+                </button>
+</aside>
+</div>
+</main>
+
+<script src="timetracker.js"></script>
+
+
+</body></html>
