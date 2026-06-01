@@ -6,14 +6,15 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "migrate": "node src/config/migrate.js"
+    "migrate": "node src/config/migrate.js",
+    "migrate:force": "FORCE_MIGRATE=true node src/config/migrate.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^5.2.1",
-    "express_validator": "^7.0.1",
+    "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",    
     "mysql2": "^3.22.3",

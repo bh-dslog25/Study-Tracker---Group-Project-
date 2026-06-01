@@ -12,11 +12,11 @@ const Task = sequelize.define('Task',{
     user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {model: 'User', key: 'id'},
+        references: { model: 'users', key: 'id' },
     },
     goal_id: {
         type: DataTypes.INTEGER,
-        references: {model: 'Goal', key: 'id'},
+        references: { model: 'goals', key: 'id' },
     },
     title: {
         type: DataTypes.STRING(150),

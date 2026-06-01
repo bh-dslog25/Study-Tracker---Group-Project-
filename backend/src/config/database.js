@@ -7,7 +7,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const DATABASE_NAME = process.env.DATABASE_NAME || 'study_tracker';
 const DATABASE_USER = process.env.DATABASE_USER || 'root';
 const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || 'Pubg.ak47';
-const DATABASE_HOST = process.env.DATABASE_HOST || 'localhost';
+const DATABASE_HOST = process.env.DATABASE_HOST || '127.0.0.1';
 const DATABASE_PORT = Number(process.env.DATABASE_PORT || 3306);
 const DATABASE_DIALECT = process.env.DATABASE_DIALECT || 'mysql';
 

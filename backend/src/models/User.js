@@ -29,7 +29,12 @@ const User = sequelize.define('User', {
     create_at: {
         type: DataTypes.DATE,
         
-    }
+    },
+    refreshToken: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    defaultValue: null,
+    },
 }, {
     tableName: 'users',
     hooks: {

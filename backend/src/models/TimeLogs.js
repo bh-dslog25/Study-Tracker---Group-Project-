@@ -13,13 +13,13 @@ const TimeLog = sequelize.define('TimeLog', {
     userId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
-        references: {model: 'User', key: 'id'},
+        references: { model: 'users', key: 'id' },
     },
 
     taskId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: true,
-        references: {model: 'Task', key: 'id'},
+        references: { model: 'tasks', key: 'id' },
     },
 
     startTime: {
@@ -41,4 +41,8 @@ const TimeLog = sequelize.define('TimeLog', {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+}, {
+    tableName: 'time_logs',
 });
+
+module.exports = TimeLog;
