@@ -1,131 +1,269 @@
+// ==========================================
+// --- 1. CẤU HÌNH BIẾN ---
+// ==========================================
+const TOTAL_MINUTES = 36; // Setup lại 36 phút khớp với giao diện của bạn
+let totalTimeInSeconds = TOTAL_MINUTES * 60;
+let timeLeft = totalTimeInSeconds;
+let timerInterval = null;
+let isRunning = false;
 
-    // --- CẤU HÌNH BIẾN ---
-    const TOTAL_MINUTES = 36;
-    let totalTimeInSeconds = TOTAL_MINUTES * 60 + 36; 
-    let timeLeft = totalTimeInSeconds;
-    let timerInterval = null;
-    let isRunning = false;
+// Quản lý trạng thái Session
+let currentSession = 1;
+const totalSessions = 4;
+let sessionStartTime = null;
 
-    // --- LẤY CÁC PHẦN TỬ TỪ DOM ---
-    const display = document.getElementById('timer-display');
-    const progressCircle = document.getElementById('progress-circle');
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const playPauseIcon = document.getElementById('play-pause-icon');
-    const stopBtn = document.getElementById('stop-btn');
-    const skipBtn = document.getElementById('skip-btn');
+const CIRCUMFERENCE = 289; // Chu vi SVG
 
-    const currentTaskTitle = document.getElementById('current-task-title');
-    const sessionHistoryList = document.getElementById('session-history-list');
+// ==========================================
+// --- 2. LẤY CÁC PHẦN TỬ TỪ DOM ---
+// ==========================================
+const display = document.getElementById('timer-display');
+const progressCircle = document.getElementById('progress-circle');
+const playPauseBtn = document.getElementById('play-pause-btn');
+const playPauseIcon = document.getElementById('play-pause-icon');
+const stopBtn = document.getElementById('stop-btn');
+const skipBtn = document.getElementById('skip-btn');
 
+const currentTaskTitle = document.getElementById('current-task-title');
+const sessionIndicator = document.getElementById('session-indicator');
+const sessionHistoryList = document.getElementById('session-history-list');
 
-    // Chu vi của vòng tròn (stroke-dasharray đang set là 289)
-    const CIRCUMFERENCE = 289;
+// Các ID mới được bổ sung
+const clearHistoryMenu = document.getElementById('clear-history-menu');
+const viewAllBtn = document.getElementById('view-all-history-btn');
+const startFocusBtn = document.getElementById('start-focus-btn');
 
-    // --- CÁC HÀM XỬ LÝ ---
-
-    // 1. Cập nhật giao diện (Số giờ + Vòng tròn)
-    function updateDisplay() {
-        // Tính phút và giây
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        
-        // Định dạng hiển thị MM:SS (thêm số 0 ở đầu nếu < 10)
-        display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-        // Tính toán độ dài viền tròn còn lại
-        // Khi đầy là 0, khi cạn là 289
-        const progressOffset = CIRCUMFERENCE - (timeLeft / totalTimeInSeconds) * CIRCUMFERENCE;
-        progressCircle.style.strokeDashoffset = progressOffset;
-    }
-
-    // 2. Hàm Bật / Tạm dừng
-    function toggleTimer() {
-        if (isRunning) {
-            // Đang chạy -> Tạm dừng
-            clearInterval(timerInterval);
-            playPauseIcon.textContent = 'play_arrow'; // Đổi icon thành Play
-        } else {
-            // Đang dừng -> Chạy
-            playPauseIcon.textContent = 'pause'; // Đổi icon thành Pause
-            timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateDisplay();
-                } else {
-                    // Hết giờ
-                    clearInterval(timerInterval);
-                    isRunning = false;
-                    playPauseIcon.textContent = 'play_arrow';
-                    
-                    // Code xử lý khi hoàn thành Task ở đây (lưu lịch sử, âm thanh báo...)
-                    alert("Hoàn thành phiên làm việc!"); 
-                }
-            }, 1000); // Lặp lại mỗi 1000ms = 1 giây
-        }
-        isRunning = !isRunning;
-    }
-
-    // 3. Hàm Dừng hẳn (Reset về ban đầu)
-    function stopTimer() {
-        clearInterval(timerInterval);
-        isRunning = false;
-        timeLeft = totalTimeInSeconds; // Reset thời gian
-        playPauseIcon.textContent = 'play_arrow';
-        updateDisplay();
-    }
-
-    // 4. Hàm Bỏ qua (Skip) --> Cap nhat ham Skip
-    function skipTimer() {
-
-    // 1. Lấy tên task đang làm (nếu không có thì để mặc định)
-    const taskName = currentTaskTitle ? currentTaskTitle.textContent : "Unknown Task";
+// ==========================================
+// --- 3. LOGIC ĐỒNG HỒ ---
+// ==========================================
+function updateDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
     
-    // 2. Tính toán xem bạn đã chạy được bao nhiêu phút trước khi bấm skip
+    display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    const progressOffset = CIRCUMFERENCE - (timeLeft / totalTimeInSeconds) * CIRCUMFERENCE;
+    if (progressCircle) progressCircle.style.strokeDashoffset = progressOffset;
+    if (sessionIndicator) sessionIndicator.textContent = `Session ${currentSession} of ${totalSessions}`;
+}
+
+function toggleTimer() {
+    if (isRunning) {
+        clearInterval(timerInterval);
+        playPauseIcon.textContent = 'play_arrow'; 
+    } else {
+        if (timeLeft === totalTimeInSeconds || !sessionStartTime) {
+            sessionStartTime = new Date();
+        }
+        playPauseIcon.textContent = 'pause'; 
+        timerInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateDisplay();
+            } else {
+                handleSessionComplete();
+            }
+        }, 1000); 
+    }
+    isRunning = !isRunning;
+}
+
+function handleSessionComplete() {
+    clearInterval(timerInterval);
+    isRunning = false;
+    playPauseIcon.textContent = 'play_arrow';
+
+    addHistoryItem('completed');
+    
+    if (currentSession < totalSessions) {
+        currentSession++;
+        alert(`Tuyệt vời! Hãy nghỉ ngơi chút trước khi bắt đầu Session ${currentSession}.`);
+    } else {
+        currentSession = 1;
+        alert(`Chúc mừng! Bạn đã hoàn thành toàn bộ chuỗi công việc.`);
+    }
+    resetTimerData();
+}
+
+function stopTimer() {
+    if (timeLeft < totalTimeInSeconds && timeLeft > 0) {
+        addHistoryItem('interrupted');
+    }
+    clearInterval(timerInterval);
+    isRunning = false;
+    playPauseIcon.textContent = 'play_arrow';
+    resetTimerData();
+}
+
+function skipTimer() {
+    if (timeLeft < totalTimeInSeconds && timeLeft > 0) {
+        addHistoryItem('interrupted');
+    }
+    clearInterval(timerInterval);
+    isRunning = false;
+    playPauseIcon.textContent = 'play_arrow';
+    
+    if (currentSession < totalSessions) currentSession++;
+    else currentSession = 1;
+    
+    resetTimerData();
+}
+
+function resetTimerData() {
+    timeLeft = totalTimeInSeconds;
+    sessionStartTime = null;
+    updateDisplay();
+}
+
+// Hàm hỗ trợ format giờ (VD: 09:30 AM)
+function formatAMPM(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return hours + ':' + minutes + ' ' + ampm;
+}
+
+// ==========================================
+// --- 4. HÀM TẠO LỊCH SỬ ĐỘNG ---
+// ==========================================
+function addHistoryItem(status) {
+    if (!sessionHistoryList) return;
+
+    const taskName = currentTaskTitle ? currentTaskTitle.textContent : "Unknown Task";
     const timeElapsedSeconds = totalTimeInSeconds - timeLeft;
     const minutesElapsed = Math.floor(timeElapsedSeconds / 60);
-    // Nếu chưa được 1 phút thì hiện "< 1m"
-    const timeString = minutesElapsed > 0 ? `${minutesElapsed}m` : `< 1m`;
+    let htmlString = "";
 
-    // 3. Tạo code HTML cho item bị hủy (bê nguyên các class Tailwind từ mẫu của bạn sang)
-    const interruptedItemHTML = `
-    <div class="flex items-start gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-default opacity-70">
-        <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-outline">
-            <span class="material-symbols-outlined" data-icon="cancel">cancel</span>
-        </div>
-        <div class="flex-1 min-w-0">
-            <p class="font-body-md text-body-md font-medium text-on-surface truncate line-through">${taskName}</p>
-            <p class="font-label-sm text-label-sm text-error mt-unit">Interrupted</p>
-        </div>
-        <div class="text-right">
-            <span class="font-h3 text-h3 text-on-surface-variant">${timeString}</span>
-        </div>
-    </div>
-    `;
+    if (status === 'completed') {
+        const endTime = new Date();
+        const timeString = sessionStartTime ? `${formatAMPM(sessionStartTime)} - ${formatAMPM(endTime)}` : 'Just now';
+        const durationStr = `${Math.floor(totalTimeInSeconds / 60)}m`;
 
-    // 4. Bơm đoạn HTML vừa tạo lên ĐẦU danh sách lịch sử
-    if (sessionHistoryList) {
-        // afterbegin nghĩa là nhét vào ngay dưới thẻ mở <div>, đẩy các item cũ xuống dưới
-        sessionHistoryList.insertAdjacentHTML('afterbegin', interruptedItemHTML);
+        htmlString = `
+        <div class="history-item group relative flex items-start gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-on-surface-variant">
+                <span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            </div>
+            <div class="flex-1 min-w-0 pointer-events-none">
+                <p class="font-body-md text-body-md font-medium text-on-surface truncate">${taskName}</p>
+                <p class="font-label-sm text-label-sm text-outline mt-unit">${timeString}</p>
+            </div>
+            <div class="text-right pointer-events-none transition-opacity group-hover:opacity-0">
+                <span class="font-h3 text-h3 text-primary">${durationStr}</span>
+            </div>
+            <button class="delete-btn absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 text-outline hover:text-error transition-opacity">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+            </button>
+        </div>`;
+    } else {
+        const timeString = minutesElapsed > 0 ? `${minutesElapsed}m` : `< 1m`;
+        htmlString = `
+        <div class="history-item group relative flex items-start gap-sm p-sm rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer opacity-70 border border-transparent hover:border-outline-variant">
+            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 text-outline">
+                <span class="material-symbols-outlined" data-icon="cancel">cancel</span>
+            </div>
+            <div class="flex-1 min-w-0 pointer-events-none">
+                <p class="font-body-md text-body-md font-medium text-on-surface truncate line-through">${taskName}</p>
+                <p class="font-label-sm text-label-sm text-error mt-unit">Interrupted</p>
+            </div>
+            <div class="text-right pointer-events-none transition-opacity group-hover:opacity-0">
+                <span class="font-h3 text-h3 text-on-surface-variant">${timeString}</span>
+            </div>
+            <button class="delete-btn absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 text-outline hover:text-error transition-opacity">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+            </button>
+        </div>`;
     }
+    sessionHistoryList.insertAdjacentHTML('afterbegin', htmlString);
+}
 
-    //5. The Warudo
-        stopTimer();
-        // Sau này bạn có thể thêm logic chuyển sang Session nghỉ ngơi (Break time) ở đây
-        alert("Đã bỏ qua Session này!");
-    }
+// ==========================================
+// --- 5. TƯƠNG TÁC GIAO DIỆN ---
+// ==========================================
 
-    // --- GẮN SỰ KIỆN CLick CHO NÚT ---
-    playPauseBtn.addEventListener('click', toggleTimer);
-    stopBtn.addEventListener('click', stopTimer);
-    skipBtn.addEventListener('click', skipTimer);
+// Sự kiện cho Sidebar: Start Focus Session
+if (startFocusBtn) {
+    startFocusBtn.addEventListener('click', () => {
+        // Cuộn màn hình xuống vùng có đồng hồ (rất tiện cho dùng điện thoại)
+        display.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Nếu đồng hồ đang dừng thì tự động bật luôn
+        if (!isRunning) {
+            toggleTimer();
+        }
+    });
+}
 
-    // Khởi tạo hiển thị lần đầu khi load trang
-    updateDisplay();
+// Sự kiện Lịch sử (Xóa & Tái sử dụng)
+if (sessionHistoryList) {
+    sessionHistoryList.addEventListener('click', function(e) {
+        // Nút xóa
+        const deleteBtn = e.target.closest('.delete-btn');
+        if (deleteBtn) {
+            const item = deleteBtn.closest('.history-item'); 
+            if (item) {
+                item.style.transition = 'opacity 0.2s';
+                item.style.opacity = '0';
+                setTimeout(() => item.remove(), 200); 
+            }
+            return;
+        }
 
+        // Click để set lại tên Task
+        const historyItem = e.target.closest('.history-item');
+        if (historyItem) {
+            // Lấy tên thông qua class truncate (vì tiêu đề task đang dùng class này)
+            const taskNameEl = historyItem.querySelector('.truncate');
+            if (taskNameEl && currentTaskTitle) {
+                currentTaskTitle.textContent = taskNameEl.textContent;
+                currentTaskTitle.style.transition = 'color 0.3s ease';
+                currentTaskTitle.style.color = '#3525cd'; 
+                setTimeout(() => currentTaskTitle.style.color = '', 500); 
+            }
+        }
+    });
+}
 
-/*### Cách hoạt động (Giải thích ngắn gọn):
-* **`setInterval(..., 1000)`**: Cứ mỗi 1000ms (1 giây), nó sẽ trừ biến `timeLeft` đi 1 đơn vị.
-* **Toán học vòng tròn**: Vòng tròn SVG của bạn có chu vi là `289` (do thuộc tính `stroke-dasharray="289"` bạn đã set). Bằng cách dùng toán học `(timeLeft / totalTimeInSeconds) * 289`, chúng ta tính ra được phần trăm thời gian còn lại tương ứng với độ dài vòng tròn và truyền vào `stroke-dashoffset` để tạo hiệu ứng thanh chạy tụt dần.
-* **`padStart(2, '0')`**: Đảm bảo nếu giây là `9` thì sẽ hiển thị là `09` cho đẹp mắt.
+// Dọn dẹp tất cả (Nút 3 chấm)
+if (clearHistoryMenu) {
+    clearHistoryMenu.addEventListener('click', () => {
+        if (!sessionHistoryList || sessionHistoryList.children.length === 0) return; 
+        if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử?")) {
+            sessionHistoryList.innerHTML = '';
+        }
+    });
+}
 
-Bạn chỉ cần paste đoạn JS này vào, gắn đúng các `id` vào HTML là bộ đếm giờ sẽ hoạt động như một ứng dụng thật!*/
+// Nút Thống kê (View All History)
+if (viewAllBtn) {
+    viewAllBtn.addEventListener('click', () => {
+        if (!sessionHistoryList) return;
+        const allItems = sessionHistoryList.querySelectorAll('.history-item');
+        let completedCount = 0;
+        let interruptedCount = 0;
+
+        allItems.forEach(item => {
+            if (item.innerHTML.includes('check_circle')) completedCount++;
+            else if (item.innerHTML.includes('cancel')) interruptedCount++;
+        });
+
+        if (allItems.length === 0) {
+            alert("Lịch sử trống. Hãy bấm Start Focus Session để bắt đầu!");
+        } else {
+            alert(`📊 THỐNG KÊ LỊCH SỬ:\n\n• Tổng số phiên: ${allItems.length}\n• Hoàn thành: ${completedCount} 🏆\n• Bị gián đoạn: ${interruptedCount} ⚠️`);
+        }
+    });
+}
+
+// ==========================================
+// --- 6. KHỞI TẠO ---
+// ==========================================
+if (playPauseBtn) playPauseBtn.addEventListener('click', toggleTimer);
+if (stopBtn) stopBtn.addEventListener('click', stopTimer);
+if (skipBtn) skipBtn.addEventListener('click', skipTimer);
+
+// Vẽ giao diện lần đầu
+updateDisplay();
