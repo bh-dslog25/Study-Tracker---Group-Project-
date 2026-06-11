@@ -1,56 +1,51 @@
-    // src/app.js
-    'use strict';
-    require('dotenv').config();
-    const express = require('express');
-    const cors    = require('cors');
-    const morgan  = require('morgan');
-    require('./models'); // load models & associations
-    const routes  = require('./routes');
-    const logger  = require('./utils/logger');
-    const { errorResponse } = require('./utils/response');
+'use strict';
 
-    const app = express();
+require('dotenv').config();
 
-    // ====== MIDDLEWARES ======
-    app.use(cors({
-    origin:         process.env.CORS_ORIGIN || 'http://localhost:5173',
-    credentials:    true,
-    methods:        ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    }));
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
 
-    app.use(express.json({ limit: '10mb' }));
-    app.use(express.urlencoded({ extended: true }));
+require('./models');
 
-    if (process.env.NODE_ENV !== 'test') {
-    app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
-        stream: { write: (msg) => logger.info(msg.trim()) },
-    }));
-    }
+const routes = require('./routes');
+const logger = require('./utils/logger');
+const swaggerSpec = require('./config/swagger');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
-    // ====== HEALTH CHECK ======
-    app.get('/health', (req, res) => {
-    res.json({
-        status:      'OK',
-        message:     '🎓 Study Tracker API đang hoạt động',
-        timestamp:   new Date().toISOString(),
-        version:     '1.0.0',
-        environment: process.env.NODE_ENV || 'development',
-    });
-    });
+const app = express();
 
-    // ====== API ROUTES ======
-    app.use('/api', routes);
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
-    // ====== 404 HANDLER ======
-    app.use((req, res) => {
-    return errorResponse(res, `Không tìm thấy route: ${req.method} ${req.originalUrl}`, 404);
-    });
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 
-    // ====== GLOBAL ERROR HANDLER ======
-    app.use((err, req, res, next) => {
-    logger.error('Unhandled error:', err);
-    return errorResponse(res, err.message || 'Lỗi server nội bộ', err.status || 500);
-    });
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
+    stream: { write: (msg) => logger.info(msg.trim()) },
+  }));
+}
 
-    module.exports = app;
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'Study Tracker API dang hoat dong',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+  });
+});
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api', routes);
+
+app.use(notFound);
+app.use(errorHandler);
+
+module.exports = app;

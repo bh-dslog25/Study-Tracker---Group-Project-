@@ -1,95 +1,66 @@
 'use strict';
-
 const authService = require('../services/authService');
 const { successResponse, errorResponse } = require('../utils/response');
 const logger = require('../utils/logger');
 
-/**
- * POST /api/auth/register
- */
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    // Validation cơ bản
-    if (!name || !email || !password) {
-      return errorResponse(res, 'Vui lòng điền đầy đủ thông tin', 400);
-    }
-
-    const user = await authService.register({ name, email, password });
-    return successResponse(res, { user }, 'Đăng ký thành công', 201);
-
+    const result = await authService.register(req.body);
+    logger.info(`Đăng ký thành công: ${req.body.email} [${result.user.role}]`);
+    return successResponse(res, result, 'Đăng ký thành công', 201);
   } catch (err) {
-    logger.error(`[authController.register] ${err.message}`);
-    return errorResponse(res, err.message, err.statusCode || 500);
+    return errorResponse(res, err.message, err.status || 500);
   }
 };
 
-/**
- * POST /api/auth/login
- */
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return errorResponse(res, 'Vui lòng nhập email và mật khẩu', 400);
-    }
-
-    const { user, accessToken, refreshToken } = await authService.login({ email, password });
-
-    return successResponse(res, { user, accessToken, refreshToken }, 'Đăng nhập thành công');
-
+    const result = await authService.login(req.body);
+    logger.info(`Đăng nhập: ${req.body.email}`);
+    return successResponse(res, result, 'Đăng nhập thành công');
   } catch (err) {
-    logger.error(`[authController.login] ${err.message}`);
-    return errorResponse(res, err.message, err.statusCode || 500);
+    return errorResponse(res, err.message, err.status || 500);
   }
 };
 
-/**
- * POST /api/auth/refresh
- */
 const refresh = async (req, res) => {
   try {
-    const { refreshToken } = req.body;
-
-    const tokens = await authService.refreshToken(refreshToken);
+    const tokens = await authService.refresh(req.body.refreshToken);
     return successResponse(res, tokens, 'Làm mới token thành công');
-
   } catch (err) {
-    logger.error(`[authController.refresh] ${err.message}`);
-    return errorResponse(res, err.message, err.statusCode || 500);
+    return errorResponse(res, err.message, err.status || 401);
   }
 };
 
-/**
- * POST /api/auth/logout
- * Yêu cầu protect middleware — req.user đã có
- */
 const logout = async (req, res) => {
   try {
-    await authService.logout(req.user.id);
+    await authService.logout(req.user);
     return successResponse(res, null, 'Đăng xuất thành công');
-
   } catch (err) {
-    logger.error(`[authController.logout] ${err.message}`);
-    return errorResponse(res, err.message, err.statusCode || 500);
+    return errorResponse(res, err.message, 500);
   }
 };
 
-/**
- * GET /api/auth/me
- * Yêu cầu protect middleware — req.user đã có
- */
-const getMe = async (req, res) => {
+const getMe = (req, res) =>
+  successResponse(res, req.user, 'Lấy thông tin thành công');
+
+const updateMe = async (req, res) => {
   try {
-    const user = await authService.getMe(req.user.id);
-    return successResponse(res, { user }, 'Lấy thông tin thành công');
-
+    const { name } = req.body;
+    await req.user.update({ name });
+    return successResponse(res, req.user, 'Cập nhật thành công');
   } catch (err) {
-    logger.error(`[authController.getMe] ${err.message}`);
-    return errorResponse(res, err.message, err.statusCode || 500);
+    return errorResponse(res, 'Cập nhật thất bại', 500);
   }
 };
 
-module.exports = { register, login, refresh, logout, getMe };
+const changePassword = async (req, res) => {
+  try {
+    await authService.changePassword(req.user, req.body.currentPassword, req.body.newPassword);
+    return successResponse(res, null, 'Đổi mật khẩu thành công');
+  } catch (err) {
+    return errorResponse(res, err.message, err.status || 500);
+  }
+};
+
+module.exports = { register, login, refresh, logout, getMe, updateMe, changePassword };

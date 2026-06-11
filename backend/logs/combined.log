@@ -1,0 +1,46 @@
+{"level":"info","message":"\u001b[0mGET /health \u001b[32m200\u001b[0m 3.068 ms - 145\u001b[0m","timestamp":"2026-06-08 21:55:21"}
+{"level":"info","message":"\u001b[0mGET /api-docs \u001b[36m301\u001b[0m 1.524 ms - 158\u001b[0m","timestamp":"2026-06-08 21:55:21"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 3.474 ms - 3106\u001b[0m","timestamp":"2026-06-08 21:55:34"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-08 22:01:54"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-08 22:01:54"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-08 22:10:47"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-08 22:10:47"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 3.445 ms - 3106\u001b[0m","timestamp":"2026-06-08 22:11:05"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[32m200\u001b[0m 0.295 ms - 1718\u001b[0m","timestamp":"2026-06-08 22:11:05"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[32m200\u001b[0m 25.269 ms - 178977\u001b[0m","timestamp":"2026-06-08 22:11:05"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[32m200\u001b[0m 91.793 ms - 251800\u001b[0m","timestamp":"2026-06-08 22:11:05"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[32m200\u001b[0m 159.235 ms - 1526593\u001b[0m","timestamp":"2026-06-08 22:11:05"}
+{"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[32m200\u001b[0m 7.314 ms - 628\u001b[0m","timestamp":"2026-06-08 22:11:05"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 0.820 ms - 3106\u001b[0m","timestamp":"2026-06-08 22:11:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[32m200\u001b[0m 0.243 ms - 1718\u001b[0m","timestamp":"2026-06-08 22:11:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[32m200\u001b[0m 7.194 ms - 178977\u001b[0m","timestamp":"2026-06-08 22:11:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[32m200\u001b[0m 12.157 ms - 251800\u001b[0m","timestamp":"2026-06-08 22:11:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[32m200\u001b[0m 12.304 ms - 1526593\u001b[0m","timestamp":"2026-06-08 22:11:27"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-11 15:30:05"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-11 15:30:05"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 1.638 ms - 57\u001b[0m","timestamp":"2026-06-11 15:35:29"}
+{"level":"info","message":"\u001b[0mGET /favicon.ico \u001b[33m404\u001b[0m 0.275 ms - 68\u001b[0m","timestamp":"2026-06-11 15:35:29"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-11 15:37:26"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-11 15:37:26"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 3.486 ms - 3106\u001b[0m","timestamp":"2026-06-11 15:37:55"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[32m200\u001b[0m 0.175 ms - 1718\u001b[0m","timestamp":"2026-06-11 15:37:55"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[32m200\u001b[0m 22.825 ms - 178977\u001b[0m","timestamp":"2026-06-11 15:37:55"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[32m200\u001b[0m 83.961 ms - 251800\u001b[0m","timestamp":"2026-06-11 15:37:55"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[32m200\u001b[0m 148.817 ms - 1526593\u001b[0m","timestamp":"2026-06-11 15:37:55"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 0.884 ms - 57\u001b[0m","timestamp":"2026-06-11 15:47:48"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 0.362 ms - 57\u001b[0m","timestamp":"2026-06-11 15:47:48"}
+{"level":"info","message":"\u001b[0mGET /api-docs \u001b[36m301\u001b[0m 1.099 ms - 158\u001b[0m","timestamp":"2026-06-11 15:47:48"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 1.214 ms - 3106\u001b[0m","timestamp":"2026-06-11 15:47:48"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-11 15:51:05"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-11 15:51:05"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-11 15:55:12"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-11 15:55:12"}
+{"level":"info","message":"\u001b[0mGET /api-docs \u001b[36m301\u001b[0m 2.888 ms - 158\u001b[0m","timestamp":"2026-06-11 15:55:42"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 1.643 ms - 3106\u001b[0m","timestamp":"2026-06-11 15:55:42"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[32m200\u001b[0m 2.164 ms - 178977\u001b[0m","timestamp":"2026-06-11 15:55:42"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[32m200\u001b[0m 0.515 ms - 55319\u001b[0m","timestamp":"2026-06-11 15:55:42"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[32m200\u001b[0m 2.544 ms - 251800\u001b[0m","timestamp":"2026-06-11 15:55:42"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[32m200\u001b[0m 6.018 ms - 1526593\u001b[0m","timestamp":"2026-06-11 15:55:42"}
+{"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[32m200\u001b[0m 9.513 ms - 628\u001b[0m","timestamp":"2026-06-11 15:55:42"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-11 15:56:00"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-11 15:56:00"}
