@@ -1,6 +1,6 @@
 // server.js
 require('dotenv').config();
-
+const jwt = require('jsonwebtoken');
 const app = require('../src/app.js');
 const { connectDB } = require('../src/config/database.js');
 const logger = require('../src/utils/logger.js');

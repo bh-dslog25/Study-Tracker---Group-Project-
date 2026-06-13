@@ -1,24 +1,27 @@
 import api from '../api/axios';
 
 const authService = {
-  // Nhận vào một Object { username, email, password, role }
   register: async ({ username, email, password, role }) => {
-    const data = await api.post('/auth/register', { username, email, password, role });
-    if (data.accessToken) {
-      localStorage.setItem('access_token', data.accessToken);
-      localStorage.setItem('refresh_token', data.refreshToken);
+    // Truy cập vào thuộc tính .data của axios response
+    const response = await api.post('/auth/register', { username, email, password, role });
+    const result = response.data; // Đây mới là { user, accessToken, refreshToken }
+
+    if (result.accessToken) {
+      localStorage.setItem('access_token', result.accessToken);
+      localStorage.setItem('refresh_token', result.refreshToken);
     }
-    return data; // Trả về { user, accessToken, refreshToken }
+    return result; 
   },
 
-  // Nhận vào một Object { email, password }
   login: async ({ email, password }) => {
-    const data = await api.post('/auth/login', { email, password });
-    if (data.accessToken) {
-      localStorage.setItem('access_token', data.accessToken);
-      localStorage.setItem('refresh_token', data.refreshToken);
+    const response = await api.post('/auth/login', { email, password });
+    const result = response.data; // Lấy dữ liệu từ .data
+
+    if (result.accessToken) {
+      localStorage.setItem('access_token', result.accessToken);
+      localStorage.setItem('refresh_token', result.refreshToken);
     }
-    return data; // Trả về { user, accessToken, refreshToken }
+    return result;
   },
 
   logout: async () => {
@@ -30,8 +33,10 @@ const authService = {
     }
   },
 
-  changePassword: ({ currentPassword, newPassword }) => {
-    return api.post('/auth/change-password', { currentPassword, newPassword });
+  changePassword: async ({ currentPassword, newPassword }) => {
+    // Nên để async/await để đồng bộ với các hàm khác
+    const response = await api.post('/auth/change-password', { currentPassword, newPassword });
+    return response.data;
   },
 };
 
