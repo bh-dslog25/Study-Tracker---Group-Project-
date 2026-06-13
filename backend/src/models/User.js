@@ -5,7 +5,7 @@ const { sequelize } = require('../config/database');
 
 const User = sequelize.define('User', {
     id: { type: DataTypes.INTEGER.UNSIGNED, autoIncrement: true, primaryKey: true },
-    name: {
+    username: {
         type: DataTypes.STRING(100),
         allowNull: false,
         validate: { notEmpty: true, len: [2, 100] },
@@ -27,7 +27,7 @@ const User = sequelize.define('User', {
     lastLogin:    { type: DataTypes.DATE, allowNull: true },
     refreshToken: { type: DataTypes.TEXT, allowNull: true },
 }, {
-tableName: 'users',
+tableName: 'users', 
 hooks: {
     beforeCreate: async (user) => { user.password = await bcrypt.hash(user.password, 12); },
     beforeUpdate: async (user) => { if (user.changed('password')) user.password = await bcrypt.hash(user.password, 12); },

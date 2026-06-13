@@ -4,11 +4,11 @@ const { User } = require('../models');
 const { generateAccessToken, generateRefreshToken } = require('../utils/generateToken');
 const jwt = require('jsonwebtoken');
 
-const register = async({ name, email, password, role }) => {
+const register = async({ username, email, password, role }) => {
   const existing = await User.findOne({ where: {email}});
   if (existing) throw { status: 409, message: 'Email da duoc su dung'};
   
-  const user = await User.create({ name, email, password, role: role || 'student'});
+  const user = await User.create({ username, email, password, role: role || 'student'});
   const accessToken = generateAccessToken(user.id, user.role);
   const refreshToken = generateRefreshToken(user.id);
   await user.update({ refreshToken, lastLogin: new Date() });

@@ -1,22 +1,24 @@
 import api from '../api/axios';
 
 const authService = {
-  register: async (name, email, password, role) => {
-    const data = await api.post('/auth/register', { name, email, password, role });
+  // Nhận vào một Object { username, email, password, role }
+  register: async ({ username, email, password, role }) => {
+    const data = await api.post('/auth/register', { username, email, password, role });
     if (data.accessToken) {
       localStorage.setItem('access_token', data.accessToken);
       localStorage.setItem('refresh_token', data.refreshToken);
     }
-    return data; // { user, accessToken, refreshToken }
+    return data; // Trả về { user, accessToken, refreshToken }
   },
 
-  login: async (email, password) => {
+  // Nhận vào một Object { email, password }
+  login: async ({ email, password }) => {
     const data = await api.post('/auth/login', { email, password });
     if (data.accessToken) {
       localStorage.setItem('access_token', data.accessToken);
       localStorage.setItem('refresh_token', data.refreshToken);
     }
-    return data; // { user, accessToken, refreshToken }
+    return data; // Trả về { user, accessToken, refreshToken }
   },
 
   logout: async () => {
@@ -28,7 +30,7 @@ const authService = {
     }
   },
 
-  changePassword: (currentPassword, newPassword) => {
+  changePassword: ({ currentPassword, newPassword }) => {
     return api.post('/auth/change-password', { currentPassword, newPassword });
   },
 };
