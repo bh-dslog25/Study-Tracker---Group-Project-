@@ -447,3 +447,39 @@
 {"level":"info","message":"\u001b[0mGET /api/goals?page=1&limit=20 \u001b[36m304\u001b[0m 13.226 ms - -\u001b[0m","timestamp":"2026-06-13 14:59:18"}
 {"level":"info","message":"\u001b[0mGET /api/goals?page=1&limit=20 \u001b[36m304\u001b[0m 6.448 ms - -\u001b[0m","timestamp":"2026-06-13 14:59:22"}
 {"level":"info","message":"\u001b[0mGET /api/goals?page=1&limit=20 \u001b[36m304\u001b[0m 6.711 ms - -\u001b[0m","timestamp":"2026-06-13 14:59:22"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:58"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:58"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:55:59"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:56:00"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:56:00"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:56:00"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:56:00"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-13 16:56:00"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 16:56:00"}
