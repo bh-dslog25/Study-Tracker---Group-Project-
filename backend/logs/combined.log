@@ -876,3 +876,9 @@
 {"level":"info","message":"Đăng ký thành công: asdf1112@gmail.com","timestamp":"2026-06-13 19:03:51"}
 {"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 734.241 ms - 767\u001b[0m","timestamp":"2026-06-13 19:03:51"}
 {"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[32m200\u001b[0m 0.718 ms - 67\u001b[0m","timestamp":"2026-06-13 19:04:03"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-14 23:16:56"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-14 23:16:56"}
+{"level":"info","message":"\nSIGINT nhận được — đang tắt server...","timestamp":"2026-06-14 23:23:11"}
+{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-14 23:23:33"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-14 23:23:33"}
+{"level":"info","message":"\nSIGINT nhận được — đang tắt server...","timestamp":"2026-06-14 23:23:49"}
