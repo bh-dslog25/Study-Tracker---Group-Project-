@@ -1,5 +1,6 @@
 // server.js
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const app = require('../src/app.js');
 const { connectDB } = require('../src/config/database.js');
 const logger = require('../src/utils/logger.js');

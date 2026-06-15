@@ -2,6 +2,7 @@
 
 const { User } = require('../models');
 const { generateAccessToken, generateRefreshToken } = require('../utils/generateToken');
+const { getRefreshTokenSecret } = require('../config/jwt');
 const jwt = require('jsonwebtoken');
 
 const register = async({ name, email, password, role }) => {
@@ -30,7 +31,7 @@ const login = async ({ email, password }) => {
  
 const refresh = async (refreshToken) => {
   if (!refreshToken) throw { status: 400, message: 'Refresh token không được cung cấp' };
-  const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  const decoded = jwt.verify(refreshToken, getRefreshTokenSecret());
   const user = await User.findOne({ where: { id: decoded.id, refreshToken, isActive: true } });
   if (!user) throw { status: 401, message: 'Refresh token không hợp lệ' };
  

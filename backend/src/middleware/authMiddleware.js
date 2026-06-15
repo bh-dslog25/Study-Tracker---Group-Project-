@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const { errorResponse } = require('../utils/response');
+const { getAccessTokenSecret } = require('../config/jwt');
 
 const authenticate = async (req, res, next) => {
     try {
@@ -11,7 +12,7 @@ const authenticate = async (req, res, next) => {
       }
 
       const token = authHeader.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, getAccessTokenSecret());
 
       const user = await User.findOne({ where: { id: decoded.id, isActive: true } });
       if (!user) return errorResponse(res, 'Người dùng không tồn tại hoặc đã bị khoá', 401);
