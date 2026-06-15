@@ -1,94 +1,101 @@
 'use strict';
 
-const { User } = require('../models');
-const { generateAccessToken, generateRefreshToken } = require('../utils/generateToken');
-const { getRefreshTokenSecret } = require('../config/jwt');
 const jwt = require('jsonwebtoken');
+const { User } = require('../models');
+const { getRefreshTokenSecret } = require('../config/jwt');
+const { generateAccessToken, generateRefreshToken } = require('../utils/generateToken');
 
-/**
- * Helper: Trả về user mà không có password hash
- */
 const sanitizeUser = (user) => {
-  const { password, ...userWithoutPassword } = user.get({ plain: true });
-  return userWithoutPassword;
+  const plain = user.get({ plain: true });
+  delete plain.password;
+  delete plain.refreshToken;
+  return plain;
 };
 
-const register = async({ username, email, password, role }) => {
+const register = async ({ name, username, email, password, role }) => {
+  const displayName = name || username;
   const existing = await User.findOne({ where: { email } });
-  if (existing) throw { status: 409, message: 'Email đã được sử dụng' };
-  
-  const user = await User.create({ 
-    username, 
-    email, 
-    password, 
+
+  if (existing) {
+    throw { status: 409, message: 'Email da duoc su dung' };
+  }
+
+  const user = await User.create({
+    name: displayName,
+    email,
+    password,
     role: role || 'student',
-    isActive: true 
+    isActive: true,
   });
 
   const accessToken = generateAccessToken(user.id, user.role);
   const refreshToken = generateRefreshToken(user.id);
-  
+
   await user.update({ refreshToken, lastLogin: new Date() });
-  
-  return { user: sanitizeUser(user), accessToken, refreshToken };  
+
+  return { user: sanitizeUser(user), accessToken, refreshToken };
 };
 
 const login = async ({ email, password }) => {
-  const user = await User.findOne({ where: { email } });
-  if (!user || !user.isActive) throw { status: 401, message: 'Email hoặc mật khẩu không đúng' };
- 
-  // Đảm bảo model User có phương thức comparePassword
+  const user = await User.findOne({ where: { email, isActive: true } });
+
+  if (!user) {
+    throw { status: 401, message: 'Email hoac mat khau khong dung' };
+  }
+
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) throw { status: 401, message: 'Email hoặc mật khẩu không đúng' };
- 
+  if (!isMatch) {
+    throw { status: 401, message: 'Email hoac mat khau khong dung' };
+  }
+
   const accessToken = generateAccessToken(user.id, user.role);
   const refreshToken = generateRefreshToken(user.id);
-  
+
   await user.update({ refreshToken, lastLogin: new Date() });
+
   return { user: sanitizeUser(user), accessToken, refreshToken };
 };
- 
+
 const refresh = async (refreshToken) => {
-  if (!refreshToken) throw { status: 400, message: 'Refresh token không được cung cấp' };
-<<<<<<< HEAD
-  const decoded = jwt.verify(refreshToken, getRefreshTokenSecret());
-  const user = await User.findOne({ where: { id: decoded.id, refreshToken, isActive: true } });
-  if (!user) throw { status: 401, message: 'Refresh token không hợp lệ' };
- 
-  const newAccessToken  = generateAccessToken(user.id, user.role);
-  const newRefreshToken = generateRefreshToken(user.id);
-  await user.update({ refreshToken: newRefreshToken });
-  return { accessToken: newAccessToken, refreshToken: newRefreshToken };
-=======
-  
+  if (!refreshToken) {
+    throw { status: 400, message: 'Refresh token khong duoc cung cap' };
+  }
+
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const user = await User.findOne({ where: { id: decoded.id, refreshToken, isActive: true } });
-    if (!user) throw { status: 401, message: 'Refresh token không hợp lệ' };
-    
+    const decoded = jwt.verify(refreshToken, getRefreshTokenSecret());
+    const user = await User.findOne({
+      where: { id: decoded.id, refreshToken, isActive: true },
+    });
+
+    if (!user) {
+      throw { status: 401, message: 'Refresh token khong hop le' };
+    }
+
     const newAccessToken = generateAccessToken(user.id, user.role);
     const newRefreshToken = generateRefreshToken(user.id);
-    
+
     await user.update({ refreshToken: newRefreshToken });
+
     return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   } catch (error) {
-    throw { status: 401, message: 'Phiên đăng nhập đã hết hạn' };
+    throw { status: 401, message: error.message || 'Phien dang nhap da het han' };
   }
->>>>>>> f43b1a47113c54e54615d03118726a96d2649513
 };
- 
-const logout = async (userId) => {
-  const user = await User.findByPk(userId);
-  if (user) await user.update({ refreshToken: null });
+
+const logout = async (user) => {
+  if (user) {
+    await user.update({ refreshToken: null });
+  }
 };
- 
+
 const changePassword = async (user, currentPassword, newPassword) => {
   const isMatch = await user.comparePassword(currentPassword);
-  if (!isMatch) throw { status: 400, message: 'Mật khẩu hiện tại không đúng' };
-  
-  // Sequelize sẽ tự hash nếu bạn có hook beforeSave trong model
-  user.password = newPassword; 
-  await user.save();
+
+  if (!isMatch) {
+    throw { status: 400, message: 'Mat khau hien tai khong dung' };
+  }
+
+  await user.update({ password: newPassword });
 };
- 
+
 module.exports = { register, login, refresh, logout, changePassword };

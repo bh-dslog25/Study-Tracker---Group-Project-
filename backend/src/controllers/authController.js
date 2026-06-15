@@ -1,24 +1,24 @@
 'use strict';
+
 const authService = require('../services/authService');
 const { successResponse, errorResponse } = require('../utils/response');
 const logger = require('../utils/logger');
 
 const register = async (req, res) => {
   try {
-    // 1. Kiểm tra dữ liệu đầu vào cơ bản
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) {
-      return errorResponse(res, 'Vui lòng điền đầy đủ thông tin bắt buộc', 422);
+    const name = req.body.name || req.body.username;
+    const { email, password, role } = req.body;
+
+    if (!name || !email || !password) {
+      return errorResponse(res, 'Vui long dien day du thong tin bat buoc', 422);
     }
 
-    // 2. Gọi service
-    const result = await authService.register({ username, email, password, role: req.body.role });
-    logger.info(`Đăng ký thành công: ${email}`);
-    
-    // 3. Trả về đúng cấu trúc
-    return successResponse(res, result, 'Đăng ký thành công', 201);
+    const result = await authService.register({ name, email, password, role });
+    logger.info(`Dang ky thanh cong: ${email}`);
+
+    return successResponse(res, result, 'Dang ky thanh cong', 201);
   } catch (err) {
-    logger.error(`Lỗi đăng ký: ${err.message}`);
+    logger.error(`Loi dang ky: ${err.message}`);
     return errorResponse(res, err.message, err.status || 500);
   }
 };
@@ -26,16 +26,17 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
-      return errorResponse(res, 'Vui lòng nhập email và mật khẩu', 400);
+      return errorResponse(res, 'Vui long nhap email va mat khau', 400);
     }
 
-    const result = await authService.login(req.body);
-    logger.info(`Đăng nhập thành công: ${email}`);
-    
-    return successResponse(res, result, 'Đăng nhập thành công');
+    const result = await authService.login({ email, password });
+    logger.info(`Dang nhap thanh cong: ${email}`);
+
+    return successResponse(res, result, 'Dang nhap thanh cong');
   } catch (err) {
-    logger.error(`Lỗi đăng nhập: ${err.message}`);
+    logger.error(`Loi dang nhap: ${err.message}`);
     return errorResponse(res, err.message, err.status || 401);
   }
 };
@@ -43,10 +44,13 @@ const login = async (req, res) => {
 const refresh = async (req, res) => {
   try {
     const { refreshToken } = req.body;
-    if (!refreshToken) return errorResponse(res, 'Thiếu refresh token', 400);
+
+    if (!refreshToken) {
+      return errorResponse(res, 'Thieu refresh token', 400);
+    }
 
     const tokens = await authService.refresh(refreshToken);
-    return successResponse(res, tokens, 'Làm mới token thành công');
+    return successResponse(res, tokens, 'Lam moi token thanh cong');
   } catch (err) {
     return errorResponse(res, err.message, err.status || 401);
   }
@@ -54,39 +58,44 @@ const refresh = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    if (req.user) await authService.logout(req.user);
-    return successResponse(res, null, 'Đăng xuất thành công');
+    await authService.logout(req.user);
+    return successResponse(res, null, 'Dang xuat thanh cong');
   } catch (err) {
-    logger.error(`Lỗi logout: ${err.message}`);
-    return errorResponse(res, 'Đăng xuất thất bại', 500);
+    logger.error(`Loi logout: ${err.message}`);
+    return errorResponse(res, 'Dang xuat that bai', 500);
   }
 };
 
 const getMe = (req, res) => {
-  return successResponse(res, req.user, 'Lấy thông tin thành công');
+  return successResponse(res, req.user, 'Lay thong tin thanh cong');
 };
 
 const updateMe = async (req, res) => {
   try {
-    const { username } = req.body;
-    if (!username) return errorResponse(res, 'Tên không được để trống', 400);
-    
-    await req.user.update({ username });
-    return successResponse(res, req.user, 'Cập nhật thành công');
+    const name = req.body.name || req.body.username;
+
+    if (!name) {
+      return errorResponse(res, 'Ten khong duoc de trong', 400);
+    }
+
+    await req.user.update({ name });
+    return successResponse(res, req.user, 'Cap nhat thanh cong');
   } catch (err) {
-    logger.error(`Lỗi updateMe: ${err.message}`);
-    return errorResponse(res, 'Cập nhật thất bại', 500);
+    logger.error(`Loi updateMe: ${err.message}`);
+    return errorResponse(res, 'Cap nhat that bai', 500);
   }
 };
 
 const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
+
     if (!currentPassword || !newPassword) {
-      return errorResponse(res, 'Vui lòng cung cấp mật khẩu cũ và mới', 400);
+      return errorResponse(res, 'Vui long cung cap mat khau cu va moi', 400);
     }
+
     await authService.changePassword(req.user, currentPassword, newPassword);
-    return successResponse(res, null, 'Đổi mật khẩu thành công');
+    return successResponse(res, null, 'Doi mat khau thanh cong');
   } catch (err) {
     return errorResponse(res, err.message, err.status || 500);
   }

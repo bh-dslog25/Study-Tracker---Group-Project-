@@ -918,3 +918,21 @@
 {"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 734.241 ms - 767\u001b[0m","timestamp":"2026-06-13 19:03:51"}
 {"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[32m200\u001b[0m 0.718 ms - 67\u001b[0m","timestamp":"2026-06-13 19:04:03"}
 >>>>>>> f43b1a47113c54e54615d03118726a96d2649513
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:05:48"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:05:48"}
+{"level":"info","message":"\u001b[0mGET /health \u001b[32m200\u001b[0m 3.281 ms - 145\u001b[0m","timestamp":"2026-06-15 18:05:57"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 2.093 ms - 3106\u001b[0m","timestamp":"2026-06-15 18:05:57"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[36m304\u001b[0m 4.503 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[36m304\u001b[0m 1.451 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[36m304\u001b[0m 0.576 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[36m304\u001b[0m 3.954 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[36m304\u001b[0m 5.109 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[32m200\u001b[0m 12.539 ms - 628\u001b[0m","timestamp":"2026-06-15 18:06:37"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:07:22"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:07:22"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[36m304\u001b[0m 0.722 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[36m304\u001b[0m 0.516 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[36m304\u001b[0m 0.533 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[36m304\u001b[0m 0.401 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[36m304\u001b[0m 2.878 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[36m304\u001b[0m 0.718 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
