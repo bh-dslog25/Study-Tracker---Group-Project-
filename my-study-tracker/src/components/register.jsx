@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const styles = `
-  .login-body {
+  .register-body {
     min-height: 100vh;
     margin: 0;
-    background-color: rgba(255, 255, 255, 0.5);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
     background-color: #f0f0f7;
     color: #1A1A1A;
     display: flex;
@@ -17,18 +12,27 @@ const styles = `
     align-items: center;
   }
 
-  .login-container {
+  .signup-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 50px;
   }
 
-  .login-container h1 {
+  .signup-container h1 {
     font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
     font-size: 32px;
     font-weight: 700;
     margin-bottom: 16px;
+    text-align: center;
+    color: #1A1A1A;
+  }
+
+  .signup-container h2 {
+    font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
     text-align: center;
     color: #1A1A1A;
   }
@@ -80,7 +84,7 @@ const styles = `
     box-shadow: 0 0 0 2px rgba(93, 92, 222, 0.15);
   }
 
-  .login-button {
+  .register-button {
     background-color: #5d5cde;
     color: white;
     border: none;
@@ -98,10 +102,10 @@ const styles = `
     width: calc(100% - 80px);
   }
 
-  .login-button:hover    { background-color: #4a49c4; }
-  .login-button:disabled { opacity: 0.7; cursor: not-allowed; }
+  .register-button:hover    { background-color: #4a49c4; }
+  .register-button:disabled { opacity: 0.7; cursor: not-allowed; }
 
-  .login-link-row {
+  .register-link-row {
     text-align: center;
     margin-top: 8px;
     font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
@@ -109,15 +113,15 @@ const styles = `
     color: #1A1A1A;
   }
 
-  .login-link-row a {
+  .register-link-row a {
     color: #5d5cde;
     text-decoration: none;
     font-weight: 600;
   }
 
-  .login-link-row a:hover { text-decoration: underline; }
+  .register-link-row a:hover { text-decoration: underline; }
 
-  .login-error {
+  .register-error {
     background: #ffdad6;
     color: #93000a;
     font-size: 13px;
@@ -127,7 +131,7 @@ const styles = `
     text-align: center;
   }
 
-  .login-success {
+  .register-success {
     background: #e8f5e9;
     color: #2e7d32;
     font-size: 13px;
@@ -138,69 +142,68 @@ const styles = `
   }
 `;
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError]       = useState('');
-  const [success, setSuccess]   = useState('');
-  const [loading, setLoading]   = useState(false);
+export default function Register() {
+  const [username,        setUsername]        = useState('');
+  const [password,        setPassword]        = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email,           setEmail]           = useState('');
+  const [error,           setError]           = useState('');
+  const [success,         setSuccess]         = useState('');
+  const [loading,         setLoading]         = useState(false);
   const navigate = useNavigate();
 
+  // Đổi thành async function để gọi API
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
-    // 1. Validate kiểm tra rỗng
-    if (email.trim() === '' || password.trim() === '') {
-      setError('Please fulfill your information');
+    // 1. Validate rỗng
+    if (!username.trim() || !password.trim() || !confirmPassword.trim() || !email.trim()) {
+      setError('Please fulfill your information !');
+      return;
+    }
+
+    // 2. Validate confirm password
+    if (password !== confirmPassword) {
+      setError('Passwords do not match !');
       return;
     }
 
     setLoading(true);
 
     try {
-      // 2. GỌI API LÊN BACKEND THỰC TẾ
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      // 3. GỌI API LÊN BACKEND THỰC TẾ
+      // Thay vì lưu vào localStorage, ta gửi dữ liệu lên server Node.js
+      const response = await fetch('http://localhost:3000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // CHÚ Ý: Nếu Database của bạn dùng 'email' thay vì 'username' để đăng nhập, 
-        // hãy đổi chữ 'username:' ở dòng dưới thành 'email:'
-        body: JSON.stringify({ 
-          email: email.trim(), 
-          password: password 
+        body: JSON.stringify({
+          username: username.trim(),
+          email: email.trim(),
+          password: password,
         }),
       });
 
-      // Lấy dữ liệu Backend trả về
       const data = await response.json();
 
-      // 3. KIỂM TRA PHẢN HỒI TỪ BACKEND
+      // 4. KIỂM TRA PHẢN HỒI TỪ BACKEND
       if (response.ok) {
-        // Đăng nhập thành công -> Lưu trạng thái vào localStorage
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('currentUser', email.trim());
+        setSuccess('Register successfully! Redirecting to login...');
         
-        // Lưu Token bảo mật do Backend cấp
-        if (data.token) {
-          localStorage.setItem('accessToken', data.token);
-        }
-
-        setSuccess('Login successfully!');
-        
-        // Chuyển hướng sang trang chủ sau 0.8 giây
-        setTimeout(() => navigate('/'), 800);
+        // Thành công thì chuyển hướng về trang Login sau 1.5 giây
+        setTimeout(() => navigate('/login'), 1500);
       } else {
-        // Backend báo lỗi (sai mật khẩu, tài khoản không tồn tại...)
-        setError(data.message || 'Username or password is wrong or does not exist!');
+        // Lỗi từ backend (ví dụ: Trùng email, trùng username...)
+        setError(data.message || 'This account or email already exists.');
       }
     } catch (err) {
-      console.error("Login Error: ", err);
+      console.error("Register Error: ", err);
       setError('Cannot connect to the server. Please make sure your backend is running.');
     } finally {
-      // Tắt trạng thái loading dù thành công hay thất bại
+      // Dù thành công hay thất bại cũng tắt trạng thái loading
       setLoading(false);
     }
   };
@@ -208,23 +211,24 @@ export default function Login() {
   return (
     <>
       <style>{styles}</style>
-      <div className="login-body">
-        <div className="login-container">
+      <div className="register-body">
+        <div className="signup-container">
           <h1>Welcome to Study Tracker</h1>
+          <h2>You are a newbie? Welcome to our study tracker!</h2>
         </div>
 
         <form className="register-form" onSubmit={handleSubmit}>
-          {error   && <div className="login-error">{error}</div>}
-          {success && <div className="login-success">{success}</div>}
+          {error   && <div className="register-error">{error}</div>}
+          {success && <div className="register-success">{success}</div>}
 
           <div className="form-group">
-            <label htmlFor="email">Email:</label>
+            <label htmlFor="username">Username:</label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              type="text"
+              id="username"
+              name="username"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
               required
             />
           </div>
@@ -241,20 +245,44 @@ export default function Login() {
             />
           </div>
 
+          <div className="form-group">
+            <label htmlFor="confirm_password">Confirm Password:</label>
+            <input
+              type="password"
+              id="confirm_password"
+              name="confirm_password"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
           <br />
 
           <button
             type="submit"
-            className="login-button"
+            className="register-button"
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Registering...' : 'Register'}
           </button>
 
           <br />
 
-          <p className="login-link-row">
-            Don't have an account? <a href="/register">Register here</a>.
+          <p className="register-link-row">
+            Already have an account? <a href="/login">Login here</a>.
           </p>
         </form>
       </div>

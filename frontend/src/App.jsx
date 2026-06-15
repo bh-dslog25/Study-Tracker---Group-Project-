@@ -1,36 +1,107 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import MainLayout from './layouts/MainLayout';
-import Dashboard from './pages/Dashboard';
-import Goals from './pages/Goals';
-import TimeTracker from './pages/TimeTracker';
-import FocusSession from './pages/FocusSession';
 
-function App() {
+// 1. Import tất cả các trang của bạn
+// (Đảm bảo đường dẫn này khớp với vị trí thư mục của bạn, ví dụ: './pages/Login')
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Calendar from './pages/Calendar';
+import FocusSession from './pages/FocusSession';
+import Goals from './pages/Goals';
+import Tasks from './pages/Tasks';
+import TimeTracker from './pages/TimeTracker';
+
+// 2. Tạo một Component bảo vệ (Chống truy cập chui)
+// Nó sẽ kiểm tra thẻ 'isLoggedIn' mà chúng ta đã lưu lúc Login thành công
+const ProtectedRoute = ({ children }) => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  
+  if (!isLoggedIn) {
+    // Nếu chưa đăng nhập, đá văng về trang login
+    return <Navigate to="/login" replace />;
+  }
+  
+  // Nếu đã đăng nhập, cho phép đi tiếp vào Component bên trong
+  return children;
+};
+
+export default function App() {
   return (
     <Router>
-      <MainLayout>
-        <Routes>
-          {/* Chuyển hướng */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          
-          {/* Các trang chính */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/focus" element={<FocusSession />} />
-          <Route path="/goals" element={<Goals />} />
-          <Route path="/time-tracker" element={<TimeTracker />} /> 
-          
-          {/* Các trang giữ chỗ */}
-          <Route path="/tasks" element={<div className="bg-white p-6 rounded-2xl border border-gray-100 font-bold text-slate-700">Trang Tasks (Đang thiết kế)</div>} />
-          <Route path="/calendar" element={<div className="bg-white p-6 rounded-2xl border border-gray-100 font-bold text-slate-700">Trang Calendar (Đang thiết kế)</div>} />
-          <Route path="/settings" element={<div className="bg-white p-6 rounded-2xl border border-gray-100 font-bold text-slate-700">Trang Settings (Đang thiết kế)</div>} />
-          
-          {/* Đưa Route 404 vào trong này */}
-          <Route path="*" element={<div className="p-10 text-center">404 - Không tìm thấy trang</div>} />
-        </Routes>
-      </MainLayout>
+      <Routes>
+        {/* =========================================
+            PUBLIC ROUTES (Ai cũng vào được)
+        ========================================= */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* =========================================
+            PROTECTED ROUTES (Phải đăng nhập mới vào được)
+        ========================================= */}
+        
+        {/* Trang chủ mặc định là Dashboard */}
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/calendar" 
+          element={
+            <ProtectedRoute>
+              <Calendar />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/focus" 
+          element={
+            <ProtectedRoute>
+              <FocusSession />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/goals" 
+          element={
+            <ProtectedRoute>
+              <Goals />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/tasks" 
+          element={
+            <ProtectedRoute>
+              <Tasks />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/time-tracker" 
+          element={
+            <ProtectedRoute>
+              <TimeTracker />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* =========================================
+            CATCH-ALL ROUTE (Bắt lỗi gõ sai link)
+        ========================================= */}
+        {/* Bất kỳ đường dẫn nào không tồn tại sẽ tự động đưa về trang chủ */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+        
+      </Routes>
     </Router>
   );
 }
-
-export default App;

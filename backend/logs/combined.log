@@ -44,6 +44,47 @@
 {"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[32m200\u001b[0m 9.513 ms - 628\u001b[0m","timestamp":"2026-06-11 15:55:42"}
 {"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-11 15:56:00"}
 {"level":"info","message":"Môi trường: development","timestamp":"2026-06-11 15:56:00"}
+<<<<<<< HEAD
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[36m304\u001b[0m 6.826 ms - -\u001b[0m","timestamp":"2026-06-11 16:46:23"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[36m304\u001b[0m 2.182 ms - -\u001b[0m","timestamp":"2026-06-11 16:46:23"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[36m304\u001b[0m 1.438 ms - -\u001b[0m","timestamp":"2026-06-11 16:46:23"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[36m304\u001b[0m 1.189 ms - -\u001b[0m","timestamp":"2026-06-11 16:46:23"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[36m304\u001b[0m 6.434 ms - -\u001b[0m","timestamp":"2026-06-11 16:46:23"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-11 17:56:13"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-11 17:56:13"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-13 23:29:11"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 23:29:11"}
+{"level":"info","message":"\u001b[0mGET /health \u001b[32m200\u001b[0m 1.873 ms - 145\u001b[0m","timestamp":"2026-06-13 23:32:57"}
+{"level":"info","message":"\u001b[0mGET /health \u001b[32m200\u001b[0m 0.300 ms - 145\u001b[0m","timestamp":"2026-06-13 23:37:17"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-13 23:53:11"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-13 23:53:11"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-15 14:37:01"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-15 14:37:01"}
+{"level":"info","message":"\u001b[0mGET /api-docs \u001b[36m301\u001b[0m 3.041 ms - 158\u001b[0m","timestamp":"2026-06-15 14:38:29"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 2.765 ms - 3106\u001b[0m","timestamp":"2026-06-15 14:38:29"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[32m200\u001b[0m 0.398 ms - 55319\u001b[0m","timestamp":"2026-06-15 14:38:29"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[32m200\u001b[0m 25.882 ms - 178977\u001b[0m","timestamp":"2026-06-15 14:38:29"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[32m200\u001b[0m 88.045 ms - 251800\u001b[0m","timestamp":"2026-06-15 14:38:29"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[32m200\u001b[0m 156.680 ms - 1526593\u001b[0m","timestamp":"2026-06-15 14:38:29"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-15 16:42:33"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-15 16:42:33"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[36m304\u001b[0m 3.524 ms - -\u001b[0m","timestamp":"2026-06-15 16:42:46"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[36m304\u001b[0m 3.376 ms - -\u001b[0m","timestamp":"2026-06-15 16:42:46"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[36m304\u001b[0m 0.272 ms - -\u001b[0m","timestamp":"2026-06-15 16:42:46"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[36m304\u001b[0m 2.340 ms - -\u001b[0m","timestamp":"2026-06-15 16:42:46"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[36m304\u001b[0m 2.452 ms - -\u001b[0m","timestamp":"2026-06-15 16:42:46"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 0.500 ms - 57\u001b[0m","timestamp":"2026-06-15 16:42:56"}
+{"level":"info","message":"\u001b[0mGET /favicon.ico \u001b[33m404\u001b[0m 0.286 ms - 68\u001b[0m","timestamp":"2026-06-15 16:42:56"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-15 17:43:57"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-15 17:43:57"}
+{"level":"info","message":"Server đang chạy tại http://localhost:8080","timestamp":"2026-06-15 17:45:58"}
+{"level":"info","message":"Môi trường: development","timestamp":"2026-06-15 17:45:58"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[36m304\u001b[0m 4.820 ms - -\u001b[0m","timestamp":"2026-06-15 17:46:10"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[36m304\u001b[0m 1.815 ms - -\u001b[0m","timestamp":"2026-06-15 17:46:10"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[36m304\u001b[0m 0.446 ms - -\u001b[0m","timestamp":"2026-06-15 17:46:10"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[36m304\u001b[0m 4.632 ms - -\u001b[0m","timestamp":"2026-06-15 17:46:10"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[36m304\u001b[0m 5.973 ms - -\u001b[0m","timestamp":"2026-06-15 17:46:10"}
+=======
 {"level":"info","message":"Server đang chạy tại http://localhost:5000","timestamp":"2026-06-12 12:30:54"}
 {"level":"info","message":"Môi trường: development","timestamp":"2026-06-12 12:30:54"}
 {"level":"info","message":"\u001b[0mGET /api/goals?page=1&limit=20 \u001b[33m401\u001b[0m 9.729 ms - 74\u001b[0m","timestamp":"2026-06-12 12:32:06"}
@@ -876,9 +917,137 @@
 {"level":"info","message":"Đăng ký thành công: asdf1112@gmail.com","timestamp":"2026-06-13 19:03:51"}
 {"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 734.241 ms - 767\u001b[0m","timestamp":"2026-06-13 19:03:51"}
 {"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[32m200\u001b[0m 0.718 ms - 67\u001b[0m","timestamp":"2026-06-13 19:04:03"}
-{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-14 23:16:56"}
-{"level":"info","message":"Môi trường: development","timestamp":"2026-06-14 23:16:56"}
-{"level":"info","message":"\nSIGINT nhận được — đang tắt server...","timestamp":"2026-06-14 23:23:11"}
-{"level":"info","message":"Server đang chạy tại http://localhost:3000","timestamp":"2026-06-14 23:23:33"}
-{"level":"info","message":"Môi trường: development","timestamp":"2026-06-14 23:23:33"}
-{"level":"info","message":"\nSIGINT nhận được — đang tắt server...","timestamp":"2026-06-14 23:23:49"}
+>>>>>>> f43b1a47113c54e54615d03118726a96d2649513
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:05:48"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:05:48"}
+{"level":"info","message":"\u001b[0mGET /health \u001b[32m200\u001b[0m 3.281 ms - 145\u001b[0m","timestamp":"2026-06-15 18:05:57"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 2.093 ms - 3106\u001b[0m","timestamp":"2026-06-15 18:05:57"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[36m304\u001b[0m 4.503 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[36m304\u001b[0m 1.451 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[36m304\u001b[0m 0.576 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[36m304\u001b[0m 3.954 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[36m304\u001b[0m 5.109 ms - -\u001b[0m","timestamp":"2026-06-15 18:06:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[32m200\u001b[0m 12.539 ms - 628\u001b[0m","timestamp":"2026-06-15 18:06:37"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:07:22"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:07:22"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[36m304\u001b[0m 0.722 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[36m304\u001b[0m 0.516 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[36m304\u001b[0m 0.533 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[36m304\u001b[0m 0.401 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[36m304\u001b[0m 2.878 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[36m304\u001b[0m 0.718 ms - -\u001b[0m","timestamp":"2026-06-15 18:07:27"}
+{"level":"info","message":"Server dang chay tai http://localhost:3000","timestamp":"2026-06-15 18:24:35"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:24:35"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:31"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 29.787 ms - 77\u001b[0m","timestamp":"2026-06-15 18:25:31"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:41"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 6.047 ms - 77\u001b[0m","timestamp":"2026-06-15 18:25:41"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:41"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 5.843 ms - 77\u001b[0m","timestamp":"2026-06-15 18:25:41"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:46"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.436 ms - 77\u001b[0m","timestamp":"2026-06-15 18:25:46"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:47"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.482 ms - 77\u001b[0m","timestamp":"2026-06-15 18:25:47"}
+{"level":"info","message":"Server dang chay tai http://localhost:3000","timestamp":"2026-06-15 18:26:57"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:26:57"}
+{"level":"info","message":"Server dang chay tai http://localhost:3000","timestamp":"2026-06-15 18:27:07"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:27:07"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:28:37"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:28:37"}
+{"level":"info","message":"SIGINT received, shutting down server...","timestamp":"2026-06-15 18:28:45"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:29:01"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:29:01"}
+{"level":"info","message":"\u001b[0mGET /api-docs/?gidzl=5emJRhvV7HaLaHLkiK0P71wG4sci4XuS1P0HRw5961bVo1HiznaS7rd8G3ty61iP0i0GQpQSu3b0kLuS6m \u001b[32m200\u001b[0m 8.126 ms - 3106\u001b[0m","timestamp":"2026-06-15 18:30:33"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[32m200\u001b[0m 0.516 ms - 55319\u001b[0m","timestamp":"2026-06-15 18:30:34"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[32m200\u001b[0m 6.361 ms - 1526593\u001b[0m","timestamp":"2026-06-15 18:30:34"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[32m200\u001b[0m 44.930 ms - 178977\u001b[0m","timestamp":"2026-06-15 18:30:34"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[32m200\u001b[0m 204.533 ms - 251800\u001b[0m","timestamp":"2026-06-15 18:30:34"}
+{"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[32m200\u001b[0m 18.542 ms - 628\u001b[0m","timestamp":"2026-06-15 18:30:36"}
+{"level":"info","message":"\u001b[0mGET /api-docs/ \u001b[32m200\u001b[0m 0.961 ms - 3106\u001b[0m","timestamp":"2026-06-15 18:30:54"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-init.js \u001b[32m200\u001b[0m 0.472 ms - 55319\u001b[0m","timestamp":"2026-06-15 18:30:54"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui.css \u001b[32m200\u001b[0m 9.112 ms - 178977\u001b[0m","timestamp":"2026-06-15 18:30:54"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-standalone-preset.js \u001b[32m200\u001b[0m 6.279 ms - 251800\u001b[0m","timestamp":"2026-06-15 18:30:54"}
+{"level":"info","message":"\u001b[0mGET /api-docs/swagger-ui-bundle.js \u001b[32m200\u001b[0m 9.905 ms - 1526593\u001b[0m","timestamp":"2026-06-15 18:30:54"}
+{"level":"info","message":"\u001b[0mGET /api-docs/favicon-32x32.png \u001b[32m200\u001b[0m 3.780 ms - 628\u001b[0m","timestamp":"2026-06-15 18:30:55"}
+{"level":"info","message":"\u001b[0mGET /health \u001b[32m200\u001b[0m 0.857 ms - 145\u001b[0m","timestamp":"2026-06-15 18:44:01"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:47:12"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:47:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:47:44"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 30.825 ms - 77\u001b[0m","timestamp":"2026-06-15 18:47:44"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:07"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 10.007 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:07"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:07"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 6.830 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:07"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:07"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.623 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:07"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:08"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.294 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:08"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:08"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.481 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:08"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.210 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:11"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.619 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:11"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.992 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:11"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.824 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:11"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 3.600 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 6.241 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.342 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.079 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.032 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 3.490 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:13"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 3.834 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:13"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:13"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 3.997 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:13"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:13"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[31m500\u001b[0m 4.548 ms - 77\u001b[0m","timestamp":"2026-06-15 18:48:13"}
+{"level":"info","message":"SIGINT received, shutting down server...","timestamp":"2026-06-15 18:49:11"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:55:31"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:55:31"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:56:01"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:56:01"}
+{"level":"info","message":"Dang ky thanh cong: test1184323024@gmail.com","timestamp":"2026-06-15 18:56:14"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 18:58:39"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 18:58:39"}
+{"level":"info","message":"Dang ky thanh cong: laq@gmail.com","timestamp":"2026-06-15 18:59:07"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 501.364 ms - 601\u001b[0m","timestamp":"2026-06-15 18:59:07"}
+{"level":"info","message":"Dang ky thanh cong: ppp@gmail.com","timestamp":"2026-06-15 18:59:35"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 464.750 ms - 601\u001b[0m","timestamp":"2026-06-15 18:59:35"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 0.894 ms - 57\u001b[0m","timestamp":"2026-06-15 19:18:08"}
+{"level":"info","message":"\u001b[0mGET /favicon.ico \u001b[33m404\u001b[0m 0.443 ms - 68\u001b[0m","timestamp":"2026-06-15 19:18:08"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 0.455 ms - 57\u001b[0m","timestamp":"2026-06-15 19:20:54"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 19:22:40"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 19:22:40"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 2.448 ms - 57\u001b[0m","timestamp":"2026-06-15 19:22:59"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 7.004 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:04"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 1.497 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:05"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.870 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:06"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 1.054 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:06"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 1.121 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:06"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.803 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:06"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.669 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:07"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.789 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.964 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.931 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.739 ms - 147\u001b[0m","timestamp":"2026-06-15 19:25:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 1.041 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:05"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.915 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:06"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.847 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:07"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.598 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:08"}
+{"level":"info","message":"Dang ky thanh cong: love@gmail.com","timestamp":"2026-06-15 19:29:28"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 501.103 ms - 602\u001b[0m","timestamp":"2026-06-15 19:29:28"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.616 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:38"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.587 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:39"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.853 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:39"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.802 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:40"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-15 19:36:45"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 458.491 ms - 604\u001b[0m","timestamp":"2026-06-15 19:36:45"}

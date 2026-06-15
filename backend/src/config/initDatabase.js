@@ -1,14 +1,14 @@
 'use strict';
 
-require('dotenv').config();
-
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+
 const DATABASE_USER = process.env.DB_USER || process.env.DATABASE_USER || 'root';
 const DATABASE_PASSWORD = process.env.DB_PASSWORD || process.env.DATABASE_PASSWORD || 'leanhquan2005';
-const DATABASE_HOST = process.env.DB_HOST || process.env.DATABASE_HOST || '127.0.0.1';
+const DATABASE_HOST = process.env.DB_HOST || process.env.DATABASE_HOST || 'localhost';
 const DATABASE_PORT = Number(process.env.DB_PORT || process.env.DATABASE_PORT || 3306);
 
 const schemaPath = path.join(__dirname, '../../database/schema.sql');

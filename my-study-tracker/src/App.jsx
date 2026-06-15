@@ -8,12 +8,12 @@ import Goals from './components/Goals';
 import Tasks from './components/Tasks';
 import Settings from './components/Settings';
 import Login from './components/Login';
+import Register from './components/Register';
 import './App.css';
 
-// Chỉ hiện Navbar khi không ở trang Login
 function Layout() {
   const location = useLocation();
-  const hideNav  = location.pathname === '/login' || location.pathname === '/register';
+  const hideNav  = ['/login', '/register'].includes(location.pathname);
 
   return (
     <div className="app-container">
@@ -21,6 +21,7 @@ function Layout() {
       <main className={hideNav ? 'main-content-full' : 'main-content'}>
         <Routes>
           <Route path="/login"        element={<Login />} />
+          <Route path="/register"     element={<Register />} />
           <Route path="/"             element={<Dashboard />} />
           <Route path="/tasks"        element={<Tasks />} />
           <Route path="/time-tracker" element={<Timer />} />

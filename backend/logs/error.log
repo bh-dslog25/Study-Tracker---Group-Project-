@@ -25,3 +25,27 @@
 {"level":"error","message":"Lỗi đăng nhập: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:56:14"}
 {"level":"error","message":"Lỗi đăng ký: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:56:53"}
 {"level":"error","message":"Lỗi đăng ký: Email đã được sử dụng","timestamp":"2026-06-13 19:00:19"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:31"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:41"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:41"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:46"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:25:47"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:47:44"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:07"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:07"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:07"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:08"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:08"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:11"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:11"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:11"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:11"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:12"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:13"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:13"}
+{"level":"error","message":"Loi dang ky: notNull Violation: User.username cannot be null","timestamp":"2026-06-15 18:48:13"}

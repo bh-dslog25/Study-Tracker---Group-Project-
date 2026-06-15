@@ -1,8 +1,7 @@
 'use strict';
 const router = require('express').Router();
-const authenticate = require('../middleware/authMiddleware');
+const { authenticate } = require('../middleware/authMiddleware');
 // Debug: Kiểm tra xem middleware có load được không
-console.log('Middleware authenticate check:', authenticate ? 'OK' : 'UNDEFINED');
 
 // Public routes (Không cần đăng nhập)
 router.use('/auth', require('./authRoutes'));
