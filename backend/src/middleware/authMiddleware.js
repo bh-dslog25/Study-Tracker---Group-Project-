@@ -26,4 +26,8 @@ const authenticate = async (req, res, next) => {
     }
 };
 
+<<<<<<< HEAD
 module.exports = { authenticate };
+=======
+module.exports = authenticate;
+>>>>>>> f43b1a47113c54e54615d03118726a96d2649513

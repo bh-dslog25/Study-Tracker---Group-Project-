@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @tailwind base;
 @tailwind components;
 <<<<<<< Updated upstream:frontend/src/index.css
@@ -5,3 +6,9 @@
 =======
 @tailwind utilities;
 >>>>>>> Stashed changes:project-management/frontend/src/index.css
+=======
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 
+>>>>>>> f43b1a47113c54e54615d03118726a96d2649513

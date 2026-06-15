@@ -2,7 +2,11 @@ import axios from 'axios';
 
 const api = axios.create({
   // Thêm giá trị dự phòng để tránh lỗi khi chưa kịp config .env
+<<<<<<< HEAD
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
+=======
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+>>>>>>> f43b1a47113c54e54615d03118726a96d2649513
   headers: {
     'Content-Type': 'application/json',
   },

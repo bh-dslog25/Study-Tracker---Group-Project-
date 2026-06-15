@@ -1,6 +1,11 @@
 // server.js
+<<<<<<< HEAD
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
+=======
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
+>>>>>>> f43b1a47113c54e54615d03118726a96d2649513
 const app = require('../src/app.js');
 const { connectDB } = require('../src/config/database.js');
 const logger = require('../src/utils/logger.js');
