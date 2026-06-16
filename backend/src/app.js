@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
     // src/app.js
     'use strict';
     require('dotenv').config();
@@ -10,6 +11,10 @@
     const { errorResponse } = require('./utils/response');
 
     const app = express();
+=======
+'use strict';
+require('dotenv').config();
+>>>>>>> Stashed changes
 
     // ====== MIDDLEWARES ======
     app.use(cors({
@@ -39,8 +44,17 @@
     });
     });
 
+<<<<<<< Updated upstream
     // ====== API ROUTES ======
     app.use('/api', routes);
+=======
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175',  'http://localhost:5176'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+>>>>>>> Stashed changes
 
     // ====== 404 HANDLER ======
     app.use((req, res) => {
