@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';  
-import TaskCard from '../components/TaskCard';
+import TaskCard from '../../../frontend/src/components/TaskCard';
 
 const Dashboard = () => {
   // Logic ngày tháng

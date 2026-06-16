@@ -65,6 +65,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Hàm Cập nhật User
+  const updateUser = (newData) => {
+    if (user) {
+      const updatedUser = { ...user, ...newData };
+      setUser(updatedUser);
+      localStorage.setItem('user_info', JSON.stringify(updatedUser));
+    }
+  };
+
   // Kiểm tra trạng thái khi load app
   useEffect(() => {
     const storedUser = localStorage.getItem('user_info');
@@ -80,7 +89,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );

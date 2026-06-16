@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import GoalCard from '../components/GoalCard';
-import goalService from '../services/goalService';
+import GoalCard from '../../../frontend/src/components/GoalCard';
+import goalService from '../../../frontend/src/services/goalService';
 
 const Goals = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);

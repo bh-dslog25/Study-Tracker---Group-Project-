@@ -1051,3 +1051,46 @@
 {"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[33m422\u001b[0m 0.802 ms - 147\u001b[0m","timestamp":"2026-06-15 19:29:40"}
 {"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-15 19:36:45"}
 {"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 458.491 ms - 604\u001b[0m","timestamp":"2026-06-15 19:36:45"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-15 19:54:24"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-15 19:54:24"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 15:41:11"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 15:41:11"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 2.515 ms - 57\u001b[0m","timestamp":"2026-06-16 15:47:31"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 0.611 ms - 57\u001b[0m","timestamp":"2026-06-16 15:47:33"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 0.287 ms - 57\u001b[0m","timestamp":"2026-06-16 15:47:34"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 15:51:35"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 15:51:35"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 15:54:53"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 15:54:53"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 16:42:09"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 16:42:09"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 16:55:52"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 16:55:52"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-16 17:42:15"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 485.569 ms - 604\u001b[0m","timestamp":"2026-06-16 17:42:15"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 17:42:38"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 17:42:38"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 18:02:33"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 18:02:33"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-16 18:03:01"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 469.151 ms - 604\u001b[0m","timestamp":"2026-06-16 18:03:01"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 19:48:49"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 19:48:49"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-16 19:49:50"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 526.604 ms - 604\u001b[0m","timestamp":"2026-06-16 19:49:50"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-16 19:50:49"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 500.328 ms - 604\u001b[0m","timestamp":"2026-06-16 19:50:49"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-16 20:00:24"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-16 20:00:24"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-16 20:20:30"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 643.472 ms - 604\u001b[0m","timestamp":"2026-06-16 20:20:30"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-17 03:46:07"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-17 03:46:07"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-17 03:46:47"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-17 03:46:47"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-17 04:05:38"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 649.488 ms - 610\u001b[0m","timestamp":"2026-06-17 04:05:38"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-17 04:05:53"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 570.968 ms - 604\u001b[0m","timestamp":"2026-06-17 04:05:53"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-17 04:06:25"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 562.959 ms - 604\u001b[0m","timestamp":"2026-06-17 04:06:25"}

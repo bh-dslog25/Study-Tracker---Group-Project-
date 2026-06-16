@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../frontend/src/api/axios';
 
 const styles = `
   .register-body {
@@ -176,23 +175,33 @@ export default function Register() {
     try {
       // 3. GỌI API LÊN BACKEND THỰC TẾ
       // Thay vì lưu vào localStorage, ta gửi dữ liệu lên server Node.js
-      const response = await api.post('/auth/register', {
-        username: username.trim(),
-        email: email.trim(),
-        password,
+      const response = await fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username.trim(),
+          email: email.trim(),
+          password: password,
+        }),
       });
-      const data = response?.data || response;
 
-      if (data?.accessToken) {
-        localStorage.setItem('access_token', data.accessToken);
-        localStorage.setItem('refresh_token', data.refreshToken);
+      const data = await response.json();
+
+      // 4. KIỂM TRA PHẢN HỒI TỪ BACKEND
+      if (response.ok) {
+        setSuccess('Register successfully! Redirecting to login...');
+        
+        // Thành công thì chuyển hướng về trang Login sau 1.5 giây
+        setTimeout(() => navigate('/login'), 1500);
+      } else {
+        // Lỗi từ backend (ví dụ: Trùng email, trùng username...)
+        setError(data.message || 'This account or email already exists.');
       }
-
-      setSuccess('Register successfully! Redirecting to login...');
-      setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
       console.error("Register Error: ", err);
-      setError(err?.message || 'Cannot connect to the server. Please make sure your backend is running.');
+      setError('Cannot connect to the server. Please make sure your backend is running.');
     } finally {
       // Dù thành công hay thất bại cũng tắt trạng thái loading
       setLoading(false);
