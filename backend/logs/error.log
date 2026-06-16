@@ -1,3 +1,4 @@
+
 {"level":"error","message":"Lỗi đăng nhập: Email hoặc mật khẩu không đúng","timestamp":"2026-06-13 00:12:13"}
 {"level":"error","message":"Lỗi đăng ký: Email da duoc su dung","timestamp":"2026-06-13 01:00:27"}
 {"level":"error","message":"Lỗi đăng nhập: Email hoặc mật khẩu không đúng","timestamp":"2026-06-13 01:37:42"}
@@ -5,4 +6,22 @@
 {"level":"error","message":"Lỗi đăng nhập: Email hoặc mật khẩu không đúng","timestamp":"2026-06-13 02:28:14"}
 {"level":"error","message":"Lỗi đăng nhập: Email hoặc mật khẩu không đúng","timestamp":"2026-06-13 12:03:41"}
 {"level":"error","message":"Lỗi đăng nhập: Email hoặc mật khẩu không đúng","timestamp":"2026-06-13 12:11:49"}
-{"level":"error","message":"Lỗi đăng ký: Email da duoc su dung","timestamp":"2026-06-13 13:11:37"}
+{"level":"error","message":"Lỗi đăng ký: Email da duoc su dung","timestamp":"2026-06-13 13:11:37"}{"level":"error","message":"Lỗi đăng ký: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:28:12"}
+{"level":"error","message":"Lỗi đăng ký: Email da duoc su dung","timestamp":"2026-06-13 18:28:15"}
+{"level":"error","message":"Lỗi đăng nhập: Email hoặc mật khẩu không đúng","timestamp":"2026-06-13 18:35:18"}
+{"level":"error","message":"Lỗi đăng ký: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:35:34"}
+{"level":"error","message":"Lỗi đăng nhập: Email hoặc mật khẩu không đúng","timestamp":"2026-06-13 18:38:43"}
+{"level":"error","message":"Lỗi đăng ký: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:38:59"}
+{"level":"error","message":"Lỗi đăng nhập: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:39:07"}
+{"level":"error","message":"Lỗi đăng nhập: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:39:20"}
+{"level":"error","message":"Lỗi đăng ký: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:39:37"}
+{"level":"error","message":"Lỗi đăng ký: Email đã được sử dụng","timestamp":"2026-06-13 18:51:04"}
+{"level":"error","message":"Lỗi đăng ký: Email đã được sử dụng","timestamp":"2026-06-13 18:51:05"}
+{"level":"error","message":"Lỗi đăng ký: Email đã được sử dụng","timestamp":"2026-06-13 18:51:09"}
+{"level":"error","message":"Lỗi đăng ký: Email đã được sử dụng","timestamp":"2026-06-13 18:52:15"}
+{"level":"error","message":"Lỗi đăng nhập: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:54:48"}
+{"level":"error","message":"Lỗi đăng ký: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:55:07"}
+{"level":"error","message":"Lỗi đăng nhập: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:56:04"}
+{"level":"error","message":"Lỗi đăng nhập: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:56:14"}
+{"level":"error","message":"Lỗi đăng ký: secretOrPrivateKey must have a value","timestamp":"2026-06-13 18:56:53"}
+{"level":"error","message":"Lỗi đăng ký: Email đã được sử dụng","timestamp":"2026-06-13 19:00:19"}

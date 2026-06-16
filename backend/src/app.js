@@ -1,6 +1,8 @@
 'use strict';
 
-require('dotenv').config();
+const path = require('path');
+
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const express = require('express');
 const cors = require('cors');
@@ -17,7 +19,7 @@ const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const app = express();
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

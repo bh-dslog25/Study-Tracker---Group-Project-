@@ -1,10 +1,10 @@
 'use strict';
 
-require('dotenv').config();
-
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
+
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 const DATABASE_USER = process.env.DB_USER || process.env.DATABASE_USER || 'root';
 const DATABASE_PASSWORD = process.env.DB_PASSWORD || process.env.DATABASE_PASSWORD || 'Pubg.ak47';
