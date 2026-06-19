@@ -1,17 +1,5 @@
-<<<<<<< Updated upstream
 // server.js
 require('dotenv').config();
-=======
-'use strict';
-
-const path = require('path');
-
-require('dotenv').config({ path: path.join(__dirname, '../src/.env') });
-
-
-
-const jwt = require('jsonwebtoken');
->>>>>>> Stashed changes
 const app = require('../src/app.js');
 const { connectDB } = require('../src/config/database.js');
 const logger = require('../src/utils/logger.js');
@@ -45,6 +33,7 @@ const start = async () => {
       process.on('SIGINT',  () => shutdown('SIGINT'));
 
     } catch (error) {
+      console.error('FULL ERROR:', error);
       logger.error('Khởi động server thất bại:', error.message);
       process.exit(1);
     }

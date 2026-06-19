@@ -83,13 +83,13 @@ const create = (userId, data) => Goal.create({ userId, ...data });
 
 const update = async (id, userId, data) => {
   const goal = await Goal.findOne({ where: { id, userId } });
-  if (!goal) throw { status: 404, message: 'Không tìm thấy mục tiêu' };
+  if (!goal) throw { status: 404, message: 'Goal not found' };
   return goal.update(data);
 };
 
 const remove = async (id, userId) => {
   const goal = await Goal.findOne({ where: { id, userId } });
-  if (!goal) throw { status: 404, message: 'Không tìm thấy mục tiêu' };
+  if (!goal) throw { status: 404, message: 'Goal not found' };
   await goal.destroy();
 };
 
@@ -97,7 +97,7 @@ const remove = async (id, userId) => {
 
 const addGoalTask = async (goalId, userId, taskData) => {
   const goal = await Goal.findOne({ where: { id: goalId, userId } });
-  if (!goal) throw { status: 404, message: 'Không tìm thấy mục tiêu' };
+  if (!goal) throw { status: 404, message: 'Goal not found' };
 
   const task = await Task.create({
     userId,
@@ -117,10 +117,10 @@ const addGoalTask = async (goalId, userId, taskData) => {
 
 const toggleGoalTask = async (goalId, taskId, userId) => {
   const goal = await Goal.findOne({ where: { id: goalId, userId } });
-  if (!goal) throw { status: 404, message: 'Không tìm thấy mục tiêu' };
+  if (!goal) throw { status: 404, message: 'Goal not found' };
 
   const task = await Task.findOne({ where: { id: taskId, goalId, userId } });
-  if (!task) throw { status: 404, message: 'Không tìm thấy nhiệm vụ' };
+  if (!task) throw { status: 404, message: 'Task not found' };
 
   const newStatus = task.status === 'completed' ? 'todo' : 'completed';
   await task.update({
@@ -146,10 +146,10 @@ const toggleGoalTask = async (goalId, taskId, userId) => {
 
 const removeGoalTask = async (goalId, taskId, userId) => {
   const goal = await Goal.findOne({ where: { id: goalId, userId } });
-  if (!goal) throw { status: 404, message: 'Không tìm thấy mục tiêu' };
+  if (!goal) throw { status: 404, message: 'Goal not found' };
 
   const task = await Task.findOne({ where: { id: taskId, goalId, userId } });
-  if (!task) throw { status: 404, message: 'Không tìm thấy nhiệm vụ' };
+  if (!task) throw { status: 404, message: 'Task not found' };
 
   await task.destroy();
 

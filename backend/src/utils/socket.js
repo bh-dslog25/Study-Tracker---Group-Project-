@@ -56,4 +56,11 @@ const getOnlineUsers = () => {
   return Array.from(onlineUsers.keys());
 };
 
-module.exports = { initSocket, getIO, isUserOnline, getOnlineUsers };
+// Emit new join request notification to all online teachers
+const emitNewJoinRequest = (requestData) => {
+  if (!io) return;
+  // Broadcast to all connected sockets (teachers will be among them)
+  io.emit('new-join-request', requestData);
+};
+
+module.exports = { initSocket, getIO, isUserOnline, getOnlineUsers, emitNewJoinRequest };

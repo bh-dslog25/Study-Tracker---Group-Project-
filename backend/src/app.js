@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
     // src/app.js
     'use strict';
     require('dotenv').config();
@@ -11,10 +10,6 @@
     const { errorResponse } = require('./utils/response');
 
     const app = express();
-=======
-'use strict';
-require('dotenv').config();
->>>>>>> Stashed changes
 
     // ====== MIDDLEWARES ======
     app.use(cors({
@@ -37,34 +32,25 @@ require('dotenv').config();
     app.get('/health', (req, res) => {
     res.json({
         status:      'OK',
-        message:     '🎓 Study Tracker API đang hoạt động',
+        message:     '🎓 Study Tracker API is running',
         timestamp:   new Date().toISOString(),
         version:     '1.0.0',
         environment: process.env.NODE_ENV || 'development',
     });
     });
 
-<<<<<<< Updated upstream
     // ====== API ROUTES ======
     app.use('/api', routes);
-=======
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175',  'http://localhost:5176'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
->>>>>>> Stashed changes
 
     // ====== 404 HANDLER ======
     app.use((req, res) => {
-    return errorResponse(res, `Không tìm thấy route: ${req.method} ${req.originalUrl}`, 404);
+    return errorResponse(res, `Route not found: ${req.method} ${req.originalUrl}`, 404);
     });
 
     // ====== GLOBAL ERROR HANDLER ======
     app.use((err, req, res, next) => {
     logger.error('Unhandled error:', err);
-    return errorResponse(res, err.message || 'Lỗi server nội bộ', err.status || 500);
+    return errorResponse(res, err.message || 'Internal server error', err.status || 500);
     });
 
     module.exports = app;

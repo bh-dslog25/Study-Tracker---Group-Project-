@@ -8,15 +8,15 @@ console.log('Middleware authenticate check:', authenticate ? 'OK' : 'UNDEFINED')
 router.use('/auth', require('./authRoutes'));
 
 // Protected routes (Tất cả các route bên dưới cần đăng nhập)
-router.use(authenticate); 
+router.use(authenticate);
 
 // Admin routes
 router.use('/admin', require('./adminRoutes'));
 
 // Các route này tự động được bảo vệ bởi middleware ở trên
-router.use('/goals',    require('./goalRoutes'));
-router.use('/tasks',    require('./taskRoutes'));
+router.use('/goals', require('./goalRoutes'));
+router.use('/tasks', require('./taskRoutes'));
 router.use('/timelogs', require('./timeLogRoutes'));
-router.use('/classes',  require('./classRoutes'));
+router.use('/classes', require('./classRoutes'));
 
 module.exports = router;

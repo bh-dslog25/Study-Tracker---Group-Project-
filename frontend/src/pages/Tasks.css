@@ -1,0 +1,480 @@
+/* ═══════════════════════════════════════════════════
+   Tasks Page – Goal Cards Design
+   Mỗi Goal là 1 thẻ (card), bấm vào mở rộng xem tasks
+   ═══════════════════════════════════════════════════ */
+
+.tk-page {
+  min-height: calc(100vh - 80px);
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  background: #f7f6fc;
+  padding: 32px 40px;
+}
+
+.tk-page-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── Loading ──────────────────────────────────────── */
+.tk-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.tk-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e4e2f9;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: tkSpin 0.7s linear infinite;
+}
+
+@keyframes tkSpin { to { transform: rotate(360deg); } }
+
+/* ── Page Header ──────────────────────────────────── */
+.tk-page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.tk-page-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin: 0;
+}
+
+.tk-page-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6366f1;
+  background: #eef2ff;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* ── Empty State ──────────────────────────────────── */
+.tk-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 80px 0;
+  color: #c4c2e0;
+}
+
+.tk-empty-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #4c1d95;
+  margin: 0;
+}
+
+.tk-empty-sub {
+  font-size: 13px;
+  color: #a5a3c8;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   Goals Grid – Mỗi Goal là 1 Card
+   ═══════════════════════════════════════════════════ */
+.tk-goals-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Goal Card ────────────────────────────────────── */
+.tk-goal-card {
+  background: white;
+  border-radius: 18px;
+  border: 1.5px solid #f0eefc;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.04);
+}
+
+.tk-goal-card:hover {
+  border-color: #e4e2f9;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
+}
+
+.tk-goal-card-expanded {
+  border-color: var(--goal-color, #6366f1);
+  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.12);
+}
+
+/* ── Goal Header (clickable) ──────────────────────── */
+.tk-goal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  cursor: pointer;
+  transition: background 0.2s;
+  user-select: none;
+}
+
+.tk-goal-header:hover {
+  background: #faf9ff;
+}
+
+.tk-goal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tk-goal-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tk-goal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tk-goal-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e1b4b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tk-goal-meta {
+  font-size: 12px;
+  color: #a5a3c8;
+  font-weight: 500;
+}
+
+.tk-goal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+/* ── Mini Ring ────────────────────────────────────── */
+.tk-goal-ring {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.tk-goal-ring .tk-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.tk-goal-ring .tk-ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--goal-color, #6366f1);
+}
+
+/* ── Chevron ──────────────────────────────────────── */
+.tk-chevron {
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.tk-chevron-open {
+  transform: rotate(180deg);
+}
+
+/* ═══════════════════════════════════════════════════
+   Expanded Body (Tasks section inside card)
+   ═══════════════════════════════════════════════════ */
+.tk-goal-body {
+  padding: 0 22px 22px;
+  animation: tkSlideDown 0.3s ease both;
+}
+
+@keyframes tkSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 2000px;
+  }
+}
+
+/* ── Progress Bar ─────────────────────────────────── */
+.tk-progress-bar {
+  height: 4px;
+  background: #f0eefc;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.tk-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+/* ── Add Task ─────────────────────────────────────── */
+.tk-add {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f7f6fc;
+  border: 1.5px solid #e4e2f9;
+  border-radius: 12px;
+  padding: 5px 7px 5px 13px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tk-add:focus-within {
+  border-color: var(--goal-color, #6366f1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+.tk-add-icon {
+  color: #c4c2e0;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.tk-add-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e1b4b;
+  background: transparent;
+  padding: 8px 0;
+}
+
+.tk-add-input::placeholder {
+  color: #c4c2e0;
+}
+
+.tk-add-btn {
+  padding: 7px 16px;
+  border-radius: 9px;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tk-add-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+.tk-add-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Task List ────────────────────────────────────── */
+.tk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tk-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 0;
+  color: #c4c2e0;
+  font-size: 13px;
+}
+
+/* ── Task Row ─────────────────────────────────────── */
+.tk-task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #faf9ff;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  animation: tkFadeIn 0.25s ease both;
+}
+
+@keyframes tkFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tk-task:hover {
+  border-color: #e4e2f9;
+  background: white;
+  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.05);
+  transform: translateY(-1px);
+}
+
+.tk-task-done {
+  opacity: 0.5;
+}
+
+.tk-task-done:hover {
+  opacity: 0.7;
+}
+
+/* ── Checkbox ─────────────────────────────────────── */
+.tk-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 2px solid #d4d2f0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.tk-check:hover {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.tk-check-on {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border-color: transparent;
+  box-shadow: 0 3px 10px rgba(34, 197, 94, 0.3);
+  animation: tkPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tkPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+/* ── Task Body ────────────────────────────────────── */
+.tk-task-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tk-task-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e1b4b;
+  transition: all 0.2s;
+}
+
+.tk-task-title-done {
+  text-decoration: line-through;
+  color: #c4c2e0;
+  font-weight: 500;
+}
+
+.tk-task-badge {
+  font-size: 9px;
+  font-weight: 700;
+  color: #22c55e;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Delete Button ────────────────────────────────── */
+.tk-task-del {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: #d4d2f0;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+  opacity: 0;
+}
+
+.tk-task:hover .tk-task-del {
+  opacity: 1;
+}
+
+.tk-task-del:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+/* ═══════════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .tk-page {
+    padding: 20px 16px;
+  }
+
+  .tk-goal-header {
+    padding: 14px 16px;
+  }
+
+  .tk-goal-body {
+    padding: 0 16px 16px;
+  }
+
+  .tk-goal-name {
+    font-size: 14px;
+  }
+
+  .tk-goal-icon {
+    width: 36px;
+    height: 36px;
+  }
+}

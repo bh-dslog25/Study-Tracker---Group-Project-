@@ -11,7 +11,7 @@ router.use(authenticate);
 router.get('/', ctrl.getAll);
 router.get('/:id', ctrl.getById);
 router.post('/', [
-  body('title').trim().notEmpty().withMessage('Tiêu đề không được để trống'),
+  body('title').trim().notEmpty().withMessage('Title is required'),
   validate,
 ], ctrl.create);
 router.put('/:id', [validate], ctrl.update);
@@ -19,7 +19,7 @@ router.delete('/:id', ctrl.remove);
 
 // Task management inside Goal
 router.post('/:id/tasks', [
-  body('title').trim().notEmpty().withMessage('Tiêu đề nhiệm vụ không được để trống'),
+  body('title').trim().notEmpty().withMessage('Task title is required'),
   validate,
 ], ctrl.addTask);
 router.put('/:id/tasks/:taskId/toggle', ctrl.toggleTask);

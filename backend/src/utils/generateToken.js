@@ -5,27 +5,24 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 const generateAccessToken = (userId, role) => {
-  
-  const secret = process.env.JWT_ACCESS_SECRET;
-  
+  const secret = process.env.JWT_SECRET;
   
   if (!secret) {
-    console.error("CRITICAL ERROR: Không tìm thấy JWT_ACCESS_SECRET trong tiến trình Node.js hiện tại!");
-    throw new Error("JWT_ACCESS_SECRET is not defined in .env");
+    console.error("CRITICAL ERROR: JWT_SECRET not found in current Node.js process!");
+    throw new Error("JWT_SECRET is not defined in .env");
   }
   
   return jwt.sign({ id: userId, role }, secret, {
-    
     expiresIn: process.env.JWT_EXPIRES_IN || '1d', 
   });
 };
 
 const generateRefreshToken = (userId) => {
-  const secret = process.env.JWT_REFRESH_SECRET;
+  const secret = process.env.JWT_SECRET;
   
   if (!secret) {
-    console.error("CRITICAL ERROR: Không tìm thấy JWT_REFRESH_SECRET trong tiến trình Node.js hiện tại!");
-    throw new Error("JWT_REFRESH_SECRET is not defined in .env");
+    console.error("CRITICAL ERROR: JWT_SECRET not found in current Node.js process!");
+    throw new Error("JWT_SECRET is not defined in .env");
   }
 
   return jwt.sign({ id: userId }, secret, {

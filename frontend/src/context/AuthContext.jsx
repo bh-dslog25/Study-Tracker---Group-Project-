@@ -38,14 +38,14 @@ export const AuthProvider = ({ children }) => {
    
     return { 
       success: false, 
-      message: responseData?.message || "Đăng nhập thất bại: Dữ liệu không hợp lệ" 
+      message: responseData?.message || "Login failed: Invalid data" 
     };
 
   } catch (error) {
     console.error("Login Error:", error);
     return { 
       success: false, 
-      message: error.response?.data?.message || error.message || "Email hoặc mật khẩu không đúng" 
+      message: error.response?.data?.message || error.message || "Incorrect email or password" 
     };
   }
 };
@@ -78,14 +78,14 @@ export const AuthProvider = ({ children }) => {
       if (accessToken) localStorage.setItem('access_token', accessToken);
       if (refreshToken) localStorage.setItem('refresh_token', refreshToken);
       
-      return { success: true, message: "Đăng ký thành công!" };
+      return { success: true, message: "Registration successful!" };
     }
     
-    return { success: false, message: "Đăng ký thất bại" };
+    return { success: false, message: "Registration failed" };
   } catch (error) {
     return { 
       success: false, 
-      message: error.response?.data?.message || "Đăng ký thất bại" 
+      message: error.response?.data?.message || "Registration failed" 
     };
   }
 };
@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await authService.logout();
     } catch (error) {
-      console.error("Lỗi logout:", error);
+      console.error("Logout error:", error);
     } finally {
       setUser(null);
       localStorage.removeItem('user_info');

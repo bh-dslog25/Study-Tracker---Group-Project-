@@ -29,7 +29,7 @@ const Goals = () => {
       const goalsData = response.data.data || response.data.rows || response.data;
       setGoals(Array.isArray(goalsData) ? goalsData : []);
     } catch (error) {
-      console.error("Lỗi khi tải danh sách mục tiêu từ backend:", error);
+      console.error("Error fetching goals from backend:", error);
       setGoals([]);
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token'); 
@@ -75,17 +75,24 @@ const Goals = () => {
         isAutoRenew: formData.isAutoRenew ? true : false
       };
 
+      // Set default endDate if not provided (endDate is required in DB)
+      if (!goalPayload.endDate && goalPayload.startDate) {
+        const start = new Date(goalPayload.startDate);
+        start.setFullYear(start.getFullYear() + 1);
+        goalPayload.endDate = start.toISOString().split('T')[0];
+      }
+
       let savedGoalId;
 
       if (editingGoal) {
         const response = await axios.put(`${API_URL}/${editingGoal.id}`, goalPayload);
         savedGoalId = editingGoal.id;
-        triggerToast('Đã lưu mọi thay đổi!');
+        triggerToast('All changes saved!');
       } else {
         const response = await axios.post(API_URL, goalPayload); 
         const newGoal = response.data.data || response.data;
         savedGoalId = newGoal.id;
-        triggerToast('Tạo mục tiêu mới thành công!');
+        triggerToast('New goal created successfully!');
       }
 
       // Handle tasks: add new ones and delete removed ones
@@ -140,19 +147,20 @@ const Goals = () => {
       handleCloseModal();
     } catch (error) {
       console.error("Lỗi khi lưu mục tiêu:", error);
-      alert(error.response?.data?.message || "Không thể lưu mục tiêu. Vui lòng kiểm tra lại.");
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message || "Unable to save goal. Please check again.";
+      alert(errorMsg);
     }
   };
 
   const handleDeleteGoal = async (id) => {
-    if (window.confirm("Bạn có chắc muốn xóa mục tiêu này?")) {
+    if (window.confirm("Are you sure you want to delete this goal?")) {
       try {
         await axios.delete(`${API_URL}/${id}`);
         setGoals(prev => prev.filter(g => g.id !== id));
-        triggerToast('Xóa mục tiêu thành công!');
+        triggerToast('Goal deleted successfully!');
       } catch (error) {
         console.error("Lỗi khi xóa mục tiêu:", error);
-        alert(error.response?.data?.message || "Xóa mục tiêu thất bại.");
+        alert(error.response?.data?.message || "Failed to delete goal.");
       }
     }
   };
@@ -180,7 +188,7 @@ const Goals = () => {
       }));
     } catch (error) {
       console.error("Lỗi khi thêm task:", error);
-      triggerToast("Không thể thêm nhiệm vụ.");
+      triggerToast("Unable to add task.");
     }
   };
 
@@ -205,7 +213,7 @@ const Goals = () => {
       }));
     } catch (error) {
       console.error("Lỗi khi toggle task:", error);
-      triggerToast("Không thể cập nhật trạng thái nhiệm vụ.");
+      triggerToast("Unable to update task status.");
     }
   };
 
@@ -224,17 +232,17 @@ const Goals = () => {
         }
         return g;
       }));
-      triggerToast('Đã xóa nhiệm vụ.');
+      triggerToast('Task deleted.');
     } catch (error) {
       console.error("Lỗi khi xóa task:", error);
-      triggerToast("Không thể xóa nhiệm vụ.");
+      triggerToast("Unable to delete task.");
     }
   };
 
   if (loading) {
     return (
       <div className="p-8 bg-slate-50/50 min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-sm font-medium">Đang tải dữ liệu...</div>
+        <div className="text-slate-400 text-sm font-medium">Loading data...</div>
       </div>
     );
   }
@@ -244,15 +252,15 @@ const Goals = () => {
       
       <div className="flex items-center justify-between mb-8 max-w-7xl mx-auto">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Mục tiêu của tôi</h2>
-          <p className="text-sm text-slate-500 mt-1">Quản lý và theo dõi tiến độ của các mục tiêu.</p>
+          <h2 className="text-2xl font-bold text-slate-800">My Goals</h2>
+          <p className="text-sm text-slate-500 mt-1">Manage and track your goals progress.</p>
         </div>
         <button 
           onClick={() => handleOpenModal(null)} 
           className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md shadow-indigo-100 transition-all active:scale-95"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-          Thêm mục tiêu
+          Add Goal
         </button>
       </div>
 

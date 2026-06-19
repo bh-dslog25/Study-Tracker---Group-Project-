@@ -5,8 +5,8 @@ const GoalList = ({ goals, onEdit, onDelete, onAddTask, onToggleTask, onRemoveTa
   if (goals.length === 0) {
     return (
       <div className="bg-white border border-gray-100 rounded-2xl p-12 text-center max-w-xl mx-auto mt-12">
-        <h3 className="font-bold text-slate-700 text-lg">Bạn chưa có mục tiêu nào</h3>
-        <p className="text-slate-400 text-sm mt-1">Hãy nhấn nút thêm để lên kế hoạch mới.</p>
+        <h3 className="font-bold text-slate-700 text-lg">You have no goals yet</h3>
+        <p className="text-slate-400 text-sm mt-1">Click the add button to create a new plan.</p>
       </div>
     );
   }

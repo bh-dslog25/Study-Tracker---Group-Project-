@@ -10,27 +10,27 @@ const { authorizeRoles } = require('../middleware/roleMiddleware');
 const { getOnlineUsers } = require('../utils/socket');
 
 // (mật khẩu cố định, chỉ teacher mới biết)
-const ADMIN_PASSWORD = 'admin@123';
+const ADMIN_PASSWORD = process.env.ADMIN_ACCESS_PASSWORD || 'admin123';
 
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return errorResponse(res, 'Vui lòng nhập email và mật khẩu', 400);
+      return errorResponse(res, 'Please enter email and password', 400);
     }
     const user = await User.findOne({ where: { email, role: 'teacher', isActive: true } });
-    if (!user) return errorResponse(res, 'Tài khoản giáo viên không tồn tại', 401);
-    if (password !== ADMIN_PASSWORD) return errorResponse(res, 'Mật khẩu chưa chính xác', 401);
+    if (!user) return errorResponse(res, 'Teacher account not found', 401);
+    if (password !== ADMIN_PASSWORD) return errorResponse(res, 'Incorrect password', 401);
 
     const accessToken = jwt.sign(
       { id: user.id, role: user.role },
-      process.env.JWT_ACCESS_SECRET || 'fallback_secret',
+      process.env.JWT_SECRET || 'fallback_secret',
       { expiresIn: '8h' }
     );
     return successResponse(res, {
       user: { id: user.id, username: user.username, email: user.email, role: user.role },
       accessToken,
-    }, 'Đăng nhập admin thành công');
+    }, 'Admin login successful');
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }
@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
 router.get('/online-users', authenticate, authorizeRoles('teacher'), async (req, res) => {
   try {
     const onlineUserIds = getOnlineUsers();
-    return successResponse(res, { onlineUserIds }, 'Lấy danh sách người dùng online thành công');
+    return successResponse(res, { onlineUserIds }, 'Get online users list successfully');
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }
@@ -62,7 +62,7 @@ router.get('/students', authenticate, authorizeRoles('teacher'), async (req, res
       isOnline: onlineUserIds.includes(s.id),
     }));
 
-    return successResponse(res, studentsWithOnline, 'Lấy danh sách học sinh thành công');
+    return successResponse(res, studentsWithOnline, 'Get students list successfully');
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }
@@ -75,7 +75,7 @@ router.get('/students/:studentId', authenticate, authorizeRoles('teacher'), asyn
       where: { id: req.params.studentId, role: 'student' },
       attributes: ['id', 'username', 'email', 'isActive', 'createdAt', 'lastLogin'],
     });
-    if (!student) return errorResponse(res, 'Không tìm thấy học sinh', 404);
+    if (!student) return errorResponse(res, 'Student not found', 404);
 
     const classes = await Class.findAll({
       include: [{
@@ -87,7 +87,106 @@ router.get('/students/:studentId', authenticate, authorizeRoles('teacher'), asyn
       attributes: ['id', 'name', 'inviteCode'],
     });
 
-    return successResponse(res, { student, classes }, 'Lấy chi tiết học sinh thành công');
+    return successResponse(res, { student, classes }, 'Get student details successfully');
+  } catch (err) {
+    return errorResponse(res, err.message, 500);
+  }
+});
+
+// ===== THÊM HỌC SINH MỚI =====
+router.post('/students', authenticate, authorizeRoles('teacher'), async (req, res) => {
+  try {
+    const { email, username, password } = req.body;
+    if (!email || !username || !password) {
+      return errorResponse(res, 'Please provide email, username and password', 400);
+    }
+    if (password.length < 6) {
+      return errorResponse(res, 'Password must be at least 6 characters', 400);
+    }
+
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return errorResponse(res, 'Email already in use', 409);
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      role: 'student',
+      isActive: true,
+    });
+
+    return successResponse(res, {
+      id: newUser.id,
+      username: newUser.username,
+      email: newUser.email,
+      role: newUser.role,
+    }, 'Student created successfully', 201);
+  } catch (err) {
+    console.error('Create student error:', err);
+    return errorResponse(res, err.message || 'Failed to create student', 500);
+  }
+});
+
+// ===== DANH SÁCH YÊU CẦU VÀO LỚP (PENDING) =====
+router.get('/join-requests', authenticate, authorizeRoles('teacher'), async (req, res) => {
+  try {
+    const requests = await ClassMember.findAll({
+      where: { status: 'pending' },
+      include: [{
+        model: User, as: 'student',
+        attributes: ['id', 'username', 'email'],
+      }, {
+        model: Class,
+        attributes: ['id', 'name', 'inviteCode'],
+      }],
+      order: [['createdAt', 'DESC']],
+    });
+
+    const formatted = requests.map(r => ({
+      id: r.id,
+      classId: r.classId,
+      className: r.Class?.name,
+      classInviteCode: r.Class?.inviteCode,
+      studentId: r.studentId,
+      studentName: r.student?.username,
+      studentEmail: r.student?.email,
+      requestedAt: r.createdAt,
+    }));
+
+    return successResponse(res, formatted, 'Get join requests successfully');
+  } catch (err) {
+    return errorResponse(res, err.message, 500);
+  }
+});
+
+// ===== DUYỆT YÊU CẦU VÀO LỚP =====
+router.put('/join-requests/:requestId/approve', authenticate, authorizeRoles('teacher'), async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const member = await ClassMember.findByPk(requestId);
+    if (!member) return errorResponse(res, 'Request not found', 404);
+    if (member.status !== 'pending') return errorResponse(res, 'Request already processed', 400);
+
+    await member.update({ status: 'active', joinedAt: new Date() });
+    return successResponse(res, null, 'Join request approved');
+  } catch (err) {
+    return errorResponse(res, err.message, 500);
+  }
+});
+
+// ===== TỪ CHỐI YÊU CẦU VÀO LỚP =====
+router.put('/join-requests/:requestId/reject', authenticate, authorizeRoles('teacher'), async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const member = await ClassMember.findByPk(requestId);
+    if (!member) return errorResponse(res, 'Request not found', 404);
+    if (member.status !== 'pending') return errorResponse(res, 'Request already processed', 400);
+
+    await member.destroy();
+    return successResponse(res, null, 'Join request rejected');
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }
@@ -107,7 +206,7 @@ router.get('/classes', authenticate, authorizeRoles('teacher'), async (req, res)
       attributes: ['id', 'name', 'inviteCode', 'isActive', 'maxStudents', 'createdAt'],
       order: [['createdAt', 'DESC']],
     });
-    return successResponse(res, classes, 'Lấy danh sách lớp thành công');
+    return successResponse(res, classes, 'Get classes list successfully');
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }
@@ -118,26 +217,26 @@ router.post('/classes/:classId/add-student', authenticate, authorizeRoles('teach
   try {
     const classId = parseInt(req.params.classId);
     const { email } = req.body;
-    if (!email) return errorResponse(res, 'Vui lòng nhập email học sinh', 400);
+    if (!email) return errorResponse(res, 'Please enter student email', 400);
 
     const cls = await Class.findOne({ where: { id: classId, teacherId: req.user.id } });
-    if (!cls) return errorResponse(res, 'Không tìm thấy lớp học', 404);
+    if (!cls) return errorResponse(res, 'Class not found', 404);
 
     const student = await User.findOne({ where: { email, role: 'student', isActive: true } });
-    if (!student) return errorResponse(res, 'Không tìm thấy học sinh với email này', 404);
+    if (!student) return errorResponse(res, 'Student not found with this email', 404);
 
     const existing = await ClassMember.findOne({ where: { classId, studentId: student.id } });
     if (existing) {
-      if (existing.status === 'active') return errorResponse(res, 'Học sinh đã ở trong lớp này', 409);
+      if (existing.status === 'active') return errorResponse(res, 'Student is already in this class', 409);
       await existing.update({ status: 'active', joinedAt: new Date() });
-      return successResponse(res, { studentId: student.id, username: student.username }, 'Đã thêm lại học sinh vào lớp');
+      return successResponse(res, { studentId: student.id, username: student.username }, 'Student re-added to class');
     }
 
     const count = await ClassMember.count({ where: { classId, status: 'active' } });
-    if (count >= cls.maxStudents) return errorResponse(res, 'Lớp học đã đầy', 400);
+    if (count >= cls.maxStudents) return errorResponse(res, 'Class is full', 400);
 
     await ClassMember.create({ classId, studentId: student.id });
-    return successResponse(res, { studentId: student.id, username: student.username }, 'Thêm học sinh vào lớp thành công', 201);
+    return successResponse(res, { studentId: student.id, username: student.username }, 'Add student to class successfully', 201);
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }
@@ -148,7 +247,7 @@ router.get('/classes/:classId/overview', authenticate, authorizeRoles('teacher')
   try {
     const classId = parseInt(req.params.classId);
     const cls = await Class.findOne({ where: { id: classId, teacherId: req.user.id } });
-    if (!cls) return errorResponse(res, 'Không tìm thấy lớp học', 404);
+    if (!cls) return errorResponse(res, 'Class not found', 404);
 
     // Lấy học sinh active trong lớp
     const members = await ClassMember.findAll({
@@ -235,34 +334,71 @@ router.get('/classes/:classId/overview', authenticate, authorizeRoles('teacher')
         totalStudents: studentsWithOnline.length,
         totalTasks: tasks.length,
         students: studentsWithOnline,
-      }, 'Lấy chi tiết lớp thành công');
+      }, 'Get class details successfully');
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }
 });
 
-// ===== DANH SÁCH HỌC SINH TRONG LỚP =====
+// ===== XÓA HỌC SINH KHỎI LỚP =====
+router.delete('/classes/:classId/students/:studentId', authenticate, authorizeRoles('teacher'), async (req, res) => {
+  try {
+    const classId = parseInt(req.params.classId);
+    const studentId = parseInt(req.params.studentId);
+
+    const cls = await Class.findOne({ where: { id: classId, teacherId: req.user.id } });
+    if (!cls) return errorResponse(res, 'Class not found', 404);
+
+    const member = await ClassMember.findOne({ where: { classId, studentId } });
+    if (!member) return errorResponse(res, 'Student is not in this class', 404);
+
+    await member.update({ status: 'inactive' });
+    return successResponse(res, null, 'Student removed from class successfully');
+  } catch (err) {
+    return errorResponse(res, err.message, 500);
+  }
+});
+
+// ===== DANH SÁCH HỌC SINH TRONG LỚP (có pagination) =====
 router.get('/classes/:classId/students', authenticate, authorizeRoles('teacher'), async (req, res) => {
   try {
     const classId = parseInt(req.params.classId);
     const cls = await Class.findOne({ where: { id: classId, teacherId: req.user.id } });
-    if (!cls) return errorResponse(res, 'Không tìm thấy lớp học', 404);
+    if (!cls) return errorResponse(res, 'Class not found', 404);
 
-    const members = await ClassMember.findAll({
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const { count, rows: members } = await ClassMember.findAndCountAll({
       where: { classId, status: 'active' },
       include: [{
         model: User, as: 'student',
-        attributes: ['id', 'username', 'email', 'isActive'],
+        attributes: ['id', 'username', 'email', 'isActive', 'lastLogin'],
       }],
+      limit,
+      offset,
+      order: [['joinedAt', 'DESC']],
     });
 
-    return successResponse(res, members.map(m => ({
-      id: m.student.id,
-      username: m.student.username,
-      email: m.student.email,
-      isActive: m.student.isActive,
-      joinedAt: m.joinedAt,
-    })), 'Lấy danh sách học sinh trong lớp thành công');
+    const result = members
+      .filter(m => m.student) // only include members with valid student records
+      .map(m => ({
+        id: m.student.id,
+        username: m.student.username,
+        email: m.student.email,
+        isActive: m.student.isActive,
+        joinedAt: m.joinedAt,
+        lastLogin: m.student.lastLogin,
+      }));
+
+    return successResponse(res, {
+      data: result,
+      total: count,
+      page,
+      limit,
+      totalPages: Math.ceil(count / limit),
+    }, 'Get class students list successfully');
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }

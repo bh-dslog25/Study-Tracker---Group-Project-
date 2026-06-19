@@ -54,7 +54,7 @@ const GoalCard = ({ goal, onEdit, onDelete, onAddTask, onToggleTask, onRemoveTas
           {title}
         </h4>
         <p className="text-xs text-slate-500 line-clamp-2 min-h-[32px] mb-4">
-          {description || <span className="italic text-slate-400">Chưa có mô tả chi tiết.</span>}
+          {description || <span className="italic text-slate-400">No description yet.</span>}
         </p>
 
         {/* Progress bar */}
@@ -73,7 +73,7 @@ const GoalCard = ({ goal, onEdit, onDelete, onAddTask, onToggleTask, onRemoveTas
           <svg className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
-          Nhiệm vụ: <span className="text-slate-700 font-bold">{completedTasks}/{totalTasks}</span>
+          Tasks: <span className="text-slate-700 font-bold">{completedTasks}/{totalTasks}</span>
         </button>
 
         {/* Expanded Tasks Section */}
@@ -86,20 +86,20 @@ const GoalCard = ({ goal, onEdit, onDelete, onAddTask, onToggleTask, onRemoveTas
                 value={newTaskText}
                 onChange={(e) => setNewTaskText(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddTask(); } }}
-                placeholder="Thêm nhiệm vụ mới..."
+                placeholder="Add new task..."
                 className="flex-1 px-3 py-2 border border-gray-200 text-xs rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               />
               <button
                 onClick={handleAddTask}
                 className="bg-indigo-600 text-white px-3 text-xs font-bold rounded-xl hover:bg-indigo-700 transition-colors"
               >
-                Thêm
+                Add
               </button>
             </div>
 
             {/* Task list */}
             {totalTasks === 0 ? (
-              <p className="text-xs text-slate-400 italic pt-1">Chưa có nhiệm vụ nào. Hãy thêm nhiệm vụ!</p>
+              <p className="text-xs text-slate-400 italic pt-1">No tasks yet. Add a task!</p>
             ) : (
               <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
                 {tasks.map(t => (
@@ -137,7 +137,7 @@ const GoalCard = ({ goal, onEdit, onDelete, onAddTask, onToggleTask, onRemoveTas
       {/* Footer */}
       <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
         <div className="text-[11px] text-slate-400 font-medium">
-          Hạn định: <span className="text-slate-600 font-semibold">{endDate || 'Không có'}</span>
+          Due: <span className="text-slate-600 font-semibold">{endDate || 'None'}</span>
         </div>
 
         <div className="flex items-center gap-1">

@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════════
+   Dashboard – Weekly Study Activity Chart
+   ═══════════════════════════════════════════════════ */
+
+.weekly-chart-card {
+  background: linear-gradient(145deg, #ffffff 0%, #faf9ff 100%);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  border: 1px solid rgba(139, 92, 246, 0.08);
+  box-shadow:
+    0 1px 3px rgba(139, 92, 246, 0.04),
+    0 8px 28px rgba(139, 92, 246, 0.06);
+}
+
+.weekly-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.weekly-chart-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin: 0;
+}
+
+.week-select {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: 1.5px solid #ede9fe;
+  border-radius: 10px;
+  padding: 7px 14px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: auto;
+}
+
+.week-select:hover {
+  border-color: #8b5cf6;
+  background: #ede9fe;
+}
+
+.week-select:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+/* ── Bar Chart Container ──────────────────────────── */
+.weekly-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 28px;
+  height: 260px;
+  padding: 0 16px;
+}
+
+/* ── Single Bar Column ────────────────────────────── */
+.bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  width: 36px;
+  cursor: pointer;
+}
+
+.bar-column:hover .bar-fill {
+  transform: scaleY(1.05);
+  filter: brightness(1.1);
+}
+
+.bar-column:hover .bar-value {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Bar Fill ─────────────────────────────────────── */
+.bar-fill {
+  width: 100%;
+  border-radius: 10px 10px 6px 6px;
+  min-height: 6px;
+  transition:
+    height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.25s ease,
+    filter 0.25s ease,
+    box-shadow 0.25s ease;
+  transform-origin: bottom center;
+  position: relative;
+}
+
+/* Default bars – light purple gradient */
+.bar-fill.bar-default {
+  background: linear-gradient(180deg, #c4b5fd 0%, #a78bfa 40%, #8b5cf6 100%);
+  box-shadow:
+    0 2px 8px rgba(139, 92, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.bar-column:hover .bar-fill.bar-default {
+  background: linear-gradient(180deg, #ddd6fe 0%, #c4b5fd 40%, #a78bfa 100%);
+  box-shadow:
+    0 6px 20px rgba(139, 92, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* Today bar – vivid purple */
+.bar-fill.bar-today {
+  background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 45%, #6d28d9 100%);
+  box-shadow:
+    0 4px 16px rgba(124, 58, 237, 0.4),
+    0 0 0 2px rgba(139, 92, 246, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.bar-column:hover .bar-fill.bar-today {
+  background: linear-gradient(180deg, #c4b5fd 0%, #8b5cf6 45%, #7c3aed 100%);
+  box-shadow:
+    0 8px 28px rgba(124, 58, 237, 0.5),
+    0 0 0 3px rgba(139, 92, 246, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* ── Value Tooltip (on hover) ─────────────────────── */
+.bar-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6d28d9;
+  background: white;
+  border: 1.5px solid #ede9fe;
+  border-radius: 8px;
+  padding: 3px 8px;
+  margin-bottom: 6px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.12);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ── Day Label ────────────────────────────────────── */
+.bar-day-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a78bfa;
+  margin-top: 8px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.bar-day-label.label-today {
+  color: #7c3aed;
+  background: #f5f3ff;
+  font-weight: 700;
+  border: 1.5px solid #ede9fe;
+}
+
+.bar-column:hover .bar-day-label {
+  color: #6d28d9;
+  background: #f5f3ff;
+}

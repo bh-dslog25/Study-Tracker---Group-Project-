@@ -9,9 +9,9 @@ const authService = {
     const result = response.data.data || response.data; // Đây mới là { user, accessToken, refreshToken }
 
     if (result.accessToken) {
-      // ĐỒNG BỘ: Đổi tên key thành dạng camelCase để khớp với file Goals.js
-      localStorage.setItem('accessToken', result.accessToken);
-      localStorage.setItem('refreshToken', result.refreshToken);
+      // Chuẩn hoá key token để khớp interceptor Axios (access_token/refresh_token)
+      localStorage.setItem('access_token', result.accessToken);
+      localStorage.setItem('refresh_token', result.refreshToken);
     }
     return result; 
   },
@@ -23,9 +23,9 @@ const authService = {
     const result = response.data.data || response.data; // Lấy dữ liệu từ .data
 
     if (result.accessToken) {
-      // ĐỒNG BỘ: Đổi tên key thành dạng camelCase để khớp với file Goals.js
-      localStorage.setItem('accessToken', result.accessToken);
-      localStorage.setItem('refreshToken', result.refreshToken);
+      // Chuẩn hoá key token để khớp interceptor Axios (access_token/refresh_token)
+      localStorage.setItem('access_token', result.accessToken);
+      localStorage.setItem('refresh_token', result.refreshToken);
     }
     return result;
   },
@@ -35,14 +35,19 @@ const authService = {
       await api.post('/auth/logout');
     } finally {
       // ĐỒNG BỘ: Xóa đúng tên key dạng camelCase khi người dùng đăng xuất
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
     }
   },
 
   changePassword: async ({ currentPassword, newPassword }) => {
     // Nên để async/await để đồng bộ với các hàm khác
     const response = await api.post('/auth/change-password', { currentPassword, newPassword });
+    return response.data.data || response.data;
+  },
+
+  verifyAdminPassword: async (password) => {
+    const response = await api.post('/auth/verify-admin-password', { password });
     return response.data.data || response.data;
   },
 };
