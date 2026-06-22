@@ -58,10 +58,33 @@ router.post('/join', authenticate, authorizeRoles('student', 'teacher'), async (
         return errorResponse(res, 'Student is already in this class', 409);
       }
       if (existing.status === 'pending') {
-        return errorResponse(res, 'Join request is pending approval', 400);
+        // Re-notify teacher about the existing pending request
+        emitNewJoinRequest({
+          id: existing.id,
+          classId: cls.id,
+          className: cls.name,
+          classInviteCode: cls.inviteCode,
+          teacherId: cls.teacherId,
+          studentId,
+          studentName: req.user?.username,
+          studentEmail: req.user?.email,
+          requestedAt: existing.createdAt || new Date(),
+        });
+        return successResponse(res, { classId: cls.id, studentId }, 'Join request sent successfully');
       }
       // inactive → resend request
       await existing.update({ status: 'pending', joinedAt: null });
+      emitNewJoinRequest({
+        id: existing.id,
+        classId: cls.id,
+        className: cls.name,
+        classInviteCode: cls.inviteCode,
+        teacherId: cls.teacherId,
+        studentId,
+        studentName: req.user?.username,
+        studentEmail: req.user?.email,
+        requestedAt: new Date(),
+      });
       return successResponse(res, { classId: cls.id, studentId }, 'Join request sent successfully');
     }
 
@@ -72,6 +95,7 @@ router.post('/join', authenticate, authorizeRoles('student', 'teacher'), async (
       classId: cls.id,
       className: cls.name,
       classInviteCode: cls.inviteCode,
+      teacherId: cls.teacherId,
       studentId,
       studentName: req.user?.username,
       studentEmail: req.user?.email,

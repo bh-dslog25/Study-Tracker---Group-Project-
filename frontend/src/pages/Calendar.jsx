@@ -1,5 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import './Calendar.css';
+import goalService from '../services/goalService';
+import { useAuth } from '../context/AuthContext';
 
 const formatDate = (date) => {
   const y = date.getFullYear();
@@ -93,6 +95,29 @@ export default function Calendar() {
   const [form, setForm]                   = useState({ title: '', time: '', priority: 'high', desc: '' });
   const [editingNote, setEditingNote]     = useState(false);
 
+  const [goals, setGoals] = useState([]);
+  const [loadingGoals, setLoadingGoals] = useState(false);
+  const { user } = useAuth();
+
+  const fetchGoals = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      if (!token) return;
+      setLoadingGoals(true);
+      const response = await goalService.getAll({ page: 1, limit: 100 });
+      const goalsData = response.data?.data || response.data?.rows || response.data || [];
+      setGoals(Array.isArray(goalsData) ? goalsData : []);
+    } catch (error) {
+      console.error("Error fetching goals for calendar:", error);
+    } finally {
+      setLoadingGoals(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchGoals();
+  }, [fetchGoals]);
+
   const year  = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -181,9 +206,22 @@ export default function Calendar() {
     setEditingNote(false);
   };
 
+  const goalsByDate = useMemo(() => {
+    const map = {};
+    goals.forEach(g => {
+      if (g.endDate) {
+        const dateKey = g.endDate.split('T')[0];
+        if (!map[dateKey]) map[dateKey] = [];
+        map[dateKey].push(g);
+      }
+    });
+    return map;
+  }, [goals]);
+
   const selectedDateObj  = parseDateStr(selectedDate);
   const selectedLabel    = selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   const dayTasks         = tasksData[selectedDate] || [];
+  const dayGoals         = goalsByDate[selectedDate] || [];
   const dayNote          = notesData[selectedDate] || '';
 
   return (
@@ -222,6 +260,7 @@ export default function Calendar() {
               const isSelected = cell.dateStr === selectedDate;
               const isToday    = cell.dateStr === formatDate(today);
               const cellTasks  = tasksData[cell.dateStr] || [];
+              const cellGoals  = goalsByDate[cell.dateStr] || [];
               return (
                 <div
                   key={cell.dateStr}
@@ -236,6 +275,16 @@ export default function Calendar() {
                       {t.title}
                     </div>
                   ))}
+                  {cellGoals.length > 0 && (
+                    <div className="cal-cell-goal-dot flex gap-0.5 mt-0.5 justify-center">
+                      {cellGoals.slice(0, 2).map((g) => (
+                        <div key={g.id} className="w-1.5 h-1.5 rounded-full bg-indigo-500" title={g.title} />
+                      ))}
+                      {cellGoals.length > 2 && (
+                        <span className="text-[9px] text-indigo-500 font-bold">+{cellGoals.length - 2}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -256,10 +305,47 @@ export default function Calendar() {
             </button>
           </div>
 
+          {/* Goals due this day */}
+          {dayGoals.length > 0 && (
+            <div className="cal-goals-section">
+              <h4 className="cal-notes-title mb-2">
+                <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Goals Due
+              </h4>
+              <div className="space-y-2 mb-4">
+                {dayGoals.map(g => {
+                  const tasks = g.tasks || [];
+                  const completed = tasks.filter(t => t.completed).length;
+                  const total = tasks.length;
+                  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+                  return (
+                    <div key={g.id} className="cal-goal-card p-3 rounded-xl border border-indigo-100 bg-indigo-50/50">
+                      <div className="flex items-center justify-between mb-1">
+                        <h5 className="text-sm font-semibold text-indigo-800 truncate">{g.title}</h5>
+                        <span className="text-[10px] font-bold text-indigo-500">{pct}%</span>
+                      </div>
+                      {g.description && (
+                        <p className="text-[11px] text-indigo-600/70 line-clamp-1 mb-1">{g.description}</p>
+                      )}
+                      <div className="w-full h-1 bg-indigo-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-indigo-600 rounded-full transition-all" style={{ width: `${pct}%` }} />
+                      </div>
+                      {total > 0 && (
+                        <p className="text-[10px] text-indigo-400 mt-1 font-medium">{completed}/{total} tasks done</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Task list */}
           <div className="cal-task-list">
             {dayTasks.length === 0 ? (
-              <p className="cal-empty">No tasks scheduled for this day.</p>
+              dayGoals.length === 0 ? (
+                <p className="cal-empty">No tasks or goals scheduled for this day.</p>
+              ) : null
             ) : (
               dayTasks.map((task) => {
                 const s = PRIORITY_STYLES[task.priority];

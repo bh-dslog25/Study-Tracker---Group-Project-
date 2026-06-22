@@ -27,6 +27,15 @@ export const AdminAuthProvider = ({ children }) => {
         
         const { user, accessToken, refreshToken } = responseData;
 
+        // Xóa dữ liệu cũ trước khi lưu (tránh lưu lẫn lộn giữa các tài khoản)
+        localStorage.removeItem('user_info');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('admin_info');
+        localStorage.removeItem('admin_access_token');
+        localStorage.removeItem('admin_refresh_token');
+        localStorage.removeItem('admin_verified');
+
         setAdmin(user);
         localStorage.setItem('admin_info', JSON.stringify(user));
         if (accessToken) localStorage.setItem('admin_access_token', accessToken);
@@ -80,6 +89,15 @@ export const AdminAuthProvider = ({ children }) => {
       const user = responseData?.user;
       const accessToken = responseData?.accessToken || responseData?.token;
       const refreshToken = responseData?.refreshToken;
+
+      // Xóa dữ liệu cũ trước khi lưu (tránh lưu lẫn lộn giữa các tài khoản)
+      localStorage.removeItem('user_info');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('admin_info');
+      localStorage.removeItem('admin_access_token');
+      localStorage.removeItem('admin_refresh_token');
+      localStorage.removeItem('admin_verified');
 
       if (user) {
         setAdmin(user);
@@ -148,7 +166,17 @@ export const AdminAuthProvider = ({ children }) => {
     }
   };
 
+  // Kiểm tra trạng thái khi load app
   useEffect(() => {
+    const storedAdmin = localStorage.getItem('admin_info');
+    const token = localStorage.getItem('admin_access_token');
+    if (storedAdmin && token) {
+      try {
+        setAdmin(JSON.parse(storedAdmin));
+      } catch (e) {
+        localStorage.removeItem('admin_info');
+      }
+    }
     setLoading(false);
   }, []);
 

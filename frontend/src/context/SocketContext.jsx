@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react';
 import { io } from 'socket.io-client';
 
 const SocketContext = createContext(null);
@@ -9,115 +9,101 @@ export const SocketProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState(new Map()); // userId -> true
   const [socket, setSocket] = useState(null);
   const socketRef = useRef(null);
-  const connectedRef = useRef(false);
-  const [currentUser, setCurrentUser] = useState(() => {
+  const mountedRef = useRef(false);
+  const currentUserIdRef = useRef(null);
+
+  // Stable current user detection (no re-render loops)
+  const currentUser = useMemo(() => {
     const storedUser = localStorage.getItem('user_info') || localStorage.getItem('admin_info');
     return storedUser ? JSON.parse(storedUser) : null;
-  });
+  }, []); // Only compute once on mount
 
-  // Listen for localStorage changes (login/logout)
+  // Poll for user changes (login/logout) — run once on mount
   useEffect(() => {
-    const handleStorage = () => {
-      const storedUser = localStorage.getItem('user_info') || localStorage.getItem('admin_info');
-      const user = storedUser ? JSON.parse(storedUser) : null;
-      setCurrentUser(prev => {
-        // Only update if user actually changed
-        if (prev?.id !== user?.id) {
-          console.log('[Socket] User changed:', prev?.id, '->', user?.id);
-        }
-        return user;
-      });
-    };
-    // Override localStorage.setItem to catch changes in same tab
-    const originalSetItem = localStorage.setItem;
-    localStorage.setItem = function(key, value) {
-      const oldValue = localStorage.getItem(key);
-      originalSetItem.call(this, key, value);
-      if (key === 'user_info' || key === 'admin_info') {
-        handleStorage();
-      }
-    };
-    window.addEventListener('storage', handleStorage);
-    // Also poll every 500ms as fallback
-    const interval = setInterval(handleStorage, 500);
-    return () => {
-      localStorage.setItem = originalSetItem;
-      window.removeEventListener('storage', handleStorage);
-      clearInterval(interval);
-    };
-  }, []);
+    let socket = null;
 
-  useEffect(() => {
-    const user = currentUser;
-
-    // If not logged in at all, disconnect socket
-    if (!user || !user.id) {
+    const connectForUser = (uid) => {
+      // Always disconnect previous socket first
       if (socketRef.current) {
         socketRef.current.disconnect();
         socketRef.current = null;
-        connectedRef.current = false;
+      }
+      if (!uid) {
         setSocket(null);
         setOnlineUsers(new Map());
+        currentUserIdRef.current = null;
+        return;
       }
-      return;
-    }
 
-    // If already connected with same user, do not reconnect
-    if (connectedRef.current && socketRef.current) {
-      return;
-    }
-
-    // Create new socket connection
-    const socket = io(SOCKET_URL, {
-      transports: ['websocket', 'polling'],
-      withCredentials: true,
-    });
-
-    socket.on('connect', () => {
-      console.log('[Socket] Connected:', socket.id);
-      connectedRef.current = true;
-      // Send userId to server to mark as online
-      socket.emit('user-online', user.id);
-    });
-
-    // Listen for online/offline status changes
-    socket.on('user-status', ({ userId, online }) => {
-      console.log(`[Socket] User ${userId} ${online ? 'ONLINE' : 'OFFLINE'}`);
-      setOnlineUsers(prev => {
-        const next = new Map(prev);
-        if (online) {
-          next.set(userId, true);
-        } else {
-          next.delete(userId);
-        }
-        return next;
+      currentUserIdRef.current = uid;
+      socket = io(SOCKET_URL, {
+        transports: ['websocket', 'polling'],
+        withCredentials: true,
       });
-    });
 
-    socket.on('disconnect', () => {
-      console.log('[Socket] Disconnected');
-      connectedRef.current = false;
-    });
+      socket.on('connect', () => {
+        console.log('[Socket] Connected:', socket.id, 'user:', uid);
+        socket.emit('user-online', uid);
+      });
 
-    socket.on('connect_error', (err) => {
-      console.error('[Socket] Connection error:', err.message);
-    });
+      socket.on('user-status', ({ userId, online }) => {
+        setOnlineUsers(prev => {
+          const next = new Map(prev);
+          if (online) {
+            next.set(userId, true);
+          } else {
+            next.delete(userId);
+          }
+          return next;
+        });
+      });
 
-    socketRef.current = socket;
-    setSocket(socket);
+      socket.on('connect_error', (err) => {
+        // Silently ignore connection errors during cleanup/navigation
+      });
+
+      socket.on('disconnect', () => {
+        // Clear ref so checkUser will reconnect on next tick
+        if (currentUserIdRef.current === uid) {
+          currentUserIdRef.current = null;
+        }
+      });
+
+      socketRef.current = socket;
+      setSocket(socket);
+    };
+
+    const checkUser = () => {
+      const storedUser = localStorage.getItem('user_info') || localStorage.getItem('admin_info');
+      const parsed = storedUser ? JSON.parse(storedUser) : null;
+      const uid = parsed?.id || null;
+      const prevUid = currentUserIdRef.current;
+      if (prevUid !== uid) {
+        console.log(`[Socket] User session changed: ${prevUid} -> ${uid}`);
+        connectForUser(uid);
+      }
+    };
+
+    // Initial connect
+    checkUser();
+
+    // Poll for login/logout changes
+    const interval = setInterval(checkUser, 500);
+    const handleStorage = () => checkUser();
+    window.addEventListener('storage', handleStorage);
 
     return () => {
-      socket.disconnect();
-      socketRef.current = null;
-      connectedRef.current = false;
-      setSocket(null);
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorage);
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+      currentUserIdRef.current = null;
     };
-  }, [currentUser]);
+  }, []);
 
-  // Check if user is online
   const isUserOnline = (userId) => onlineUsers.has(Number(userId));
-
-  // Get list of online user IDs
   const getOnlineUserIds = () => Array.from(onlineUsers.keys());
 
   return (

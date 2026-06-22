@@ -65,6 +65,8 @@ const ClassDetail = () => {
   useEffect(() => {
     if (!classId || !admin) return;
     fetchClassDetail();
+    const interval = setInterval(fetchClassDetail, 5000);
+    return () => clearInterval(interval);
   }, [classId, admin]);
 
   const handleCreateTask = async () => {

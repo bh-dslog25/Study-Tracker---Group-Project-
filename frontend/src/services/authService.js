@@ -9,6 +9,15 @@ const authService = {
     const result = response.data.data || response.data; // Đây mới là { user, accessToken, refreshToken }
 
     if (result.accessToken) {
+      // Xóa dữ liệu cũ trước khi lưu dữ liệu mới (tránh lưu lẫn lộn giữa các tài khoản)
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_info');
+      localStorage.removeItem('admin_info');
+      localStorage.removeItem('admin_access_token');
+      localStorage.removeItem('admin_refresh_token');
+      localStorage.removeItem('admin_verified');
+
       // Chuẩn hoá key token để khớp interceptor Axios (access_token/refresh_token)
       localStorage.setItem('access_token', result.accessToken);
       localStorage.setItem('refresh_token', result.refreshToken);
@@ -23,6 +32,15 @@ const authService = {
     const result = response.data.data || response.data; // Lấy dữ liệu từ .data
 
     if (result.accessToken) {
+      // Xóa dữ liệu cũ trước khi lưu dữ liệu mới (tránh lưu lẫn lộn giữa các tài khoản)
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_info');
+      localStorage.removeItem('admin_info');
+      localStorage.removeItem('admin_access_token');
+      localStorage.removeItem('admin_refresh_token');
+      localStorage.removeItem('admin_verified');
+
       // Chuẩn hoá key token để khớp interceptor Axios (access_token/refresh_token)
       localStorage.setItem('access_token', result.accessToken);
       localStorage.setItem('refresh_token', result.refreshToken);

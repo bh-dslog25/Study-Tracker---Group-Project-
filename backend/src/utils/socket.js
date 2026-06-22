@@ -18,26 +18,39 @@ const initSocket = (server) => {
 
     // Khi user đăng nhập, gửi userId lên
     socket.on('user-online', (userId) => {
-      if (userId) {
-        onlineUsers.set(Number(userId), socket.id);
-        console.log(`[Socket] User ${userId} is ONLINE`);
-        io.emit('user-status', { userId: Number(userId), online: true });
+      if (!userId) return;
+      const uid = Number(userId);
+
+      // Remove any PREVIOUS socket entry for this user (login from a new tab/session)
+      for (const [existingUid, existingSid] of onlineUsers.entries()) {
+        if (existingUid === uid && existingSid !== socket.id) {
+          onlineUsers.delete(existingUid);
+          console.log(`[Socket] Removed stale entry for user ${uid} (old socket ${existingSid})`);
+        }
+      }
+
+      // Only emit if user actually changed online state
+      const wasOnline = onlineUsers.has(uid);
+      onlineUsers.set(uid, socket.id);
+      if (!wasOnline) {
+        console.log(`[Socket] User ${uid} is ONLINE (socket ${socket.id})`);
+        socket.broadcast.emit('user-status', { userId: uid, online: true });
+      } else {
+        console.log(`[Socket] User ${uid} refreshed socket (socket ${socket.id})`);
       }
     });
 
-    // Khi user disconnect
-    socket.on('disconnect', () => {
-      let disconnectedUserId = null;
+    socket.on('disconnect', (reason) => {
+      const disconnectedUserIds = [];
       for (const [uid, sid] of onlineUsers.entries()) {
         if (sid === socket.id) {
-          disconnectedUserId = uid;
+          disconnectedUserIds.push(uid);
           onlineUsers.delete(uid);
-          break;
         }
       }
-      if (disconnectedUserId) {
-        console.log(`[Socket] User ${disconnectedUserId} is OFFLINE`);
-        io.emit('user-status', { userId: disconnectedUserId, online: false });
+      for (const uid of disconnectedUserIds) {
+        console.log(`[Socket] User ${uid} is OFFLINE (socket ${socket.id})`);
+        socket.broadcast.emit('user-status', { userId: uid, online: false });
       }
     });
   });
@@ -56,10 +69,11 @@ const getOnlineUsers = () => {
   return Array.from(onlineUsers.keys());
 };
 
-// Emit new join request notification to all online teachers
+// Emit new join request notification to the specific teacher who owns the class
 const emitNewJoinRequest = (requestData) => {
   if (!io) return;
-  // Broadcast to all connected sockets (teachers will be among them)
+  const { teacherId } = requestData;
+  // Emit to all sockets, the frontend will filter by teacherId
   io.emit('new-join-request', requestData);
 };
 

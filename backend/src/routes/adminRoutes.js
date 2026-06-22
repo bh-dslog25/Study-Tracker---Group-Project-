@@ -130,37 +130,71 @@ router.post('/students', authenticate, authorizeRoles('teacher'), async (req, re
   }
 });
 
-// ===== DANH SÁCH YÊU CẦU VÀO LỚP (PENDING) =====
-router.get('/join-requests', authenticate, authorizeRoles('teacher'), async (req, res) => {
-  try {
-    const requests = await ClassMember.findAll({
-      where: { status: 'pending' },
-      include: [{
-        model: User, as: 'student',
-        attributes: ['id', 'username', 'email'],
-      }, {
-        model: Class,
-        attributes: ['id', 'name', 'inviteCode'],
-      }],
-      order: [['createdAt', 'DESC']],
-    });
+  // ===== DANH SÁCH YÊU CẤU VÀO LỚP (PENDING) - Chỉ lấy của teacher hiện tại =====
+  router.get('/join-requests', authenticate, authorizeRoles('teacher'), async (req, res) => {
+    try {
+      // Lấy tất cả class của teacher này
+      const teacherClasses = await Class.findAll({
+        where: { teacherId: req.user.id },
+        attributes: ['id'],
+      });
+      const classIds = teacherClasses.map(c => c.id);
 
-    const formatted = requests.map(r => ({
-      id: r.id,
-      classId: r.classId,
-      className: r.Class?.name,
-      classInviteCode: r.Class?.inviteCode,
-      studentId: r.studentId,
-      studentName: r.student?.username,
-      studentEmail: r.student?.email,
-      requestedAt: r.createdAt,
-    }));
+      if (classIds.length === 0) {
+        return successResponse(res, [], 'Get join requests successfully');
+      }
 
-    return successResponse(res, formatted, 'Get join requests successfully');
-  } catch (err) {
-    return errorResponse(res, err.message, 500);
-  }
-});
+      const requests = await ClassMember.findAll({
+        where: { status: 'pending', classId: classIds },
+        order: [['createdAt', 'DESC']],
+      });
+
+      const formatted = await Promise.all(requests.map(async (r) => {
+        let studentName = null;
+        let studentEmail = null;
+        let className = null;
+        let classInviteCode = null;
+
+        try {
+          const student = await User.findOne({
+            where: { id: r.studentId },
+            attributes: ['username', 'email'],
+          });
+          studentName = student?.username;
+          studentEmail = student?.email;
+        } catch (err) {
+          console.error('Error fetching student for join request:', err);
+        }
+
+        try {
+          const cls = await Class.findOne({
+            where: { id: r.classId },
+            attributes: ['name', 'inviteCode'],
+          });
+          className = cls?.name;
+          classInviteCode = cls?.inviteCode;
+        } catch (err) {
+          console.error('Error fetching class for join request:', err);
+        }
+
+        return {
+          id: r.id,
+          classId: r.classId,
+          className,
+          classInviteCode,
+          studentId: r.studentId,
+          studentName,
+          studentEmail,
+          requestedAt: r.createdAt,
+        };
+      }));
+
+      return successResponse(res, formatted, 'Get join requests successfully');
+    } catch (err) {
+      console.error('Get join requests error:', err);
+      return errorResponse(res, err.message || 'Failed to get join requests', 500);
+    }
+  });
 
 // ===== DUYỆT YÊU CẦU VÀO LỚP =====
 router.put('/join-requests/:requestId/approve', authenticate, authorizeRoles('teacher'), async (req, res) => {

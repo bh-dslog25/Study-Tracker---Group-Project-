@@ -10,6 +10,7 @@
     "migrate:force": "node src/config/migrate.js --force"
   },
   "dependencies": {
+    "axios": "^1.18.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.6",
     "dotenv": "^16.3.1",
@@ -30,4 +31,3 @@
     "sequelize-cli": "^6.6.5"
   }
 }
-

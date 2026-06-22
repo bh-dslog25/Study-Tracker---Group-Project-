@@ -23,6 +23,13 @@ export const AuthProvider = ({ children }) => {
     if (responseData && (responseData.user || responseData.accessToken)) {
       const { user, accessToken, refreshToken } = responseData;
       
+      // Xóa dữ liệu cũ trước khi lưu (tránh lưu lẫn lộn giữa các tài khoản)
+      localStorage.removeItem('user_info');
+      localStorage.removeItem('admin_info');
+      localStorage.removeItem('admin_access_token');
+      localStorage.removeItem('admin_refresh_token');
+      localStorage.removeItem('admin_verified');
+
       // Lưu vào state và localStorage
       if (user) {
         setUser(user);
@@ -35,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     }
 
-   
+    
     return { 
       success: false, 
       message: responseData?.message || "Login failed: Invalid data" 
@@ -57,6 +64,13 @@ export const AuthProvider = ({ children }) => {
     // Kiểm tra nếu response tồn tại (thường Axios trả về status 200-299 là thành công)
     if (response) {
       const responseData = response.data || response;
+
+      // Xóa dữ liệu cũ trước khi lưu (tránh lưu lẫn lộn giữa các tài khoản)
+      localStorage.removeItem('user_info');
+      localStorage.removeItem('admin_info');
+      localStorage.removeItem('admin_access_token');
+      localStorage.removeItem('admin_refresh_token');
+      localStorage.removeItem('admin_verified');
 
       // Lấy dữ liệu ra (dùng optional chaining ?. để không bị crash nếu thiếu trường)
       const user = responseData?.user;

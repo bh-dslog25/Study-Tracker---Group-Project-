@@ -6,6 +6,7 @@ console.log('Middleware authenticate check:', authenticate ? 'OK' : 'UNDEFINED')
 
 // Public routes (Không cần đăng nhập)
 router.use('/auth', require('./authRoutes'));
+router.use('/chatbot', require('./chatbotRoutes'));
 
 // Protected routes (Tất cả các route bên dưới cần đăng nhập)
 router.use(authenticate);

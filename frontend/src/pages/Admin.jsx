@@ -32,7 +32,17 @@ const Admin = () => {
   const [addStudentEmail, setAddStudentEmail] = useState('');
   const [message, setMessage] = useState('');
   const { isUserOnline, socket } = useSocket();
+  const isUserOnlineRef = React.useRef(isUserOnline);
+  isUserOnlineRef.current = isUserOnline;
+  const stableIsUserOnline = React.useCallback((id) => isUserOnlineRef.current(id), []);
   const [filterOnline, setFilterOnline] = useState('all');
+  const [joinRequests, setJoinRequests] = useState([]);
+  const [showJoinRequests, setShowJoinRequests] = useState(false);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const lastFetchRef = React.useRef(0);
+  const joinRequestsFetchedRef = React.useRef(false);
+  const pollingRef = React.useRef(null);
+  const isPollingActive = React.useRef(false);
 
   const adminAuthHeaders = useCallback(() => ({
     headers: { Authorization: `Bearer ${localStorage.getItem('admin_access_token')}` }
@@ -55,31 +65,134 @@ const Admin = () => {
       const res = await axios.get('/admin/students', adminAuthHeaders());
       const data = res.data.data;
       const studentsArray = (data && Array.isArray(data.data)) ? data.data : (Array.isArray(data) ? data : []);
-      const studentsWithOnline = studentsArray.map(s => ({ ...s, isOnline: isUserOnline(s.id) }));
+      const studentsWithOnline = studentsArray.map(s => ({ ...s, isOnline: stableIsUserOnline(s.id) }));
       setAllStudents(studentsWithOnline);
     } catch (err) { console.error(err); }
-  }, [adminAuthHeaders, isUserOnline]);
+  }, [adminAuthHeaders, stableIsUserOnline]);
 
-  // Socket listener for real-time join request toast notification (admin)
+  const fetchJoinRequests = useCallback(async () => {
+    const now = Date.now();
+    if (now - lastFetchRef.current < 1000) return; // debounce 1s
+    lastFetchRef.current = now;
+
+    const token = localStorage.getItem('admin_access_token');
+    if (!token) {
+      console.warn('No admin token found');
+      return;
+    }
+
+    try {
+      setLoadingRequests(true);
+      const res = await axios.get('/admin/join-requests', adminAuthHeaders());
+      const data = res.data.data;
+      setJoinRequests(Array.isArray(data) ? data : []);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        console.warn('Unauthorized when fetching join requests');
+      } else {
+        console.error('Error fetching join requests:', err.response?.data || err.message);
+      }
+    } finally {
+      setLoadingRequests(false);
+    }
+  }, [adminAuthHeaders]);
+
+  const handleApproveRequest = async (requestId) => {
+    try {
+      await axios.put(`/admin/join-requests/${requestId}/approve`, {}, adminAuthHeaders());
+      showMsg('Join request approved! Student added to class.');
+      setJoinRequests(prev => prev.filter(r => r.id !== requestId));
+      fetchClasses();
+      fetchAllStudents();
+    } catch (err) {
+      showMsg(err.response?.data?.message || 'Error approving request', 'error');
+    }
+  };
+
+  const handleRejectRequest = async (requestId) => {
+    try {
+      await axios.put(`/admin/join-requests/${requestId}/reject`, {}, adminAuthHeaders());
+      showMsg('Join request rejected.');
+      setJoinRequests(prev => prev.filter(r => r.id !== requestId));
+    } catch (err) {
+      showMsg(err.response?.data?.message || 'Error rejecting request', 'error');
+    }
+  };
+
+  // Auto-refresh join requests every 3s (prevent duplicate polling)
   useEffect(() => {
-    if (!socket) return;
+    if (!isLoggedIn || admin?.role !== 'teacher' || !adminVerified) {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+        isPollingActive.current = false;
+      }
+      return;
+    }
+
+    if (isPollingActive.current) return; // already polling
+
+    isPollingActive.current = true;
+    pollingRef.current = setInterval(() => {
+      fetchJoinRequests();
+    }, 3000);
+
+    console.log('[Admin] Polling join requests every 3s');
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+      isPollingActive.current = false;
+    };
+  }, [isLoggedIn, admin?.role, adminVerified, fetchJoinRequests]);
+
+  // Socket listener for real-time join request (chỉ nhận request của class mình)
+  useEffect(() => {
+    if (!socket || !admin?.id) return;
     const handler = (request) => {
+      // Chỉ hiển thị nếu request thuộc về teacher này
+      if (request.teacherId && Number(request.teacherId) !== Number(admin.id)) {
+        console.log('[Admin] Ignoring join request for another teacher:', request.teacherId);
+        return;
+      }
+      console.log('[Admin] New join request via socket:', request);
       showMsg(
         `📋 ${request.studentName || 'A student'} wants to join ${request.className || 'class'}`,
         'info'
       );
+      fetchJoinRequests();
     };
     socket.on('new-join-request', handler);
     return () => socket.off('new-join-request', handler);
-  }, [socket]);
+  }, [socket, admin?.id, fetchJoinRequests]);
 
-  // When admin is already verified (e.g. coming back from ClassDetail), fetch data
+  const toggleJoinRequests = () => {
+    if (!showJoinRequests) {
+      fetchJoinRequests();
+    }
+    setShowJoinRequests(prev => !prev);
+  };
+
+  // When admin is already verified, fetch data (prevent loop by ref)
   useEffect(() => {
     if (isLoggedIn && admin?.role === 'teacher' && adminVerified) {
       fetchClasses();
+      if (!joinRequestsFetchedRef.current) {
+        joinRequestsFetchedRef.current = true;
+        fetchJoinRequests();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn, admin?.role, adminVerified]);
+
+  // Fetch students separately when admin is verified (prevent loop by ref)
+  useEffect(() => {
+    if (isLoggedIn && admin?.role === 'teacher' && adminVerified) {
       fetchAllStudents();
     }
-  }, [isLoggedIn, admin?.role, adminVerified, fetchClasses, fetchAllStudents]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn, admin?.role, adminVerified]);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -94,6 +207,7 @@ const Admin = () => {
     setShowAdminPasswordModal(false);
     fetchClasses();
     fetchAllStudents();
+    fetchJoinRequests();
   };
 
   const handleAdminFormSubmit = async (e) => {
@@ -111,7 +225,6 @@ const Admin = () => {
       setAdminEmail('');
       setAdminPassword('');
       setAdminUsername('');
-      // Luôn yêu cầu nhập admin password ngay cả khi đã có token
       setShowAdminPasswordModal(true);
     } else {
       setAdminFormError(result?.message || 'Something went wrong');
@@ -212,7 +325,6 @@ const Admin = () => {
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 p-4 relative overflow-hidden">
-        {/* Animated background particles */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -left-40 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -221,7 +333,7 @@ const Admin = () => {
         <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 relative z-10 animate-fadeIn">
           <div className="text-center mb-6">
             <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-200">
-              <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 002 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
             </div>
             <h1 className="text-3xl font-extrabold text-slate-800">Admin Dashboard</h1>
             <p className="text-sm text-slate-500 mt-2">{showAdminLogin ? 'Sign in with your teacher account' : 'Create a new teacher account'}</p>
@@ -230,7 +342,7 @@ const Admin = () => {
               <p className="text-xs text-amber-700 font-medium">Separate login. Login here again even if already logged in as teacher.</p>
             </div>
             <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 rounded-xl">
-              <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 002 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
               <p className="text-xs text-slate-200 font-medium">Admin password: <span className="font-bold text-white">admin123</span></p>
             </div>
           </div>
@@ -339,7 +451,6 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 relative overflow-hidden">
-      {/* Decorative elements */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl"></div>
       <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-200/20 rounded-full blur-3xl"></div>
       
@@ -368,7 +479,7 @@ const Admin = () => {
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
               <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 002 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
             <div>
@@ -408,10 +519,96 @@ const Admin = () => {
             </div>
             {selectedClass && (
               <button onClick={() => { setShowAddStudent(!showAddStudent); setAddStudentEmail(''); }} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl text-xs font-bold hover:from-emerald-600 hover:to-emerald-700 transition-all shadow-md shadow-emerald-200">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg> Add Student
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+                Add Student
               </button>
             )}
           </div>
+        </div>
+
+        {/* Join Requests Section */}
+        <div className="mb-8">
+          <button
+            onClick={toggleJoinRequests}
+            className="flex items-center gap-3 px-5 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-amber-200 transition-all w-full text-left group"
+          >
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${joinRequests.length > 0 ? 'bg-amber-100' : 'bg-slate-100'}`}>
+              <svg className={`w-5 h-5 ${joinRequests.length > 0 ? 'text-amber-600' : 'text-slate-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <span className="font-bold text-slate-800 group-hover:text-amber-700 transition-colors">Join Requests</span>
+              {joinRequests.length > 0 && !showJoinRequests && (
+                <span className="ml-2 px-2 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded-full">{joinRequests.length} pending</span>
+              )}
+            </div>
+            <svg className={`w-5 h-5 text-slate-400 transition-transform ${showJoinRequests ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {showJoinRequests && (
+            <div className="mt-3 bg-white rounded-2xl border border-amber-100 shadow-sm overflow-hidden">
+              {loadingRequests ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="w-8 h-8 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin"></div>
+                </div>
+              ) : joinRequests.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-slate-500 font-medium">No pending join requests</p>
+                  <p className="text-xs text-slate-400 mt-1">When students request to join, they'll appear here</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-amber-50">
+                  {joinRequests.map(req => (
+                    <div key={req.id} className="flex items-center justify-between px-6 py-4 hover:bg-amber-50/50 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center text-sm font-bold text-amber-600 shadow-sm">
+                          {req.studentName?.[0]?.toUpperCase() || '?'}
+                        </div>
+                        <div>
+                          <p className="font-bold text-sm text-slate-800">{req.studentName || 'Unknown'}</p>
+                          <div className="flex items-center gap-2 text-xs text-slate-400">
+                            <span>{req.studentEmail || ''}</span>
+                            <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                            <span className="font-medium text-indigo-500">{req.className || 'Unknown class'}</span>
+                            <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                            <span>{req.requestedAt ? formatDate(req.requestedAt) : ''}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleApproveRequest(req.id)}
+                          className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-200 hover:shadow-lg"
+                        >
+                          <svg className="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => handleRejectRequest(req.id)}
+                          className="px-4 py-2 bg-white text-red-500 border border-red-200 hover:bg-red-50 rounded-xl text-xs font-bold transition-all"
+                        >
+                          <svg className="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
@@ -431,7 +628,6 @@ const Admin = () => {
             <div onClick={() => navigate('/admin/classes')}
               className="group bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all duration-300 cursor-pointer text-center relative overflow-hidden"
             >
-              {/* Hover gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-purple-50/0 group-hover:from-indigo-50/50 group-hover:to-purple-50/50 transition-all duration-300"></div>
               <div className="relative z-10">
                 <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 group-hover:from-indigo-500 group-hover:to-purple-600 flex items-center justify-center mx-auto mb-5 transition-all duration-300 shadow-lg">
@@ -508,7 +704,6 @@ const Admin = () => {
               </div>
             ) : (
               <>
-                {/* Show class overview if class selected */}
                 {selectedClass && classOverview && (
                   <div className="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-indigo-100 shadow-sm grid grid-cols-4 gap-4 text-center">
                     <div className="p-3 rounded-lg bg-indigo-50/50">
@@ -529,7 +724,6 @@ const Admin = () => {
                     </div>
                   </div>
                 )}
-                {/* Always show ALL students with +Add if class selected */}
                 <div className="overflow-y-auto max-h-[600px] scrollbar-hide border border-slate-100 rounded-2xl bg-white/80 backdrop-blur-sm shadow-sm">
                   <div className="grid gap-2 p-3">
                     {filteredAllStudents.map(s => <StudentCard key={s.id} s={s} showAddToClass={!!selectedClass} />)}

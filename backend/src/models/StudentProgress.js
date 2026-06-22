@@ -8,6 +8,8 @@ const StudentProgress = sequelize.define('StudentProgress', {
   studentId: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
   classTaskId: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
   status: { type: DataTypes.ENUM('assigned', 'in_progress', 'completed', 'late'), allowNull: false, defaultValue: 'assigned' },
+  submission: { type: DataTypes.TEXT, allowNull: true },
+  submittedAt: { type: DataTypes.DATE, allowNull: true },
 }, {
   tableName: 'student_progresses',
 });
