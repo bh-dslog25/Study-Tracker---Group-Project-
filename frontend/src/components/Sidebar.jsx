@@ -5,11 +5,11 @@ import { NavLink } from 'react-router-dom';
 const Sidebar = () => {
   // Danh sách các Menu điều hướng khớp 100% với hình mẫu của bạn
   const menuItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { path: '/tasks', label: 'Tasks', icon: 'task_alt' },
-    { path: '/time-tracker', label: 'Time Tracker', icon: 'schedule' },
-    { path: '/goals', label: 'Goals', icon: 'target' },
-    { path: '/calendar', label: 'Calendar', icon: 'calendar_today' },
+    { path: '/dashboard', label: 'Tổng quan', icon: 'dashboard' },
+    { path: '/tasks', label: 'Nhiệm vụ', icon: 'task_alt' },
+    { path: '/time-tracker', label: 'Thời gian tập trung', icon: 'schedule' },
+    { path: '/goals', label: 'Mục tiêu', icon: 'target' },
+    { path: '/calendar', label: 'Lịch', icon: 'calendar_today' },
   ];
 
   return (
@@ -62,7 +62,7 @@ const Sidebar = () => {
           }
         >
           <span className="material-symbols-outlined text-[20px]">settings</span>
-          <span>Settings</span>
+          <span>Cài đặt</span>
         </NavLink>
         
       </div>

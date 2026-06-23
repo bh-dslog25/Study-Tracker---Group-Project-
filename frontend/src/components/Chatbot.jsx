@@ -32,7 +32,7 @@ const IconClose = () => (
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { id: 1, text: "Hi! I'm your Study Tracker AI Assistant. How can I help you today?", isBot: true }
+    { id: 1, text: "Xin chào, tớ là trợ lý AI Tokuda Chatbot, tớ có thể giúp gì cho bạn?", isBot: true }
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +113,7 @@ export default function Chatbot() {
           <div className="chatbot-header">
             <div className="chatbot-header-title">
               <IconBot />
-              <span>Study AI Assistant</span>
+              <span>Tokuda AI Assistant</span>
             </div>
             <button className="chatbot-close" onClick={() => setIsOpen(false)}>
               <IconClose />
@@ -146,7 +146,7 @@ export default function Chatbot() {
           <form className="chatbot-input-area" onSubmit={handleSend}>
             <input
               type="text"
-              placeholder="Type your message..."
+              placeholder="Nhập tin nhắn của bạn..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               disabled={isLoading}

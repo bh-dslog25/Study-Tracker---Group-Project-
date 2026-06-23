@@ -91,6 +91,122 @@
   margin-top: 8px;
 }
 
+.timer-edit-btn {
+  margin-top: 12px;
+  border: 1px solid #d0d0e0;
+  background: #ffffff;
+  color: #3d35d4;
+  border-radius: 999px;
+  padding: 7px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.timer-edit-btn:hover {
+  background: #f0effc;
+  border-color: #3d35d4;
+  transform: translateY(-1px);
+}
+
+.timer-edit-box {
+  width: 210px;
+  border: 1px solid #d0d0e0;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 30px rgba(37, 34, 86, 0.14);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 3;
+}
+
+.timer-edit-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #3d35d4;
+}
+
+.timer-edit-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timer-edit-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.timer-edit-input {
+  width: 64px;
+  height: 42px;
+  border: 1px solid #c7c4d8;
+  border-radius: 10px;
+  text-align: center;
+  color: #1e1e2f;
+  font-size: 18px;
+  font-weight: 800;
+  outline: none;
+}
+
+.timer-edit-input:focus {
+  border-color: #3d35d4;
+  box-shadow: 0 0 0 3px rgba(61, 53, 212, 0.12);
+}
+
+.timer-edit-unit {
+  font-size: 10px;
+  color: #777587;
+}
+
+.timer-edit-colon {
+  color: #3d35d4;
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.timer-edit-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.timer-edit-cancel,
+.timer-edit-save {
+  border: none;
+  border-radius: 9px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.timer-edit-cancel {
+  background: #f0f0f7;
+  color: #4a4a6a;
+}
+
+.timer-edit-save {
+  background: #3d35d4;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
 /* Controls */
 .timer-controls {
   display: flex;

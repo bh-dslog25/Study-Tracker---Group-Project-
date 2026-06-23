@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { loadJSON, saveJSON } from '../../utils/storage';
+import { recalculateGoalsWithTasks, TASKS_STORAGE_KEY, GOALS_STORAGE_KEY } from '../../utils/goalProgress';
 import './Goals.css';
 
 // ── Icons ─────────────────────────────────────────────
@@ -19,13 +21,19 @@ const INITIAL_GOALS = [
 ];
 
 const CATEGORY_STYLES = {
-  academic: { bg: '#e2dfff', color: '#3323cc', label: 'Academic' },
-  skill:    { bg: '#e7feef', color: '#006c49', label: 'Skill' },
-  personal: { bg: '#fff3e0', color: '#b45309', label: 'Personal' },
-  career:   { bg: '#e7eefe', color: '#3525cd', label: 'Career' },
+  academic: { bg: '#e2dfff', color: '#3323cc', label: 'Học tập' },
+  skill:    { bg: '#e7feef', color: '#006c49', label: 'Kỹ năng' },
+  personal: { bg: '#fff3e0', color: '#b45309', label: 'Cá nhân' },
+  career:   { bg: '#e7eefe', color: '#3525cd', label: 'Sự nghiệp' },
 };
 
-const EMPTY_FORM = { title: '', targetDate: '', category: '', description: '' };
+const INITIAL_TASKS = [
+  { id:1, name:'Complete Practice Test 3', deadline:'2026-06-14', goal:'CS101 Final Exam', priority:'high', description:'Reading Comprehension Section - focus on speed.', done:false },
+  { id:2, name:'Review Vocabulary Flashcards', deadline:'2026-06-15', goal:'Weekly Reading Quota', priority:'medium', description:'Sets 10-15, Anki deck.', done:false },
+  { id:3, name:'Listen to English Podcast', deadline:'2026-06-16', goal:'Weekly Reading Quota', priority:'low', description:'Episode 42 - Business English.', done:true },
+];
+
+const EMPTY_FORM = { title: '', targetDate: '', category: '', description: '', linkedTaskIds: [] };
 
 // ── Progress Ring SVG ─────────────────────────────────
 function ProgressRing({ pct, size = 80 }) {
@@ -48,22 +56,31 @@ function ProgressRing({ pct, size = 80 }) {
 }
 
 // ── Modal ─────────────────────────────────────────────
-function GoalModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
+function GoalModal({ isOpen, isEditing, form, setForm, onSave, onCancel, tasks }) {
   if (!isOpen) return null;
+
+  const toggleTask = (taskId) => {
+    const id = String(taskId);
+    const selected = new Set((form.linkedTaskIds || []).map(String));
+    if (selected.has(id)) selected.delete(id);
+    else selected.add(id);
+    setForm({ ...form, linkedTaskIds: Array.from(selected) });
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal-backdrop" onClick={onCancel} />
       <div className="modal-box">
         {/* Header */}
         <div className="modal-header">
-          <h2 className="modal-title">{isEditing ? 'Edit Goal' : 'Add New Goal'}</h2>
+          <h2 className="modal-title">{isEditing ? 'Chỉnh sửa Mục tiêu' : 'Thêm Mục tiêu Mới'}</h2>
           <button className="modal-close" onClick={onCancel}><IconClose /></button>
         </div>
 
         {/* Body */}
         <div className="modal-body">
           <div className="field">
-            <label className="field-label">Goal Title</label>
+            <label className="field-label">Tên mục tiêu</label>
             <input
               className="field-input"
               type="text"
@@ -75,7 +92,7 @@ function GoalModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
 
           <div className="field-row">
             <div className="field">
-              <label className="field-label">Target Date</label>
+              <label className="field-label">Thời hạn</label>
               <input
                 className="field-input"
                 type="date"
@@ -84,23 +101,23 @@ function GoalModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
               />
             </div>
             <div className="field">
-              <label className="field-label">Category</label>
+              <label className="field-label">Danh mục</label>
               <select
                 className="field-input"
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
               >
                 <option value="">Select a category</option>
-                <option value="academic">Academic</option>
-                <option value="skill">Skill</option>
-                <option value="personal">Personal</option>
-                <option value="career">Career</option>
+                <option value="academic">Học tập</option>
+                <option value="skill">Kỹ năng</option>
+                <option value="personal">Cá nhân</option>
+                <option value="career">Sự nghiệp</option>
               </select>
             </div>
           </div>
 
           <div className="field">
-            <label className="field-label">Objective Description</label>
+            <label className="field-label">Mô tả mục tiêu</label>
             <textarea
               className="field-input field-textarea"
               placeholder="Briefly describe what achieving this goal looks like..."
@@ -110,24 +127,36 @@ function GoalModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
             />
           </div>
 
-          {isEditing && (
-            <div className="field">
-              <label className="field-label">Current Progress ({form.progress ?? 0}%)</label>
-              <input
-                type="range" min="0" max="100"
-                className="field-range"
-                value={form.progress ?? 0}
-                onChange={(e) => setForm({ ...form, progress: Number(e.target.value) })}
-              />
+          <div className="field">
+            <label className="field-label">Nhiệm vụ trong mục tiêu này</label>
+            <div className="goal-task-picker">
+              {tasks.length === 0 ? (
+                <p className="goal-task-empty">Chưa có nhiệm vụ nào. Tạo nhiệm vụ trước, sau đó gắn chúng vào đây.</p>
+              ) : tasks.map((task) => {
+                const checked = (form.linkedTaskIds || []).map(String).includes(String(task.id));
+                return (
+                  <label key={task.id} className={`goal-task-option ${checked ? 'selected' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleTask(task.id)}
+                    />
+                    <span>
+                      <strong>{task.name}</strong>
+                      <small>{task.done ? 'Done' : 'Active'}{task.deadline ? ` - ${task.deadline}` : ''}</small>
+                    </span>
+                  </label>
+                );
+              })}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Footer */}
         <div className="modal-footer">
-          <button className="btn-cancel" onClick={onCancel}>Cancel</button>
+          <button className="btn-cancel" onClick={onCancel}>Hủy</button>
           <button className="btn-create" onClick={onSave} disabled={!form.title.trim()}>
-            {isEditing ? 'Save Changes' : 'Create Goal'}
+            {isEditing ? 'Lưu Thay đổi' : 'Tạo Mục tiêu'}
           </button>
         </div>
       </div>
@@ -137,11 +166,35 @@ function GoalModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
 
 // ── Goals Page ────────────────────────────────────────
 export default function Goals() {
-  const [goals, setGoals]       = useState(INITIAL_GOALS);
+  const [goals, setGoals]       = useState(() => loadJSON(GOALS_STORAGE_KEY, INITIAL_GOALS));
+  const [tasks, setTasks]       = useState(() => loadJSON(TASKS_STORAGE_KEY, INITIAL_TASKS));
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm]           = useState(EMPTY_FORM);
   const [menuOpen, setMenuOpen]   = useState(null);
+
+  useEffect(() => {
+    saveJSON(GOALS_STORAGE_KEY, recalculateGoalsWithTasks(goals, tasks));
+  }, [goals]);
+
+  useEffect(() => {
+    const updatedGoals = recalculateGoalsWithTasks(goals, tasks);
+    if (JSON.stringify(updatedGoals) !== JSON.stringify(goals)) {
+      setGoals(updatedGoals);
+    }
+  }, [tasks]);
+
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (!e?.detail) return;
+      if (e.detail.key === TASKS_STORAGE_KEY) {
+        setTasks(loadJSON(TASKS_STORAGE_KEY, INITIAL_TASKS));
+      }
+    };
+
+    window.addEventListener('local-storage', onStorage);
+    return () => window.removeEventListener('local-storage', onStorage);
+  }, []);
 
   const openNew = () => {
     setEditingId(null);
@@ -151,7 +204,13 @@ export default function Goals() {
 
   const openEdit = (goal) => {
     setEditingId(goal.id);
-    setForm({ title: goal.title, targetDate: goal.targetDate, category: goal.category, description: goal.description, progress: goal.progress });
+    setForm({
+      title: goal.title,
+      targetDate: goal.targetDate,
+      category: goal.category,
+      description: goal.description,
+      linkedTaskIds: goal.linkedTaskIds || [],
+    });
     setModalOpen(true);
     setMenuOpen(null);
   };
@@ -165,21 +224,32 @@ export default function Goals() {
   const handleSave = () => {
     if (!form.title.trim()) return;
     if (editingId) {
-      setGoals((prev) => prev.map((g) => g.id === editingId
-        ? { ...g, title: form.title, targetDate: form.targetDate, category: form.category, description: form.description, progress: form.progress ?? g.progress }
+      setGoals((prev) => recalculateGoalsWithTasks(prev.map((g) => g.id === editingId
+        ? { ...g, title: form.title, targetDate: form.targetDate, category: form.category, description: form.description, linkedTaskIds: form.linkedTaskIds || [] }
         : g
-      ));
+      ), tasks));
     } else {
-      setGoals((prev) => [...prev, {
+      setGoals((prev) => recalculateGoalsWithTasks([...prev, {
         id: Date.now(),
         title: form.title,
         targetDate: form.targetDate,
         category: form.category,
         description: form.description,
+        linkedTaskIds: form.linkedTaskIds || [],
         progress: 0,
-      }]);
+        completed: false,
+      }], tasks));
     }
     setModalOpen(false);
+  };
+
+  const toggleLinkedTask = (taskId) => {
+    const updatedTasks = tasks.map((task) => task.id === taskId ? { ...task, done: !task.done } : task);
+    const updatedGoals = recalculateGoalsWithTasks(goals, updatedTasks);
+    setTasks(updatedTasks);
+    setGoals(updatedGoals);
+    saveJSON(TASKS_STORAGE_KEY, updatedTasks);
+    saveJSON(GOALS_STORAGE_KEY, updatedGoals);
   };
 
   const formatDate = (str) => {
@@ -193,11 +263,11 @@ export default function Goals() {
       {/* ── Header ──────────────────────────────────── */}
       <div className="goals-header">
         <div>
-          <h1 className="goals-title">Long-Term Goals</h1>
-          <p className="goals-subtitle">Track your overarching academic and personal objectives.</p>
+          <h1 className="goals-title">Mục tiêu dài hạn</h1>
+          <p className="goals-subtitle">Theo dõi các mục tiêu của bạn.</p>
         </div>
         <button className="btn-new" onClick={openNew}>
-          <IconAdd /> New Goal
+          <IconAdd /> Mục tiêu mới
         </button>
       </div>
 
@@ -205,12 +275,14 @@ export default function Goals() {
       {goals.length === 0 ? (
         <div className="goals-empty">
           <IconTarget />
-          <p>No goals yet. Click <strong>New Goal</strong> to get started.</p>
+          <p>Chưa có mục tiêu nào. Nhấn <strong>Mục tiêu mới</strong> để bắt đầu.</p>
         </div>
       ) : (
         <div className="goals-grid">
           {goals.map((goal) => {
             const cat = CATEGORY_STYLES[goal.category] || CATEGORY_STYLES.personal;
+            const linkedTaskIds = new Set((goal.linkedTaskIds || []).map(String));
+            const linkedTasks = tasks.filter((task) => linkedTaskIds.has(String(task.id)));
             return (
               <div key={goal.id} className="goal-card">
                 {/* Card header */}
@@ -224,8 +296,8 @@ export default function Goals() {
                     </button>
                     {menuOpen === goal.id && (
                       <div className="goal-dropdown">
-                        <button onClick={() => openEdit(goal)}><IconEdit /> Edit</button>
-                        <button className="danger" onClick={() => handleDelete(goal.id)}><IconTrash /> Delete</button>
+                        <button onClick={() => openEdit(goal)}><IconEdit /> Chỉnh sửa</button>
+                        <button className="danger" onClick={() => handleDelete(goal.id)}><IconTrash /> Xóa</button>
                       </div>
                     )}
                   </div>
@@ -234,6 +306,26 @@ export default function Goals() {
                 {/* Title + desc */}
                 <h3 className="goal-card-title">{goal.title}</h3>
                 {goal.description && <p className="goal-card-desc">{goal.description}</p>}
+
+                <div className="goal-linked-tasks">
+                  <div className="goal-linked-head">
+                    <span>Các nhiệm vụ liên kết</span>
+                    <strong>{linkedTasks.filter((task) => task.done).length}/{linkedTasks.length}</strong>
+                  </div>
+                  {linkedTasks.length === 0 ? (
+                    <p className="goal-linked-empty">Chưa có nhiệm vụ nào được liên kết.</p>
+                  ) : linkedTasks.slice(0, 4).map((task) => (
+                    <button
+                      key={task.id}
+                      className={`goal-linked-task ${task.done ? 'done' : ''}`}
+                      onClick={() => toggleLinkedTask(task.id)}
+                    >
+                      <span className="goal-linked-check">{task.done && '✓'}</span>
+                      <span>{task.name}</span>
+                    </button>
+                  ))}
+                  {linkedTasks.length > 4 && <p className="goal-linked-more">+{linkedTasks.length - 4} more tasks</p>}
+                </div>
 
                 {/* Footer */}
                 <div className="goal-card-footer">
@@ -259,6 +351,7 @@ export default function Goals() {
         isEditing={!!editingId}
         form={form}
         setForm={setForm}
+        tasks={tasks}
         onSave={handleSave}
         onCancel={() => setModalOpen(false)}
       />

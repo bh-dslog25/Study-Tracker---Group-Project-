@@ -6,6 +6,8 @@ const styles = `
   .register-body {
     min-height: 100vh;
     margin: 0;
+
+    
     background-color: #f0f0f7;
     color: #1A1A1A;
     display: flex;
@@ -141,6 +143,27 @@ const styles = `
     border-radius: 8px;
     text-align: center;
   }
+
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+
+    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+    background-image: url('studying.avif');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+  
+    margin: 0;
+
+
+    filter: blur(5px); /* Lệnh làm mờ ở đây */
+    z-index: -1; /* Đẩy nó nằm dưới cùng */
+    transform: scale(1.1); /* Phóng to một chút để không bị lộ viền trắng khi mờ */
+}
+
 `;
 
 export default function Register() {
@@ -280,3 +303,4 @@ export default function Register() {
     </>
   );
 }
+

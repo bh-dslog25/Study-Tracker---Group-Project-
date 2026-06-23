@@ -177,6 +177,83 @@
   transition: width 0.4s ease;
 }
 
+.goal-linked-tasks {
+  border: 1px solid #e3e2f0;
+  background: #f9f9ff;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.goal-linked-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #464555;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.goal-linked-head strong {
+  color: #3525cd;
+}
+
+.goal-linked-empty,
+.goal-linked-more {
+  margin: 0;
+  color: #777587;
+  font-size: 12px;
+}
+
+.goal-linked-task {
+  width: 100%;
+  border: none;
+  background: #fff;
+  color: #151c27;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.goal-linked-task:hover {
+  background: #e7eefe;
+}
+
+.goal-linked-task.done {
+  color: #777587;
+}
+
+.goal-linked-task.done span:last-child {
+  text-decoration: line-through;
+}
+
+.goal-linked-check {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #777587;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.goal-linked-task.done .goal-linked-check {
+  background: #3525cd;
+  border-color: #3525cd;
+}
+
 /* ── Empty ────────────────────────────────────────── */
 .goals-empty {
   display: flex;
@@ -282,6 +359,62 @@
   width: 100%;
   accent-color: #3525cd;
   cursor: pointer;
+}
+
+.goal-task-picker {
+  max-height: 230px;
+  overflow-y: auto;
+  border: 1.5px solid #c7c4d8;
+  border-radius: 10px;
+  background: #f9f9ff;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goal-task-empty {
+  margin: 0;
+  padding: 12px;
+  color: #777587;
+  font-size: 13px;
+}
+
+.goal-task-option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.goal-task-option.selected {
+  border-color: #3525cd;
+  background: #f0effc;
+}
+
+.goal-task-option input {
+  margin-top: 3px;
+  accent-color: #3525cd;
+}
+
+.goal-task-option span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.goal-task-option strong {
+  color: #151c27;
+  font-size: 13px;
+}
+
+.goal-task-option small {
+  color: #777587;
+  font-size: 11px;
 }
 
 .modal-footer {

@@ -2,26 +2,45 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const styles = `
-  .login-body {
-    min-height: 100vh;
+  /* ── Reset & Body ─────────────────────────────────── */
+  body {
     margin: 0;
-    background-color: rgba(255, 255, 255, 0.5);
+    min-height: 100vh;
+    background-image: url('/studying.avif');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
-    background-color: #f0f0f7;
     color: #1A1A1A;
+  }
+
+  /* Overlay tối nhẹ lên ảnh để form nổi bật hơn */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 0;
+  }
+
+  /* ── Login Body ────────────────────────────────────── */
+  .login-body {
+    background: transparent;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    z-index: 1;
   }
 
+  /* ── Container ─────────────────────────────────────── */
   .login-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 50px;
+    width: 100%;
   }
 
   .login-container h1 {
@@ -30,83 +49,91 @@ const styles = `
     font-weight: 700;
     margin-bottom: 16px;
     text-align: center;
-    color: #1A1A1A;
+    color: #ffffff;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
   }
 
+  /* ── Form card ─────────────────────────────────────── */
   .register-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 350px;
-    margin: 40px auto;
-    background-color: #F8F9FD;
-    padding: 50px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 1px solid #E5E7EB;
+    max-width: 380px;
+    margin: 24px auto;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 44px 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     box-sizing: border-box;
   }
 
+  /* ── Form fields ───────────────────────────────────── */
   .form-group {
-    padding-left: 1%;
     display: flex;
     flex-direction: column;
+    gap: 6px;
   }
 
   .form-group label {
     font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
     color: #1A1A1A;
   }
 
   .form-group input {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #D1D5DB;
+    padding: 11px 14px;
+    border: 1.5px solid #D1D5DB;
     border-radius: 8px;
     font-size: 14px;
     box-sizing: border-box;
     outline: none;
-    transition: border-color 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s;
     font-family: inherit;
     background: #fff;
+    color: #1A1A1A;
   }
 
   .form-group input:focus {
     border-color: #5d5cde;
-    box-shadow: 0 0 0 2px rgba(93, 92, 222, 0.15);
+    box-shadow: 0 0 0 3px rgba(93, 92, 222, 0.15);
   }
 
+  /* ── Login button ──────────────────────────────────── */
   .login-button {
+    width: 100%;
     background-color: #5d5cde;
-    color: white;
+    color: #fff;
     border: none;
     padding: 12px 20px;
     text-align: center;
-    text-decoration: none;
     display: block;
-    font-size: 16px;
-    margin: 1px 40px;
+    font-size: 15px;
+    margin-top: 6px;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
     font-weight: 600;
-    transition: background 0.15s, opacity 0.15s;
-    width: calc(100% - 80px);
+    transition: background 0.15s, opacity 0.15s, transform 0.1s;
+    letter-spacing: 0.01em;
   }
 
-  .login-button:hover    { background-color: #4a49c4; }
-  .login-button:disabled { opacity: 0.7; cursor: not-allowed; }
+  .login-button:hover    { background-color: #4a49c4; transform: translateY(-1px); }
+  .login-button:active   { transform: translateY(0); }
+  .login-button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
+  /* ── Links ─────────────────────────────────────────── */
   .login-link-row {
     text-align: center;
-    margin-top: 8px;
+    margin-top: 10px;
     font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
     font-size: 14px;
-    color: #1A1A1A;
+    color: #444;
   }
 
   .login-link-row a {
@@ -117,6 +144,7 @@ const styles = `
 
   .login-link-row a:hover { text-decoration: underline; }
 
+  /* ── Alerts ────────────────────────────────────────── */
   .login-error {
     background: #ffdad6;
     color: #93000a;
@@ -137,6 +165,8 @@ const styles = `
     text-align: center;
   }
 `;
+
+
 
 export default function Login() {
   const [email, setEmail] = useState('');

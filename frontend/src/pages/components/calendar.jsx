@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { loadJSON, saveJSON } from '../../utils/storage';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const formatDate = (date) => {
@@ -24,6 +25,13 @@ const PRIORITY_STYLES = {
   assignment: { bg: 'bg-cyan-100',   text: 'text-cyan-800',   bar: 'bg-cyan-600',  chip: 'bg-cyan-100 text-cyan-800',   label: 'Assignment' },
 };
 
+const CALENDAR_TASKS_KEY = 'study_tracker_calendar_tasks';
+const CALENDAR_SELECTED_DATE_KEY = 'study_tracker_calendar_selected_date';
+
+// Keys used by other pages
+const TIMER_SESSIONS_KEY = 'study_tracker_timer_sessions';
+const TASKS_STORAGE_KEY = 'study_tracker_tasks';
+
 const INITIAL_TASKS = {
   '2026-05-09': [
     { id: 1, title: 'History Midterm', time: '10:00 AM', priority: 'high',       desc: 'Chapters 4-8. Focus on the industrial revolution impacts.' },
@@ -42,12 +50,12 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center backdrop-blur-sm">
       <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg border border-gray-200">
         <h2 className="text-xl font-bold text-gray-900 mb-4">
-          {isEditing ? 'Edit Task' : 'Create New Task'}
+          {isEditing ? 'Chỉnh sửa Nhiệm vụ' : 'Tạo Nhiệm vụ Mới'}
         </h2>
         <div className="flex flex-col gap-3 mb-4">
           <input
             type="text"
-            placeholder="Task Name (e.g. Read Chapter 4)"
+            placeholder="Tên Nhiệm vụ (ví dụ: Đọc Chương 4)"
             className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:border-indigo-500"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
@@ -70,7 +78,7 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
             </select>
           </div>
           <textarea
-            placeholder="Description (optional)"
+            placeholder="Mô tả (tùy chọn)"
             className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:border-indigo-500 resize-none h-20"
             value={form.desc}
             onChange={(e) => setForm({ ...form, desc: e.target.value })}
@@ -81,13 +89,13 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
             onClick={onCancel}
             className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors"
           >
-            Cancel
+            Hủy
           </button>
           <button
             onClick={onSave}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
           >
-            Save Task
+            Lưu Nhiệm vụ
           </button>
         </div>
       </div>
@@ -99,8 +107,8 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
 export default function Calendar() {
   const today = new Date();
   const [currentDate, setCurrentDate]     = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selectedDate, setSelectedDate]   = useState(formatDate(today));
-  const [tasksData, setTasksData]         = useState(INITIAL_TASKS);
+  const [selectedDate, setSelectedDate]   = useState(() => loadJSON(CALENDAR_SELECTED_DATE_KEY, formatDate(today)));
+  const [tasksData, setTasksData]         = useState(() => loadJSON(CALENDAR_TASKS_KEY, INITIAL_TASKS));
   const [modalOpen, setModalOpen]         = useState(false);
   const [editingId, setEditingId]         = useState(null);
   const [form, setForm]                   = useState({ title: '', time: '', priority: 'high', desc: '' });
@@ -178,16 +186,49 @@ export default function Calendar() {
 
     setTasksData((prev) => {
       const list = [...(prev[selectedDate] || [])];
+      const newId = Date.now();
       if (editingId) {
         const idx = list.findIndex((t) => t.id === editingId);
         if (idx > -1) list[idx] = { id: editingId, title: form.title, time: formattedTime, priority: form.priority, desc: form.desc };
       } else {
-        list.push({ id: Date.now(), title: form.title, time: formattedTime, priority: form.priority, desc: form.desc });
+        list.push({ id: newId, title: form.title, time: formattedTime, priority: form.priority, desc: form.desc });
+
+        // Also add to Timer sessions (default duration 25) so user can track it immediately
+        try {
+          const existing = loadJSON(TIMER_SESSIONS_KEY, []);
+          const exists = existing.some((s) => s.id === newId);
+          if (!exists) {
+            const newSession = { id: newId, title: form.title, project: selectedDate, duration: 25 };
+            saveJSON(TIMER_SESSIONS_KEY, [...existing, newSession]);
+          }
+        } catch (e) {
+          console.warn('Failed to add session to Timer from Calendar', e);
+        }
+
+        // Also add to Tasks page storage so it appears in Tasks list
+        try {
+          const existingTasks = loadJSON(TASKS_STORAGE_KEY, []);
+          const existsT = existingTasks.some((t) => t.id === newId);
+          if (!existsT) {
+            const newTaskItem = { id: newId, name: form.title, deadline: selectedDate, goal: '', priority: 'medium', description: form.desc || '', done: false };
+            saveJSON(TASKS_STORAGE_KEY, [...existingTasks, newTaskItem]);
+          }
+        } catch (e) {
+          console.warn('Failed to add task to Tasks storage from Calendar', e);
+        }
       }
       return { ...prev, [selectedDate]: list };
     });
     setModalOpen(false);
   };
+
+  useEffect(() => {
+    saveJSON(CALENDAR_TASKS_KEY, tasksData);
+  }, [tasksData]);
+
+  useEffect(() => {
+    saveJSON(CALENDAR_SELECTED_DATE_KEY, selectedDate);
+  }, [selectedDate]);
 
   const handleDelete = (taskId) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return;
@@ -211,7 +252,7 @@ export default function Calendar() {
 
       {/* ── Header ────────────────────────────────────────── */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white">
-        <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Lịch</h1>
         <div className="flex items-center gap-2">
           <button onClick={goToday} className="px-3 py-1.5 text-sm font-semibold border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-gray-700">
             Today
@@ -283,21 +324,21 @@ export default function Calendar() {
           <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
             <h3 className="text-base font-bold text-gray-900">{selectedLabel}</h3>
             <p className="text-xs text-gray-500 mt-0.5">
-              {dayTasks.length === 0 ? '0 items scheduled' : `${dayTasks.length} ${dayTasks.length === 1 ? 'item' : 'items'} scheduled`}
+              {dayTasks.length === 0 ? '0 mục được lên lịch' : `${dayTasks.length} ${dayTasks.length === 1 ? 'mục' : 'mục'} được lên lịch`}
             </p>
             <button
               onClick={openNew}
               className="mt-3 w-full flex items-center justify-center gap-1.5 border border-gray-300 text-indigo-600 text-sm font-semibold py-2 px-4 rounded-lg hover:bg-indigo-50 transition-colors"
             >
               <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-              New Task
+              Nhiệm vụ mới
             </button>
           </div>
 
           {/* Task list */}
           <div className="p-3 flex flex-col gap-2 overflow-y-auto flex-1">
             {dayTasks.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center mt-6">No tasks scheduled for this day.</p>
+              <p className="text-sm text-gray-400 text-center mt-6">Không có nhiệm vụ nào được lên lịch cho ngày này.</p>
             ) : (
               dayTasks.map((task) => {
                 const s = PRIORITY_STYLES[task.priority];

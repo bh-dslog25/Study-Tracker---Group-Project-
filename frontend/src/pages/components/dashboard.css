@@ -29,6 +29,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  position: relative;
 }
 .icon-circle {
   width: 40px;
@@ -50,6 +51,93 @@
   border-radius: 50%;
   background: #dce2f3 url('https://lh3.googleusercontent.com/aida-public/AB6AXuCcj0z_3D1JkN0JULVH86UOgPcUnzwyF32bwWqIDXUHLI0qJsQ-wXtXDj2lxKLZy456zUPlUchSwd0F_J-r3wshT1FKAV5uxKY1JQp4sYXrXAoNg0uxrXAkfRKEbMKNP3UcmXML1gbo8DatiCP02_SRj6tBpZT_rY9YRWPVFBvNb8MdMRhkxFPSMVAng02678x8rbO8UEBubjXBaACOvnGiGtomBTFqQmDk97D_jwuy3hQyfOqaKyh4MnHedMg46mPQbNlaIteLew') center/cover;
   border: 1px solid #c7c4d8;
+}
+
+.notif-dot {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+}
+
+.notif-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  width: 310px;
+  background: #fff;
+  border: 1px solid #d9d7e8;
+  border-radius: 10px;
+  box-shadow: 0 14px 35px rgba(24, 24, 44, 0.14);
+  padding: 16px;
+  z-index: 100;
+}
+
+.notif-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.notif-head h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #151c27;
+}
+
+.notif-head button {
+  border: none;
+  background: none;
+  color: #3525cd;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notif-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eeeeF7;
+}
+
+.notif-item.read { opacity: 0.6; }
+.notif-title { font-size: 13px; font-weight: 700; color: #151c27; }
+.notif-message { font-size: 12px; color: #464555; }
+.notif-time { font-size: 10px; color: #858398; }
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -14px 0 24px;
+}
+
+.quick-actions a {
+  border: 1px solid #c7c4d8;
+  background: #fff;
+  color: #3525cd;
+  border-radius: 8px;
+  padding: 9px 13px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.quick-actions a:hover {
+  background: #e7eefe;
 }
 
 /* ── Bento grid ───────────────────────────────────── */
@@ -115,6 +203,11 @@
   font-size: 13px;
   color: #464555;
 }
+
+.card-note {
+  font-size: 12px;
+  color: #777587;
+}
 .progress-bar-track {
   width: 100%;
   height: 8px;
@@ -156,6 +249,21 @@
   color: #464555;
   outline: none;
   cursor: pointer;
+}
+
+.week-pill {
+  font-size: 12px;
+  font-weight: 700;
+  color: #3525cd;
+  background: #e7eefe;
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.section-subtitle {
+  margin-top: 3px;
+  color: #777587;
+  font-size: 12px;
 }
 .bar-chart {
   flex: 1;
@@ -200,6 +308,12 @@
 .bar-label-today {
   color: #3525cd;
   font-weight: 700;
+}
+
+.bar-value {
+  min-height: 14px;
+  font-size: 10px;
+  color: #777587;
 }
 
 /* ── Goal card ────────────────────────────────────── */
@@ -262,6 +376,154 @@
 .goal-date {
   font-size: 13px;
   color: #464555;
+}
+
+.current-goal-card {
+  grid-column: span 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.goal-select {
+  max-width: 150px;
+  border: 1px solid #c7c4d8;
+  border-radius: 8px;
+  background: #fff;
+  color: #464555;
+  font-size: 12px;
+  padding: 6px 8px;
+  outline: none;
+}
+
+.card-link {
+  margin-top: 12px;
+  color: #3525cd;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.card-link:hover { text-decoration: underline; }
+
+.empty-panel {
+  width: 100%;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  color: #464555;
+}
+
+.empty-panel a {
+  color: #3525cd;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.focus-card,
+.calendar-card {
+  grid-column: span 4;
+}
+
+.focus-session {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #d9d7e8;
+  border-radius: 10px;
+  background: #f9f9ff;
+}
+
+.focus-play {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #3525cd;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.focus-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #151c27;
+}
+
+.focus-sub {
+  font-size: 12px;
+  color: #464555;
+  margin-top: 3px;
+}
+
+.mini-history {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mini-history-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: #464555;
+}
+
+.mini-history-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-history-row strong {
+  color: #151c27;
+}
+
+.calendar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eeeeF7;
+}
+
+.calendar-row p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #151c27;
+}
+
+.calendar-row span {
+  font-size: 12px;
+  color: #464555;
+}
+
+.calendar-icon,
+.calendar-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #e7eefe;
+  color: #3525cd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.empty-text {
+  color: #777587;
+  font-size: 13px;
+  padding: 10px 0;
 }
 
 /* ── Tasks card ───────────────────────────────────── */

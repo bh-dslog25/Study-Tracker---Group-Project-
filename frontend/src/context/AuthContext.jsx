@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import authService from '../services/authService'; 
 
+import { clearUserData } from '../utils/storage';
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -99,4 +101,9 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuth phải được đặt bên trong AuthProvider');
   return context;
+};
+
+const logout = () => {
+  clearUserData(user?.id || user?.email);
+  setUser(null);
 };

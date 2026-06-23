@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { loadJSON, saveJSON } from '../../utils/storage';
+import { updateGoalsProgressFromTasks } from '../../utils/goalProgress';
 import './Tasks.css';
 
 // ── Icons ─────────────────────────────────────────────
@@ -31,6 +33,13 @@ const PRIORITY_META = {
 };
 
 const EMPTY_FORM = { name:'', deadline:'', goal:'', priority:'medium', description:'' };
+const TASKS_STORAGE_KEY = 'study_tracker_tasks';
+
+const loadStoredTasks = () => loadJSON(TASKS_STORAGE_KEY, INITIAL_TASKS);
+const saveTasks = (tasks) => {
+  saveJSON(TASKS_STORAGE_KEY, tasks);
+  updateGoalsProgressFromTasks(tasks);
+};
 
 const fmtDate = (str) => {
   if (!str) return '—';
@@ -52,14 +61,14 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
       <div className="modal-box">
         {/* Header */}
         <div className="modal-header">
-          <h2 className="modal-title">{isEditing ? 'Edit Task' : 'New Task'}</h2>
+          <h2 className="modal-title">{isEditing ? 'Chỉnh sửa nhiệm vụ' : 'Nhiệm vụ mới'}</h2>
           <button className="modal-close" onClick={onCancel}><IconClose /></button>
         </div>
 
         {/* Body */}
         <div className="modal-body">
           <div className="field">
-            <label className="field-label">Task Name</label>
+            <label className="field-label">Tên nhiệm vụ</label>
             <input className="field-input" type="text"
               placeholder="e.g., Read Chapter 4: Neural Networks"
               value={form.name}
@@ -89,7 +98,7 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
 
           {/* Priority pills */}
           <div className="field">
-            <label className="field-label">Priority</label>
+            <label className="field-label">Ưu tiên</label>
             <div className="priority-pills">
               {['low','medium','high'].map((p) => (
                 <button key={p}
@@ -104,7 +113,7 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
           </div>
 
           <div className="field">
-            <label className="field-label">Description (Optional)</label>
+            <label className="field-label">Mô tả (Tùy chọn)</label>
             <textarea className="field-input field-textarea"
               placeholder="Add any specific notes, links, or sub-tasks here..."
               rows={3}
@@ -116,9 +125,9 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
 
         {/* Footer */}
         <div className="modal-footer">
-          <button className="btn-cancel" onClick={onCancel}>Cancel</button>
+          <button className="btn-cancel" onClick={onCancel}>Hủy</button>
           <button className="btn-create" onClick={onSave} disabled={!form.name.trim()}>
-            <IconAdd /> {isEditing ? 'Save Changes' : 'Create Task'}
+            <IconAdd /> {isEditing ? 'Lưu thay đổi' : 'Tạo nhiệm vụ'}
           </button>
         </div>
       </div>
@@ -128,7 +137,7 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
 
 // ── Tasks Page ────────────────────────────────────────
 export default function Tasks() {
-  const [tasks, setTasks]         = useState(INITIAL_TASKS);
+  const [tasks, setTasks]         = useState(loadStoredTasks);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm]           = useState(EMPTY_FORM);
@@ -149,22 +158,49 @@ export default function Tasks() {
 
   const handleSave = () => {
     if (!form.name.trim()) return;
-    if (editingId) {
-      setTasks(prev => prev.map(t => t.id === editingId ? { ...t, ...form } : t));
-    } else {
-      setTasks(prev => [...prev, { id: Date.now(), ...form, done: false }]);
-    }
+    const nextTasks = editingId
+      ? tasks.map(t => t.id === editingId ? { ...t, ...form } : t)
+      : [...tasks, { id: Date.now(), ...form, done: false }];
+
+    setTasks(nextTasks);
+    saveTasks(nextTasks);
     setModalOpen(false);
   };
 
   const handleDelete = (id) => {
     if (!window.confirm('Delete this task?')) return;
-    setTasks(prev => prev.filter(t => t.id !== id));
+    const nextTasks = tasks.filter(t => t.id !== id);
+    setTasks(nextTasks);
+    saveTasks(nextTasks);
     setMenuOpen(null);
   };
 
-  const toggleDone = (id) =>
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
+  const toggleDone = (id) => {
+    const nextTasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+    setTasks(nextTasks);
+    saveTasks(nextTasks);
+  };
+
+  useEffect(() => {
+    saveTasks(tasks);
+  }, [tasks]);
+
+  // Listen for storage changes made elsewhere in the app (same-tab via saveJSON dispatch)
+  useEffect(() => {
+    const onStorage = (e) => {
+      try {
+        if (!e?.detail) return;
+        if (e.detail.key === TASKS_STORAGE_KEY) {
+          const updated = loadJSON(TASKS_STORAGE_KEY, []);
+          setTasks(updated);
+        }
+      } catch (err) {
+        // ignore
+      }
+    };
+    window.addEventListener('local-storage', onStorage);
+    return () => window.removeEventListener('local-storage', onStorage);
+  }, []);
 
   // ── Filtered list ─────────────────────────────────────
   const filtered = useMemo(() => tasks.filter(t => {
@@ -186,11 +222,11 @@ export default function Tasks() {
       {/* ── Header ──────────────────────────────────── */}
       <div className="tasks-header">
         <div>
-          <h1 className="tasks-title">Tasks</h1>
-          <p className="tasks-subtitle">Manage your study assignments and to-dos.</p>
+          <h1 className="tasks-title">Nhiệm vụ</h1>
+          <p className="tasks-subtitle">Quản lý các nhiệm vụ học tập và công việc cần làm.</p>
         </div>
         <button className="btn-new" onClick={openNew}>
-          <IconAdd /> New Task
+          <IconAdd /> Nhiệm vụ mới
         </button>
       </div>
 
@@ -200,7 +236,7 @@ export default function Tasks() {
         <div className="search-box">
           <IconSearch />
           <input
-            placeholder="Search tasks..."
+            placeholder="Tìm kiếm nhiệm vụ..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -223,10 +259,10 @@ export default function Tasks() {
         <div className="filter-box">
           <IconFilter />
           <select value={filterPri} onChange={e => setFilterPri(e.target.value)}>
-            <option value="all">All Priority</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="all">Tất cả ưu tiên</option>
+            <option value="high">Cao</option>
+            <option value="medium">Trung bình</option>
+            <option value="low">Thấp</option>
           </select>
         </div>
       </div>
@@ -234,7 +270,7 @@ export default function Tasks() {
       {/* ── Task list ───────────────────────────────── */}
       {filtered.length === 0 ? (
         <div className="tasks-empty">
-          <p>No tasks found. Try changing filters or <button onClick={openNew}>add a new task</button>.</p>
+          <p>Không tìm thấy nhiệm vụ nào. Hãy thử thay đổi bộ lọc hoặc <button onClick={openNew}>thêm một nhiệm vụ mới</button>.</p>
         </div>
       ) : (
         <div className="task-list">
@@ -279,12 +315,12 @@ export default function Tasks() {
                   </button>
                   {menuOpen === task.id && (
                     <div className="task-dropdown">
-                      <button onClick={() => openEdit(task)}><IconEdit /> Edit</button>
+                      <button onClick={() => openEdit(task)}><IconEdit /> Sửa</button>
                       <button onClick={() => toggleDone(task.id)}>
-                        {task.done ? '↩ Mark Active' : '✓ Mark Done'}
+                        {task.done ? '↩ Đánh dấu là đang hoạt động' : '✓ Đánh dấu là hoàn thành'}
                       </button>
                       <button className="danger" onClick={() => handleDelete(task.id)}>
-                        <IconTrash /> Delete
+                        <IconTrash /> Xóa
                       </button>
                     </div>
                   )}

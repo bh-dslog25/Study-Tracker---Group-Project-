@@ -1094,3 +1094,56 @@
 {"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 570.968 ms - 604\u001b[0m","timestamp":"2026-06-17 04:05:53"}
 {"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-17 04:06:25"}
 {"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 562.959 ms - 604\u001b[0m","timestamp":"2026-06-17 04:06:25"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-17 04:07:57"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-17 04:07:57"}
+{"level":"info","message":"SIGINT received, shutting down server...","timestamp":"2026-06-17 04:12:47"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-17 16:06:52"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-17 16:06:52"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-17 17:05:08"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 570.682 ms - 610\u001b[0m","timestamp":"2026-06-17 17:05:08"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-17 17:57:42"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-17 17:57:42"}
+{"level":"info","message":"Dang ky thanh cong: hahuong@gmail.com","timestamp":"2026-06-17 17:58:03"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 556.022 ms - 603\u001b[0m","timestamp":"2026-06-17 17:58:03"}
+{"level":"info","message":"Dang nhap thanh cong: hahuong@gmail.com","timestamp":"2026-06-17 17:58:20"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 463.273 ms - 605\u001b[0m","timestamp":"2026-06-17 17:58:20"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-17 17:59:47"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-17 17:59:47"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-18 10:41:32"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-18 10:41:32"}
+{"level":"info","message":"Dang ky thanh cong: assssss@gmail.com","timestamp":"2026-06-18 10:43:19"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 571.400 ms - 604\u001b[0m","timestamp":"2026-06-18 10:43:19"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-19 14:22:50"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-19 14:22:50"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-19 14:23:24"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 520.165 ms - 610\u001b[0m","timestamp":"2026-06-19 14:23:24"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-19 16:09:59"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-19 16:09:59"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-19 17:49:16"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-19 17:49:16"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-19 18:37:13"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-19 18:37:13"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-21 01:57:22"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-21 01:57:22"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-21 01:58:32"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 666.088 ms - 604\u001b[0m","timestamp":"2026-06-21 01:58:32"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-21 02:12:24"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-21 02:12:24"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-23 12:48:57"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-23 12:48:57"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-23 18:54:13"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-23 18:54:13"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-24 02:13:30"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-24 02:13:30"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-24 03:13:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 669.938 ms - 604\u001b[0m","timestamp":"2026-06-24 03:13:12"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-24 03:14:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 442.916 ms - 610\u001b[0m","timestamp":"2026-06-24 03:14:12"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-24 03:30:45"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 468.569 ms - 610\u001b[0m","timestamp":"2026-06-24 03:30:45"}
+{"level":"info","message":"Dang ky thanh cong: lala@gmail.com","timestamp":"2026-06-24 03:31:08"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 479.618 ms - 603\u001b[0m","timestamp":"2026-06-24 03:31:08"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-24 03:32:58"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 431.732 ms - 610\u001b[0m","timestamp":"2026-06-24 03:32:58"}
+{"level":"info","message":"Dang ky thanh cong: kk@gmail.com","timestamp":"2026-06-24 03:33:28"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 479.234 ms - 598\u001b[0m","timestamp":"2026-06-24 03:33:28"}
