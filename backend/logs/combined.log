@@ -1147,3 +1147,82 @@
 {"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 431.732 ms - 610\u001b[0m","timestamp":"2026-06-24 03:32:58"}
 {"level":"info","message":"Dang ky thanh cong: kk@gmail.com","timestamp":"2026-06-24 03:33:28"}
 {"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 479.234 ms - 598\u001b[0m","timestamp":"2026-06-24 03:33:28"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-24 03:35:26"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-24 03:35:26"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-24 10:41:12"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-24 10:41:12"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-24 10:44:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 553.818 ms - 604\u001b[0m","timestamp":"2026-06-24 10:44:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 9.550 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:09"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/refresh \u001b[32m200\u001b[0m 158.298 ms - 397\u001b[0m","timestamp":"2026-06-24 16:22:10"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.577 ms - 48\u001b[0m","timestamp":"2026-06-24 16:22:10"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.433 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:11"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.348 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:12"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.390 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:14"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.329 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:15"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.356 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:21"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.444 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:22"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.334 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:23"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.247 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:24"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.332 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:24"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.247 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:25"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.221 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:26"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.261 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:28"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.277 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:29"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.331 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:57"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.242 ms - 64\u001b[0m","timestamp":"2026-06-24 16:22:59"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.223 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:31"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.322 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:32"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.209 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:32"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.221 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:33"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.311 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:34"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.354 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:34"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.267 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:34"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.245 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:35"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.660 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:35"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.252 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:36"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.206 ms - 64\u001b[0m","timestamp":"2026-06-24 16:23:37"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.369 ms - 64\u001b[0m","timestamp":"2026-06-24 16:37:45"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.567 ms - 64\u001b[0m","timestamp":"2026-06-24 16:37:46"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.261 ms - 64\u001b[0m","timestamp":"2026-06-24 16:40:32"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.336 ms - 64\u001b[0m","timestamp":"2026-06-24 16:40:33"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.271 ms - 64\u001b[0m","timestamp":"2026-06-24 16:40:34"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.294 ms - 64\u001b[0m","timestamp":"2026-06-24 16:40:34"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.275 ms - 64\u001b[0m","timestamp":"2026-06-24 16:40:35"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/logout \u001b[33m401\u001b[0m 0.298 ms - 64\u001b[0m","timestamp":"2026-06-24 16:42:19"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-24 16:46:33"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 482.720 ms - 604\u001b[0m","timestamp":"2026-06-24 16:46:33"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-24 17:06:26"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 478.096 ms - 610\u001b[0m","timestamp":"2026-06-24 17:06:26"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-24 17:40:14"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-24 17:40:14"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-24 17:43:24"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 519.744 ms - 610\u001b[0m","timestamp":"2026-06-24 17:43:24"}
+{"level":"error","message":"Loi dang ky: Email da duoc su dung","timestamp":"2026-06-24 17:52:54"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[33m409\u001b[0m 14.163 ms - 51\u001b[0m","timestamp":"2026-06-24 17:52:54"}
+{"level":"info","message":"Dang ky thanh cong: doanquoctran@gmail.com","timestamp":"2026-06-24 17:53:21"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/register \u001b[32m201\u001b[0m 489.966 ms - 617\u001b[0m","timestamp":"2026-06-24 17:53:21"}
+{"level":"info","message":"Dang nhap thanh cong: doanquoctran@gmail.com","timestamp":"2026-06-24 18:00:40"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 498.105 ms - 619\u001b[0m","timestamp":"2026-06-24 18:00:40"}
+{"level":"info","message":"Dang nhap thanh cong: doanquoctran@gmail.com","timestamp":"2026-06-24 18:06:31"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 457.308 ms - 619\u001b[0m","timestamp":"2026-06-24 18:06:31"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-24 18:10:37"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-24 18:10:37"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-24 22:20:20"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-24 22:20:20"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-24 22:30:53"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 679.688 ms - 610\u001b[0m","timestamp":"2026-06-24 22:30:53"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-24 23:22:51"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-24 23:22:51"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-25 00:27:46"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-25 00:27:46"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-25 09:18:14"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-25 09:18:14"}
+{"level":"info","message":"Server dang chay tai http://localhost:8080","timestamp":"2026-06-25 09:28:43"}
+{"level":"info","message":"Moi truong: development","timestamp":"2026-06-25 09:28:43"}
+{"level":"info","message":"Dang nhap thanh cong: love@gmail.com","timestamp":"2026-06-25 10:50:42"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 639.680 ms - 604\u001b[0m","timestamp":"2026-06-25 10:50:42"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-25 11:09:51"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 505.297 ms - 610\u001b[0m","timestamp":"2026-06-25 11:09:51"}
+{"level":"info","message":"Dang nhap thanh cong: tomhumvlog@gmail.com","timestamp":"2026-06-25 11:33:02"}
+{"level":"info","message":"\u001b[0mPOST /api/auth/login \u001b[32m200\u001b[0m 552.414 ms - 610\u001b[0m","timestamp":"2026-06-25 11:33:02"}

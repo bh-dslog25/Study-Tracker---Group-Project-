@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { loadJSON, saveJSON } from '../../utils/storage';
+import { useAuth } from '../../context/AuthContext';
+import { loadUserJSON, saveUserJSON } from '../../utils/storage';
 import { updateGoalsProgressFromTasks } from '../../utils/goalProgress';
+import { syncTaskToTimer, syncTaskToCalendar, syncTaskStatus, syncTaskDeletion } from '../../utils/syncTasks';
 import './Tasks.css';
 
 // ── Icons ─────────────────────────────────────────────
@@ -16,29 +18,32 @@ const IconCheck  = () => <svg width="12" height="12" fill="none" stroke="current
 
 // ── Dữ liệu mẫu ──────────────────────────────────────
 const INITIAL_TASKS = [
-  { id:1, name:'Complete Practice Test 3',      deadline:'2026-06-14', goal:'CS101 Final Exam',    priority:'high',   description:'Reading Comprehension Section — focus on speed.', done:false },
-  { id:2, name:'Review Vocabulary Flashcards',  deadline:'2026-06-15', goal:'Weekly Reading Quota',priority:'medium', description:'Sets 10–15, Anki deck.',                          done:false },
-  { id:3, name:'Listen to English Podcast',     deadline:'2026-06-16', goal:'Weekly Reading Quota',priority:'low',    description:'Episode 42 — Business English.',                  done:true  },
-  { id:4, name:'Write Thesis Outline',          deadline:'2026-06-20', goal:'Thesis Research',     priority:'high',   description:'Chapter 1 & 2 structure.',                        done:false },
-  { id:5, name:'Read Chapter 4: Neural Nets',   deadline:'2026-06-18', goal:'CS101 Final Exam',    priority:'medium', description:'',                                                done:false },
-  { id:6, name:'Math Problem Set 5',            deadline:'2026-06-13', goal:'CS101 Final Exam',    priority:'high',   description:'Integration by parts exercises.',                 done:true  },
+  { id:1, name:'Hoàn thành dự án Web Study Tracker',      deadline:'2026-06-14', priority:'high',   description:'Ôn thi cuối kì.', done:false },
+  { id:2, name:'Học Chương trình dịch chương 1-3',  deadline:'2026-06-15', priority:'medium', description:'Ôn thi cuối kì.',                          done:false },
+  { id:3, name:'Học Hệ thống viễn thông chương 1-5',     deadline:'2026-06-16', priority:'low',    description:'Ôn thi cuối kì.',                  done:true  },
+  { id:4, name:'Học Kiến trúc máy tính chương 1-5',          deadline:'2026-06-20', priority:'high',   description:'Ôn thi cuối kì.',                        done:false },
+  { id:5, name:'Học Phát triển ứng dụng web chương 2',   deadline:'2026-06-18', priority:'medium', description:'',                                                done:false },
+  { id:6, name:'Học Phát triển ứng dụng web chương 1',            deadline:'2026-06-13', priority:'high',   description:'Thầy Thuận đẹp trai nhất thế giới.',                 done:true  },
+  { id:7, name:'Luyện viết Writing IELTS Task 2',            deadline:'2026-06-13', priority:'high',   description:'Improving writing skills.',                 done:true  },
+  { id:8, name:'Luyện nghe Listening IELTS Task 3',            deadline:'2026-06-22', priority:'high',   description:'Improving listening skills.',                 done:false  },
+  { id:9, name:'Luyện đọc Reading IELTS Task 1',            deadline:'2026-06-25', priority:'high',   description:'Improving reading skills.',                 done:true  },
 ];
 
-const GOALS = ['CS101 Final Exam', 'Thesis Research', 'Weekly Reading Quota'];
+
 
 const PRIORITY_META = {
-  high:   { label:'High',   cls:'pri-high'   },
-  medium: { label:'Medium', cls:'pri-medium' },
-  low:    { label:'Low',    cls:'pri-low'    },
+  high:   { label:'Cao',   cls:'pri-high'   },
+  medium: { label:'Trung bình', cls:'pri-medium' },
+  low:    { label:'Thấp',    cls:'pri-low'    },
 };
 
 const EMPTY_FORM = { name:'', deadline:'', goal:'', priority:'medium', description:'' };
 const TASKS_STORAGE_KEY = 'study_tracker_tasks';
 
-const loadStoredTasks = () => loadJSON(TASKS_STORAGE_KEY, INITIAL_TASKS);
-const saveTasks = (tasks) => {
-  saveJSON(TASKS_STORAGE_KEY, tasks);
-  updateGoalsProgressFromTasks(tasks);
+const loadStoredTasks = (userId) => loadUserJSON(TASKS_STORAGE_KEY, userId, INITIAL_TASKS);
+const saveTasks = (userId, tasks) => {
+  saveUserJSON(TASKS_STORAGE_KEY, userId, tasks);
+  updateGoalsProgressFromTasks(userId, tasks);
 };
 
 const fmtDate = (str) => {
@@ -85,14 +90,7 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
               />
             </div>
             <div className="field">
-              <label className="field-label">Goal Association</label>
-              <select className="field-input"
-                value={form.goal}
-                onChange={(e) => setForm({ ...form, goal: e.target.value })}
-              >
-                <option value="">Select a goal...</option>
-                {GOALS.map(g => <option key={g} value={g}>{g}</option>)}
-              </select>
+
             </div>
           </div>
 
@@ -137,7 +135,9 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
 
 // ── Tasks Page ────────────────────────────────────────
 export default function Tasks() {
-  const [tasks, setTasks]         = useState(loadStoredTasks);
+  const { user } = useAuth();
+  const userId = user?.id || user?.email;
+  const [tasks, setTasks]         = useState(() => loadStoredTasks(userId));
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm]           = useState(EMPTY_FORM);
@@ -158,41 +158,61 @@ export default function Tasks() {
 
   const handleSave = () => {
     if (!form.name.trim()) return;
+    const taskId = editingId || Date.now();
+    const previousTask = tasks.find(t => t.id === editingId);
+    const affectedTask = editingId
+      ? { ...previousTask, ...form, id: taskId, done: Boolean(previousTask?.done) }
+      : { id: taskId, ...form, done: false };
     const nextTasks = editingId
-      ? tasks.map(t => t.id === editingId ? { ...t, ...form } : t)
-      : [...tasks, { id: Date.now(), ...form, done: false }];
+      ? tasks.map(t => t.id === editingId ? affectedTask : t)
+      : [...tasks, affectedTask];
 
     setTasks(nextTasks);
-    saveTasks(nextTasks);
+    saveTasks(userId, nextTasks);
+    
+    // Đồng bộ sang Timer và Calendar
+    syncTaskToTimer(userId, affectedTask);
+    syncTaskToCalendar(userId, affectedTask);
+    
     setModalOpen(false);
   };
 
   const handleDelete = (id) => {
     if (!window.confirm('Delete this task?')) return;
+    const deletedTask = tasks.find(t => t.id === id);
     const nextTasks = tasks.filter(t => t.id !== id);
     setTasks(nextTasks);
-    saveTasks(nextTasks);
+    saveTasks(userId, nextTasks);
+    if (deletedTask) {
+      syncTaskDeletion(userId, deletedTask);
+    }
     setMenuOpen(null);
   };
 
   const toggleDone = (id) => {
+    const task = tasks.find(t => t.id === id);
     const nextTasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
     setTasks(nextTasks);
-    saveTasks(nextTasks);
+    saveTasks(userId, nextTasks);
+    if (task) {
+      syncTaskStatus(userId, { id, done: !task.done });
+    }
   };
 
   useEffect(() => {
-    saveTasks(tasks);
-  }, [tasks]);
+    saveTasks(userId, tasks);
+  }, [tasks, userId]);
 
   // Listen for storage changes made elsewhere in the app (same-tab via saveJSON dispatch)
   useEffect(() => {
     const onStorage = (e) => {
       try {
         if (!e?.detail) return;
-        if (e.detail.key === TASKS_STORAGE_KEY) {
-          const updated = loadJSON(TASKS_STORAGE_KEY, []);
-          setTasks(updated);
+        if (e.detail.key === `${TASKS_STORAGE_KEY}__${userId}`) {
+          const updated = loadUserJSON(TASKS_STORAGE_KEY, userId, []);
+          setTasks((current) => (
+            JSON.stringify(current) === JSON.stringify(updated) ? current : updated
+          ));
         }
       } catch (err) {
         // ignore
@@ -200,12 +220,12 @@ export default function Tasks() {
     };
     window.addEventListener('local-storage', onStorage);
     return () => window.removeEventListener('local-storage', onStorage);
-  }, []);
+  }, [userId]);
 
   // ── Filtered list ─────────────────────────────────────
   const filtered = useMemo(() => tasks.filter(t => {
     const matchSearch = t.name.toLowerCase().includes(search.toLowerCase()) ||
-                        t.goal.toLowerCase().includes(search.toLowerCase());
+                        (t.goal || '').toLowerCase().includes(search.toLowerCase());
     const matchPri    = filterPri === 'all' || t.priority === filterPri;
     const matchStatus = filterStatus === 'all' || (filterStatus === 'done' ? t.done : !t.done);
     return matchSearch && matchPri && matchStatus;

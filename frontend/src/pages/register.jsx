@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../frontend/src/api/axios';
+import { useAuth } from '../context/AuthContext';
+
+import './register.css'
 
 const styles = `
   .register-body {
     min-height: 100vh;
     margin: 0;
-
-    
-    background-color: #f0f0f7;
     color: #1A1A1A;
     display: flex;
     flex-direction: column;
@@ -28,7 +27,7 @@ const styles = `
     font-weight: 700;
     margin-bottom: 16px;
     text-align: center;
-    color: #1A1A1A;
+    color: #fff;
   }
 
   .signup-container h2 {
@@ -45,11 +44,11 @@ const styles = `
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 350px;
-    margin: 40px auto;
+    max-width: 550px;
+    margin: 24px auto;
     background-color: #F8F9FD;
-    padding: 50px;
-    border-radius: 10px;
+    padding: 44px 40px;
+    border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border: 1px solid #E5E7EB;
     box-sizing: border-box;
@@ -144,24 +143,7 @@ const styles = `
     text-align: center;
   }
 
-  body::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
 
-    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
-    background-image: url('studying.avif');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-  
-    margin: 0;
-
-
-    filter: blur(5px); /* Lệnh làm mờ ở đây */
-    z-index: -1; /* Đẩy nó nằm dưới cùng */
-    transform: scale(1.1); /* Phóng to một chút để không bị lộ viền trắng khi mờ */
 }
 
 `;
@@ -175,6 +157,7 @@ export default function Register() {
   const [success,         setSuccess]         = useState('');
   const [loading,         setLoading]         = useState(false);
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   // Đổi thành async function để gọi API
   const handleSubmit = async (e) => {
@@ -197,22 +180,20 @@ export default function Register() {
     setLoading(true);
 
     try {
-      // 3. GỌI API LÊN BACKEND THỰC TẾ
-      // Thay vì lưu vào localStorage, ta gửi dữ liệu lên server Node.js
-      const response = await api.post('/auth/register', {
+      // Sử dụng AuthContext register để đồng bộ lưu trữ
+      const result = await register({
         username: username.trim(),
         email: email.trim(),
         password,
+        role: 'student',
       });
-      const data = response?.data || response;
 
-      if (data?.accessToken) {
-        localStorage.setItem('access_token', data.accessToken);
-        localStorage.setItem('refresh_token', data.refreshToken);
+      if (result.success) {
+        setSuccess('Register successfully! Redirecting to dashboard...');
+        setTimeout(() => navigate('/'), 1500);
+      } else {
+        setError(result.message || 'Cannot connect to the server. Please make sure your backend is running.');
       }
-
-      setSuccess('Register successfully! Redirecting to login...');
-      setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
       console.error("Register Error: ", err);
       setError(err?.message || 'Cannot connect to the server. Please make sure your backend is running.');

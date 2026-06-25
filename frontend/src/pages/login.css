@@ -1,0 +1,36 @@
+.login-body {
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-image: url('/mitsuha.gif');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: #1A1A1A;
+}
+
+.login-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  pointer-events: none;
+}
+
+.login-body > * {
+  position: relative;
+  z-index: 1;
+}
+
+#theme
+{
+  display: none;
+}
+
+
+
+

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { loadJSON, saveJSON } from '../../utils/storage';
+import { loadJSON, loadUserJSON, saveUserJSON } from '../../utils/storage';
 import './dashboard.css';
 
 const TASKS_STORAGE_KEY = 'study_tracker_tasks';
@@ -88,26 +88,27 @@ const sortByDate = (items) => [...items].sort((a, b) => {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [tasks, setTasks] = useState(() => loadJSON(TASKS_STORAGE_KEY, INITIAL_TASKS));
-  const [goals, setGoals] = useState(() => loadJSON(GOALS_STORAGE_KEY, INITIAL_GOALS));
-  const [calendarTasks, setCalendarTasks] = useState(() => loadJSON(CALENDAR_TASKS_KEY, {}));
-  const [sessions, setSessions] = useState(() => loadJSON(TIMER_SESSIONS_KEY, []));
-  const [history, setHistory] = useState(() => loadJSON(TIMER_HISTORY_KEY, []));
+  const userId = user?.id || user?.email;
+  const [tasks, setTasks] = useState(() => loadUserJSON(TASKS_STORAGE_KEY, userId, INITIAL_TASKS));
+  const [goals, setGoals] = useState(() => loadUserJSON(GOALS_STORAGE_KEY, userId, INITIAL_GOALS));
+  const [calendarTasks, setCalendarTasks] = useState(() => loadUserJSON(CALENDAR_TASKS_KEY, userId, {}));
+  const [sessions, setSessions] = useState(() => loadUserJSON(TIMER_SESSIONS_KEY, userId, []));
+  const [history, setHistory] = useState(() => loadUserJSON(TIMER_HISTORY_KEY, userId, []));
   const [usageTotal, setUsageTotal] = useState(() => Number(localStorage.getItem(USAGE_TOTAL_KEY) || 0));
   const [dailyUsage, setDailyUsage] = useState(() => loadJSON(USAGE_DAILY_KEY, {}));
-  const [selectedGoalId, setSelectedGoalId] = useState(() => loadJSON(DASHBOARD_GOAL_KEY, null));
+  const [selectedGoalId, setSelectedGoalId] = useState(() => loadUserJSON(DASHBOARD_GOAL_KEY, userId, null));
   const [showNotif, setShowNotif] = useState(false);
-  const [notifs, setNotifs] = useState(() => loadJSON(DASHBOARD_NOTIFS_KEY, [
+  const [notifs, setNotifs] = useState(() => loadUserJSON(DASHBOARD_NOTIFS_KEY, userId, [
     { id: 1, title: 'Dashboard synced', message: 'Tasks, goals, calendar and timer are linked here.', time: 'Now', read: false },
   ]));
 
   useEffect(() => {
     const syncDashboardData = () => {
-      setTasks(loadJSON(TASKS_STORAGE_KEY, INITIAL_TASKS));
-      setGoals(loadJSON(GOALS_STORAGE_KEY, INITIAL_GOALS));
-      setCalendarTasks(loadJSON(CALENDAR_TASKS_KEY, {}));
-      setSessions(loadJSON(TIMER_SESSIONS_KEY, []));
-      setHistory(loadJSON(TIMER_HISTORY_KEY, []));
+      setTasks(loadUserJSON(TASKS_STORAGE_KEY, userId, INITIAL_TASKS));
+      setGoals(loadUserJSON(GOALS_STORAGE_KEY, userId, INITIAL_GOALS));
+      setCalendarTasks(loadUserJSON(CALENDAR_TASKS_KEY, userId, {}));
+      setSessions(loadUserJSON(TIMER_SESSIONS_KEY, userId, []));
+      setHistory(loadUserJSON(TIMER_HISTORY_KEY, userId, []));
     };
 
     const syncUsage = () => {
@@ -129,7 +130,7 @@ export default function Dashboard() {
       window.removeEventListener('storage', syncDashboardData);
       window.removeEventListener('study-usage-update', syncUsage);
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (!goals.length) return;
@@ -138,12 +139,12 @@ export default function Dashboard() {
   }, [goals, selectedGoalId]);
 
   useEffect(() => {
-    saveJSON(DASHBOARD_GOAL_KEY, selectedGoalId);
-  }, [selectedGoalId]);
+    saveUserJSON(DASHBOARD_GOAL_KEY, userId, selectedGoalId);
+  }, [selectedGoalId, userId]);
 
   useEffect(() => {
-    saveJSON(DASHBOARD_NOTIFS_KEY, notifs);
-  }, [notifs]);
+    saveUserJSON(DASHBOARD_NOTIFS_KEY, userId, notifs);
+  }, [notifs, userId]);
 
   const selectedGoal = goals.find((goal) => String(goal.id) === String(selectedGoalId)) || goals[0];
   const selectedGoalTaskIds = new Set((selectedGoal?.linkedTaskIds || []).map(String));
@@ -197,7 +198,7 @@ export default function Dashboard() {
   const toggleTask = (id) => {
     const nextTasks = tasks.map((task) => task.id === id ? { ...task, done: !task.done } : task);
     setTasks(nextTasks);
-    saveJSON(TASKS_STORAGE_KEY, nextTasks);
+    saveUserJSON(TASKS_STORAGE_KEY, userId, nextTasks);
   };
 
   return (

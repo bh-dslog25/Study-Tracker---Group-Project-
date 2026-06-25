@@ -55,16 +55,23 @@ export const AuthProvider = ({ children }) => {
 
   // Hàm Đăng Xuất
   const logout = async () => {
+    // Xóa dữ liệu user TRƯỚC (không chờ backend)
+    if (user) {
+      clearUserData(user.id || user.email);
+    }
+    
+    // Gọi API logout nhưng không block - backend có thể lỗi vẫn logout được
     try {
       await authService.logout();
     } catch (error) {
-      console.error("Lỗi logout:", error);
-    } finally {
-      setUser(null);
-      localStorage.removeItem('user_info');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      console.error("Lỗi logout API (không ảnh hưởng):", error);
     }
+    
+    // Luôn xóa auth data và redirect
+    setUser(null);
+    localStorage.removeItem('user_info');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
   };
 
   // Hàm Cập nhật User
@@ -101,9 +108,4 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuth phải được đặt bên trong AuthProvider');
   return context;
-};
-
-const logout = () => {
-  clearUserData(user?.id || user?.email);
-  setUser(null);
 };

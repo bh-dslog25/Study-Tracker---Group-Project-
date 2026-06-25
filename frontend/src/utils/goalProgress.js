@@ -1,4 +1,4 @@
-import { loadJSON, saveJSON } from './storage';
+import { loadUserJSON, saveUserJSON } from './storage';
 
 export const GOALS_STORAGE_KEY = 'study_tracker_goals';
 export const TASKS_STORAGE_KEY = 'study_tracker_tasks';
@@ -35,12 +35,12 @@ export const recalculateGoalsWithTasks = (goals, tasks) =>
     };
   });
 
-export const updateGoalsProgressFromTasks = (tasks) => {
-  const goals = loadJSON(GOALS_STORAGE_KEY, []);
+export const updateGoalsProgressFromTasks = (userId, tasks) => {
+  const goals = loadUserJSON(GOALS_STORAGE_KEY, userId, []);
   const updatedGoals = recalculateGoalsWithTasks(goals, tasks);
 
   if (JSON.stringify(goals) !== JSON.stringify(updatedGoals)) {
-    saveJSON(GOALS_STORAGE_KEY, updatedGoals);
+    saveUserJSON(GOALS_STORAGE_KEY, userId, updatedGoals);
   }
 
   return updatedGoals;

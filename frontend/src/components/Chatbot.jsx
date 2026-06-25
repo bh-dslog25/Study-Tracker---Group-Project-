@@ -1,8 +1,117 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Chatbot.css';
 
+
+
+// ── Câu trả lời mặc định ─────────────────────────────
+// Thêm câu hỏi mới vào đây, keywords là các từ khóa kích hoạt
+const PREDEFINED_ANSWERS = [
+  {
+    keywords: ['toán cao cấp', 'học toán'],
+    answer: `Chào cậu, lộ trình học Toán cao cấp đòi hỏi sự tuần tự từ nền tảng đến nâng cao, thường kéo dài 12-18 tháng. Lộ trình lý tưởng bao gồm 6 giai đoạn cốt lõi: Nền tảng, Giải tích, Đại số tuyến tính, Phương trình vi phân, Xác suất thống kê và Toán rời rạc.
+
+Dưới đây là lộ trình chi tiết từng bước:
+
+1. Nền tảng Toán học (Pre-Calculus)
+- Mục tiêu: Củng cố kiến thức trước khi bước vào các khái niệm chuyên sâu.
+- Nội dung: Lượng giác, hàm số, số phức, đa thức, lý thuyết tập hợp, bất đẳng thức.
+
+2. Giải tích (Calculus & Real Analysis)
+- Mục tiêu: Hiểu về sự biến thiên, giới hạn, đạo hàm và tích phân.
+- Nội dung: Giới hạn, Đạo hàm, Tích phân, Chuỗi số, Đạo hàm riêng, tích phân bội.
+
+3. Đại số tuyến tính (Linear Algebra)
+- Mục tiêu: Trang bị tư duy không gian và xử lý dữ liệu đa chiều.
+- Nội dung: Ma trận, định thức, hệ phương trình tuyến tính, không gian vectơ, trị riêng.
+
+4. Phương trình vi phân (Differential Equations)
+- Mục tiêu: Mô hình hóa các hiện tượng thực tế trong vật lý, kỹ thuật và kinh tế.
+- Nội dung: PT vi phân cấp 1, cấp 2, hệ PT vi phân, biến đổi Laplace.
+
+5. Xác suất & Thống kê (Probability & Statistics)
+- Mục tiêu: Phân tích dữ liệu và ra quyết định dựa trên các mô hình ngẫu nhiên.
+- Nội dung: Xác suất cơ bản, biến ngẫu nhiên, phân phối xác suất, kiểm định giả thuyết.
+
+6. Toán rời rạc (Discrete Mathematics)
+- Mục tiêu: Nền tảng cho Khoa học Máy tính, AI và Lập trình.
+- Nội dung: Tổ hợp, lý thuyết đồ thị, logic mệnh đề, lý thuyết mật mã và thuật toán.`
+  },
+  {
+    keywords: ['IELTS', '6.5'],
+    answer: `Chào cậu! Để đạt điểm IELTS 6.5, bạn cần tập trung vào việc cải thiện 4 kỹ năng: Nghe, Nói, Đọc, Viết. Dưới đây là một số gợi ý:
+
+1. Nghe: Luyện nghe hàng ngày với các tài liệu tiếng Anh như podcast, phim ảnh, tin tức.
+2. Nói: Tham gia các nhóm thảo luận hoặc tìm người bản địa để luyện nói.
+3. Đọc: Đọc các bài báo, sách tiếng Anh để mở rộng vốn từ vựng và hiểu biết.
+4. Viết: Viết bài tập thường xuyên và nhờ người khác góp ý.
+
+Ngoài ra, bạn cũng nên tham gia các khóa học IELTS để được hướng dẫn chuyên sâu.`
+
+
+  },
+  {
+    keywords: ['lập trình', 'cơ bản'],
+    answer: `Chào cậu! Để học lập trình hiệu quả, bạn nên bắt đầu với các ngôn ngữ lập trình phổ biến như Python hoặc JavaScript. Dưới đây là một lộ trình học lập trình cơ bản:
+
+1. Hiểu các khái niệm cơ bản về lập trình: Biến, kiểu dữ liệu, cấu trúc điều khiển (if, for, while), hàm.
+2. Học một ngôn ngữ lập trình: Bắt đầu với Python hoặc JavaScript để làm quen với cú pháp và cách viết mã.
+3. Thực hành qua các dự án nhỏ: Tạo các ứng dụng đơn giản như máy tính, trò chơi nhỏ hoặc trang web tĩnh.
+4. Nâng cao kỹ năng: Học về cấu trúc dữ liệu, thuật toán và các khái niệm nâng cao khác.
+5. Tham gia cộng đồng: Tham gia các diễn đàn, nhóm học tập để trao đổi kiến thức và nhận phản hồi từ người khác.
+
+Hãy kiên nhẫn và luyện tập thường xuyên để cải thiện kỹ năng lập trình của bạn!`
+  },
+  {
+    keywords: ['thời gian biểu', 'Study Tracker'],
+    answer: `Chào cậu! Để quản lý thời gian hiệu quả, bạn có thể sử dụng các công cụ như Study Tracker để lên kế hoạch học tập và theo dõi tiến độ. Dưới đây là một số mẹo để quản lý thời gian học tập:
+
+1. Lên lịch học tập cụ thể và tuân thủ theo lịch.
+2. Chia nhỏ thời gian học thành các khoảng thời gian ngắn.
+3. Đặt mục tiêu rõ ràng cho từng buổi học.
+4. Tránh các yếu tố gây xao nhãng trong quá trình học.
+5. Sử dụng các công cụ quản lý thời gian và theo dõi tiến độ học tập.
+
+Ví dụ, để học tốt tiếng Anh, thay vì học dồn dập nhiều giờ trong một ngày, bạn nên chia nhỏ thời gian thành các buổi từ 15–45 phút mỗi ngày để não bộ dễ dàng tiếp thu.
+Nguyên tắc cốt lõi là duy trì sự đều đặn (mưa dầm thấm lâu) và cân bằng các kỹ năng (Nghe - Nói - Đọc - Viết).
+
+1. Phân bổ thời gian theo kỹ năng (Gợi ý lịch học 45 phút/ngày)Nghe (10 phút): Tận dụng "thời gian chết" (dead time) như khi đi làm, tập thể dục hoặc nấu ăn để nghe. Bạn có thể chọn các bài Podcast ngắn hoặc video giải trí để làm quen với phát âm và ngữ điệu.
+Từ vựng (10 phút): Không nên học quá nhiều từ cùng lúc. Thay vào đó, hãy học 10 từ vựng mới/ngày và tập đặt câu với chúng để nhớ lâu hơn.
+Ngữ pháp & Đọc (15 phút): Đọc các mẩu tin ngắn, báo chí hoặc truyện. Đồng thời ôn tập các cấu trúc ngữ pháp cơ bản để áp dụng trực tiếp vào việc đọc và viết.
+Nói (10 phút): Luyện phản xạ bằng cách tự nói chuyện trước gương (Self-talk) về các chủ đề quen thuộc trong ngày hoặc lặp lại các câu thoại từ những bộ phim yêu thích.
+
+2. Các "Khung giờ vàng" trong ngày
+5h - 7h sáng: Não bộ đã được nghỉ ngơi và tái tạo năng lượng. Đây là thời điểm tốt nhất để học từ vựng mới hoặc các cấu trúc ngữ pháp cần ghi nhớ nhiều.
+12h - 13h trưa: Rất thích hợp để luyện nghe hoặc xem các video tiếng Anh ngắn thư giãn trong lúc nghỉ ngơi.Buổi tối (sau 20h): Thời điểm này não bộ tư duy và hoạt động rất hiệu quả, thích hợp để học các bài học chuyên sâu, ngữ pháp hoặc làm bài tập.
+
+3. Tạo môi trường tiếng Anh (Immersion)
+Thay vì chỉ ngồi vào bàn học, hãy biến tiếng Anh thành một phần lối sống:
+Đổi ngôn ngữ trên điện thoại và máy tính sang tiếng Anh.
+Xem phim hoặc nghe nhạc có phụ đề/lời bài hát bằng tiếng Anh.
+Tham khảo thêm các cách học tiếng Anh hiệu quả từ các chuyên gia ngôn ngữ.
+
+Hãy sử dụng Study Tracker để theo dõi và tối ưu hóa thời gian học tập của bạn!`
+  }
+
+  // Thêm câu hỏi mới ở đây theo cùng format
+
+
+
+];
+
+// Kiểm tra câu hỏi có khớp predefined không
+const checkPredefined = (message) => {
+  const lowerMsg = message.toLowerCase();
+  for (const item of PREDEFINED_ANSWERS) {
+    // Phải khớp TẤT CẢ keywords trong một entry
+    const matched = item.keywords.every(kw => lowerMsg.includes(kw.toLowerCase()));
+    if (matched) return item.answer;
+  }
+  return null;
+};
+
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${API_KEY}`;
+
 
 const IconBot = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -91,7 +200,9 @@ export default function Chatbot() {
 
     try {
       // Truyền lịch sử (không tính tin nhắn vừa thêm) để Gemini có context
-      const botReply = await callGeminiAPI(userText, messages);
+
+      const predefined = checkPredefined(userText);
+      const botReply = predefined ?? await callGeminiAPI(userText, messages);
       const botMsg = { id: Date.now() + 1, text: botReply, isBot: true };
       setMessages(prev => [...prev, botMsg]);
     } catch (error) {

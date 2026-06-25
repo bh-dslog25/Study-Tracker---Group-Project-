@@ -325,6 +325,14 @@
   background: #f0effc;
 }
 
+.session-item.done {
+  opacity: 0.62;
+}
+
+.session-item.done .session-title {
+  text-decoration: line-through;
+}
+
 .session-info {
   flex: 1;
   min-width: 0;

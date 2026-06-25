@@ -10,7 +10,14 @@ export const loadJSON = (key, fallback = null) => {
 
 export const saveJSON = (key, value) => {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    const oldValue = localStorage.getItem(key);
+    const newValue = JSON.stringify(value);
+    if (oldValue === newValue) return;
+
+    localStorage.setItem(key, newValue);
+    window.dispatchEvent(new CustomEvent('local-storage', {
+      detail: { key, oldValue, newValue },
+    }));
   } catch (e) {
     console.warn('localStorage write failed:', e);
   }

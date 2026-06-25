@@ -1,20 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Square, Play, Pause, SkipForward, Plus, Trash2, X, Clock, ChevronLeft, Pencil, Check } from 'lucide-react';
-import { loadJSON, saveJSON } from '../../utils/storage';
+import { useAuth } from '../../context/AuthContext';
+import { loadUserJSON, saveUserJSON } from '../../utils/storage';
 import { updateGoalsProgressFromTasks } from '../../utils/goalProgress';
+import { syncTaskStatus } from '../../utils/syncTasks';
 import './Timer.css';
 
 // ── Dữ liệu mẫu ─────────────────────────────────────
 const INITIAL_HISTORY = [
-  { id: 1, title: 'Algorithms Practice', project: 'CS301', date: 'Today',     start: '09:00 AM', end: '09:45 AM', duration: 45 },
+  { id: 1, title: 'Xem video thuật toán Heap Sort trong C', project: 'CS301', date: 'Today',     start: '09:00 AM', end: '09:45 AM', duration: 45 },
   { id: 2, title: 'Read Chapter 4',      project: 'CS301', date: 'Today',     start: '07:30 AM', end: '08:00 AM', duration: 30 },
-  { id: 3, title: 'Math Problem Set',    project: 'MATH2', date: 'Yesterday', start: '03:00 PM', end: '04:15 PM', duration: 75 },
-  { id: 4, title: 'English Essay Draft', project: 'ENG1',  date: 'Yesterday', start: '06:00 PM', end: '06:40 PM', duration: 40 },
-  { id: 5, title: 'Physics Lab Report',  project: 'PHY1',  date: 'Jun 10',    start: '08:00 AM', end: '09:30 AM', duration: 90 },
+  { id: 3, title: 'Làm bài tập chương 3 Kiến trúc máy tính',    project: 'MATH2', date: 'Yesterday', start: '03:00 PM', end: '04:15 PM', duration: 75 },
+  { id: 4, title: 'Hoàn thành frontend trong dự án Web Study Tracker', project: 'ENG1',  date: 'Yesterday', start: '06:00 PM', end: '06:40 PM', duration: 40 },
+  { id: 5, title: 'Chạy bộ 1 tiếng',  project: 'PHY1',  date: 'Jun 10',    start: '08:00 AM', end: '09:30 AM', duration: 90 },
 ];
 
 const INITIAL_SESSIONS = [
-  { id: 1, title: 'Read Chapter 4', project: 'CS301', duration: 36 },
+  { id: 2, title: 'Read Chapter 4', project: 'CS301', duration: 36 },
 ];
 const TIMER_SESSIONS_KEY = 'study_tracker_timer_sessions';
 const TIMER_HISTORY_KEY = 'study_tracker_timer_history';
@@ -24,9 +26,12 @@ const TASKS_STORAGE_KEY = 'study_tracker_tasks';
 const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 const uid = () => Date.now();
 const normalizeText = (value) => String(value || '').trim().toLowerCase();
-const getInitialTimerState = () => {
-  const sessions = loadJSON(TIMER_SESSIONS_KEY, INITIAL_SESSIONS);
-  const storedActiveIdx = loadJSON(TIMER_ACTIVE_KEY, 0);
+const getInitialTimerState = (userId) => {
+  let sessions = loadUserJSON(TIMER_SESSIONS_KEY, userId, null);
+  if (!sessions || sessions.length === 0) {
+    sessions = INITIAL_SESSIONS;
+  }
+  const storedActiveIdx = loadUserJSON(TIMER_ACTIVE_KEY, userId, 0);
   const activeIdx = Math.min(storedActiveIdx, Math.max(0, sessions.length - 1));
   const activeSession = sessions[activeIdx] || sessions[0];
 
@@ -37,8 +42,8 @@ const getInitialTimerState = () => {
   };
 };
 
-const markLinkedTaskDone = (session) => {
-  const tasks = loadJSON(TASKS_STORAGE_KEY, []);
+const markLinkedTaskDone = (userId, session) => {
+  const tasks = loadUserJSON(TASKS_STORAGE_KEY, userId, []);
   const sessionTitle = normalizeText(session.title);
   let changed = false;
 
@@ -50,20 +55,25 @@ const markLinkedTaskDone = (session) => {
   });
 
   if (changed) {
-    saveJSON(TASKS_STORAGE_KEY, updatedTasks);
-    updateGoalsProgressFromTasks(updatedTasks);
+    saveUserJSON(TASKS_STORAGE_KEY, userId, updatedTasks);
+    updateGoalsProgressFromTasks(userId, updatedTasks);
+    updatedTasks
+      .filter((task) => task.id === session.id || normalizeText(task.name) === sessionTitle)
+      .forEach((task) => syncTaskStatus(userId, task));
   }
 };
 
 // ── Component chính ──────────────────────────────────
 export default function Timer() {
+  const { user } = useAuth();
+  const userId = user?.id || user?.email;
   const initialTimerState = useRef(null);
   if (!initialTimerState.current) {
-    initialTimerState.current = getInitialTimerState();
+    initialTimerState.current = getInitialTimerState(userId);
   }
 
   const [sessions, setSessions]           = useState(initialTimerState.current.sessions);
-  const [history, setHistory]             = useState(() => loadJSON(TIMER_HISTORY_KEY, INITIAL_HISTORY));
+  const [history, setHistory]             = useState(() => loadUserJSON(TIMER_HISTORY_KEY, userId, INITIAL_HISTORY));
   const [activeIdx, setActiveIdx]         = useState(initialTimerState.current.activeIdx);
   const [secondsLeft, setSecondsLeft]     = useState(initialTimerState.current.secondsLeft);
   const [isRunning, setIsRunning]         = useState(false);
@@ -106,7 +116,7 @@ export default function Timer() {
       { id: uid(), title: cur.title, project: cur.project, date: 'Today', start, end, duration: cur.duration },
       ...h,
     ]);
-    markLinkedTaskDone(cur);
+    markLinkedTaskDone(userId, cur);
   };
 
   // ── Đổi session ─────────────────────────────────────
@@ -170,17 +180,19 @@ export default function Timer() {
   };
 
   useEffect(() => {
-    saveJSON(TIMER_SESSIONS_KEY, sessions);
-  }, [sessions]);
+    saveUserJSON(TIMER_SESSIONS_KEY, userId, sessions);
+  }, [sessions, userId]);
 
   // Listen for storage changes made elsewhere in the app (same-tab via saveJSON dispatch)
   useEffect(() => {
     const onStorage = (e) => {
       try {
         if (!e?.detail) return;
-        if (e.detail.key === TIMER_SESSIONS_KEY) {
-          const updated = loadJSON(TIMER_SESSIONS_KEY, []);
-          setSessions(updated);
+        if (e.detail.key === `${TIMER_SESSIONS_KEY}__${userId}`) {
+          const updated = loadUserJSON(TIMER_SESSIONS_KEY, userId, []);
+          setSessions((current) => (
+            JSON.stringify(current) === JSON.stringify(updated) ? current : updated
+          ));
           setActiveIdx((idx) => Math.min(idx, Math.max(0, updated.length - 1)));
           const cur = updated[Math.min(activeIdx, Math.max(0, updated.length - 1))];
           setSecondsLeft(cur ? cur.duration * 60 : 0);
@@ -192,15 +204,15 @@ export default function Timer() {
     };
     window.addEventListener('local-storage', onStorage);
     return () => window.removeEventListener('local-storage', onStorage);
-  }, [activeIdx]);
+  }, [userId, activeIdx]);
 
   useEffect(() => {
-    saveJSON(TIMER_HISTORY_KEY, history);
-  }, [history]);
+    saveUserJSON(TIMER_HISTORY_KEY, userId, history);
+  }, [history, userId]);
 
   useEffect(() => {
-    saveJSON(TIMER_ACTIVE_KEY, activeIdx);
-  }, [activeIdx]);
+    saveUserJSON(TIMER_ACTIVE_KEY, userId, activeIdx);
+  }, [activeIdx, userId]);
 
   // ── Xóa session ─────────────────────────────────────
   const deleteSession = (id) => {
@@ -362,7 +374,7 @@ export default function Timer() {
               {sessions.map((s, idx) => (
                 <li
                   key={s.id}
-                  className={`session-item ${idx === activeIdx ? 'active' : ''}`}
+                  className={`session-item ${idx === activeIdx ? 'active' : ''} ${s.done ? 'done' : ''}`}
                   onClick={() => selectSession(idx)}
                 >
                   <div className="session-info">

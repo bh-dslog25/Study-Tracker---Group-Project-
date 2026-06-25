@@ -87,9 +87,32 @@ const Navbar = () => {
   const location = useLocation();
 
   const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('accessToken');
+    // Xóa tất cả dữ liệu user trong localStorage
+    try {
+      const userInfo = localStorage.getItem('user_info');
+      if (userInfo) {
+        const user = JSON.parse(userInfo);
+        const userId = user.id || user.email;
+        if (userId) {
+          // Xóa tất cả keys có chứa userId
+          const suffix = `__${userId}`;
+          Object.keys(localStorage)
+            .filter((k) => k.endsWith(suffix))
+            .forEach((k) => localStorage.removeItem(k));
+        }
+      }
+    } catch (e) {
+      console.warn('Could not clear user data:', e);
+    }
+    
+    // Xóa auth keys
+    localStorage.removeItem('user_info');
     localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('isLoggedIn');
+    
+    // Redirect ngay lập tức
     window.location.href = '/login';
   };
 

@@ -1,5 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { loadJSON, saveJSON } from '../../utils/storage';
+import { useAuth } from '../../context/AuthContext';
+import { loadUserJSON, saveUserJSON } from '../../utils/storage';
+import {
+  calendarEntryToTask,
+  deleteTaskEverywhere,
+  syncTaskEverywhere,
+  taskToCalendarEntry,
+} from '../../utils/syncTasks';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const formatDate = (date) => {
@@ -22,6 +29,7 @@ const MONTH_NAMES = [
 const PRIORITY_STYLES = {
   high:       { bg: 'bg-red-100',    text: 'text-red-800',    bar: 'bg-red-500',   chip: 'bg-red-100 text-red-800',   label: 'High Priority' },
   medium:     { bg: 'bg-green-100',  text: 'text-green-800',  bar: 'bg-green-600', chip: 'bg-green-100 text-green-800', label: 'Medium' },
+  low:        { bg: 'bg-slate-100',  text: 'text-slate-700',  bar: 'bg-slate-400', chip: 'bg-slate-100 text-slate-700', label: 'Low' },
   assignment: { bg: 'bg-cyan-100',   text: 'text-cyan-800',   bar: 'bg-cyan-600',  chip: 'bg-cyan-100 text-cyan-800',   label: 'Assignment' },
 };
 
@@ -105,13 +113,16 @@ function TaskModal({ isOpen, isEditing, form, setForm, onSave, onCancel }) {
 
 // ── Main Calendar component ───────────────────────────────────────────────────
 export default function Calendar() {
+  const { user } = useAuth();
+  const userId = user?.id || user?.email;
   const today = new Date();
   const [currentDate, setCurrentDate]     = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selectedDate, setSelectedDate]   = useState(() => loadJSON(CALENDAR_SELECTED_DATE_KEY, formatDate(today)));
-  const [tasksData, setTasksData]         = useState(() => loadJSON(CALENDAR_TASKS_KEY, INITIAL_TASKS));
+  const [selectedDate, setSelectedDate]   = useState(() => loadUserJSON(CALENDAR_SELECTED_DATE_KEY, userId, formatDate(today)));
+  const [tasksData, setTasksData]         = useState(() => loadUserJSON(CALENDAR_TASKS_KEY, userId, INITIAL_TASKS));
   const [modalOpen, setModalOpen]         = useState(false);
   const [editingId, setEditingId]         = useState(null);
   const [form, setForm]                   = useState({ title: '', time: '', priority: 'high', desc: '' });
+  const [copiedTask, setCopiedTask]       = useState(null);
 
   const year  = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -184,54 +195,48 @@ export default function Calendar() {
       formattedTime = `${h}:${min} ${ampm}`;
     }
 
+    const taskId = editingId || Date.now();
+
     setTasksData((prev) => {
       const list = [...(prev[selectedDate] || [])];
-      const newId = Date.now();
+      const currentTask = list.find((t) => t.id === editingId);
+      const calendarEntry = {
+        id: taskId,
+        title: form.title,
+        time: formattedTime,
+        priority: form.priority,
+        desc: form.desc,
+        done: Boolean(currentTask?.done),
+      };
+
       if (editingId) {
         const idx = list.findIndex((t) => t.id === editingId);
-        if (idx > -1) list[idx] = { id: editingId, title: form.title, time: formattedTime, priority: form.priority, desc: form.desc };
+        if (idx > -1) list[idx] = calendarEntry;
       } else {
-        list.push({ id: newId, title: form.title, time: formattedTime, priority: form.priority, desc: form.desc });
-
-        // Also add to Timer sessions (default duration 25) so user can track it immediately
-        try {
-          const existing = loadJSON(TIMER_SESSIONS_KEY, []);
-          const exists = existing.some((s) => s.id === newId);
-          if (!exists) {
-            const newSession = { id: newId, title: form.title, project: selectedDate, duration: 25 };
-            saveJSON(TIMER_SESSIONS_KEY, [...existing, newSession]);
-          }
-        } catch (e) {
-          console.warn('Failed to add session to Timer from Calendar', e);
-        }
-
-        // Also add to Tasks page storage so it appears in Tasks list
-        try {
-          const existingTasks = loadJSON(TASKS_STORAGE_KEY, []);
-          const existsT = existingTasks.some((t) => t.id === newId);
-          if (!existsT) {
-            const newTaskItem = { id: newId, name: form.title, deadline: selectedDate, goal: '', priority: 'medium', description: form.desc || '', done: false };
-            saveJSON(TASKS_STORAGE_KEY, [...existingTasks, newTaskItem]);
-          }
-        } catch (e) {
-          console.warn('Failed to add task to Tasks storage from Calendar', e);
-        }
+        list.push(calendarEntry);
       }
       return { ...prev, [selectedDate]: list };
     });
+
+    const linkedTask = calendarEntryToTask(
+      { id: taskId, title: form.title, time: formattedTime, priority: form.priority, desc: form.desc },
+      selectedDate
+    );
+    syncTaskEverywhere(userId, linkedTask);
     setModalOpen(false);
   };
 
   useEffect(() => {
-    saveJSON(CALENDAR_TASKS_KEY, tasksData);
-  }, [tasksData]);
+    saveUserJSON(CALENDAR_TASKS_KEY, userId, tasksData);
+  }, [tasksData, userId]);
 
   useEffect(() => {
-    saveJSON(CALENDAR_SELECTED_DATE_KEY, selectedDate);
-  }, [selectedDate]);
+    saveUserJSON(CALENDAR_SELECTED_DATE_KEY, userId, selectedDate);
+  }, [selectedDate, userId]);
 
   const handleDelete = (taskId) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return;
+    const deletedTask = (tasksData[selectedDate] || []).find((t) => t.id === taskId);
     setTasksData((prev) => {
       const list = (prev[selectedDate] || []).filter((t) => t.id !== taskId);
       const next = { ...prev };
@@ -239,7 +244,43 @@ export default function Calendar() {
       else next[selectedDate] = list;
       return next;
     });
+    if (deletedTask) {
+      deleteTaskEverywhere(userId, calendarEntryToTask(deletedTask, selectedDate));
+    }
   };
+
+  const handleCopy = (task) => {
+    setCopiedTask(task);
+  };
+
+  const handlePaste = () => {
+    if (!copiedTask) return;
+    const newTask = {
+      ...calendarEntryToTask(copiedTask, selectedDate),
+      id: Date.now(),
+      deadline: selectedDate,
+      done: false,
+    };
+    const calendarEntry = taskToCalendarEntry(newTask);
+
+    setTasksData((prev) => ({
+      ...prev,
+      [selectedDate]: [...(prev[selectedDate] || []), calendarEntry],
+    }));
+    syncTaskEverywhere(userId, newTask);
+  };
+
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e?.detail?.key !== `${CALENDAR_TASKS_KEY}__${userId}`) return;
+      const updated = loadUserJSON(CALENDAR_TASKS_KEY, userId, {});
+      setTasksData((current) => (
+        JSON.stringify(current) === JSON.stringify(updated) ? current : updated
+      ));
+    };
+    window.addEventListener('local-storage', onStorage);
+    return () => window.removeEventListener('local-storage', onStorage);
+  }, [userId]);
 
   // ── Side panel data ───────────────────────────────────────────────────────
   const selectedDateObj  = parseDateStr(selectedDate);
@@ -255,7 +296,7 @@ export default function Calendar() {
         <h1 className="text-2xl font-bold text-gray-900">Lịch</h1>
         <div className="flex items-center gap-2">
           <button onClick={goToday} className="px-3 py-1.5 text-sm font-semibold border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-gray-700">
-            Today
+            Hôm nay
           </button>
           <button onClick={prevMonth} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-gray-600">
             <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
@@ -308,7 +349,7 @@ export default function Calendar() {
                     {cell.day}
                   </span>
                   {cellTasks.map((t) => (
-                    <div key={t.id} className={`${PRIORITY_STYLES[t.priority].chip} text-[10px] font-semibold px-1.5 py-0.5 rounded mb-0.5 truncate`}>
+                    <div key={t.id} className={`${(PRIORITY_STYLES[t.priority] || PRIORITY_STYLES.medium).chip} ${t.done ? 'line-through opacity-60' : ''} text-[10px] font-semibold px-1.5 py-0.5 rounded mb-0.5 truncate`}>
                       {t.title}
                     </div>
                   ))}
@@ -333,6 +374,14 @@ export default function Calendar() {
               <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
               Nhiệm vụ mới
             </button>
+            <button
+              onClick={handlePaste}
+              disabled={!copiedTask}
+              className="mt-2 w-full flex items-center justify-center gap-1.5 border border-gray-300 text-gray-700 text-sm font-semibold py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+              Paste nhiệm vụ
+            </button>
           </div>
 
           {/* Task list */}
@@ -341,9 +390,9 @@ export default function Calendar() {
               <p className="text-sm text-gray-400 text-center mt-6">Không có nhiệm vụ nào được lên lịch cho ngày này.</p>
             ) : (
               dayTasks.map((task) => {
-                const s = PRIORITY_STYLES[task.priority];
+                const s = PRIORITY_STYLES[task.priority] || PRIORITY_STYLES.medium;
                 return (
-                  <div key={task.id} className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
+                  <div key={task.id} className={`bg-white border border-gray-200 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden ${task.done ? 'opacity-60' : ''}`}>
                     <div className={`absolute left-0 top-0 bottom-0 w-1 ${s.bar}`} />
                     <div className="flex justify-between items-start mb-1.5 pl-2">
                       <span className={`${s.chip} text-[10px] font-bold px-2 py-0.5 rounded-full`}>{s.label}</span>
@@ -352,11 +401,14 @@ export default function Calendar() {
                         {task.time}
                       </span>
                     </div>
-                    <h4 className="text-sm font-semibold text-gray-900 pl-2 mb-0.5">{task.title}</h4>
+                    <h4 className={`text-sm font-semibold text-gray-900 pl-2 mb-0.5 ${task.done ? 'line-through' : ''}`}>{task.title}</h4>
                     {task.desc && <p className="text-xs text-gray-500 pl-2 line-clamp-2">{task.desc}</p>}
                     <div className="mt-2 pl-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button onClick={() => openEdit(task)} className="text-gray-400 hover:text-indigo-600 transition-colors">
                         <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                      </button>
+                      <button onClick={() => handleCopy(task)} className="text-gray-400 hover:text-gray-700 transition-colors">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
                       </button>
                       <button onClick={() => handleDelete(task.id)} className="text-gray-400 hover:text-red-500 transition-colors">
                         <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>

@@ -1,31 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+import './login.css'
 
 const styles = `
-  /* ── Reset & Body ─────────────────────────────────── */
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background-image: url('/studying.avif');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-    color: #1A1A1A;
-  }
-
-  /* Overlay tối nhẹ lên ảnh để form nổi bật hơn */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    z-index: 0;
-  }
-
   /* ── Login Body ────────────────────────────────────── */
   .login-body {
-    background: transparent;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -54,7 +35,7 @@ const styles = `
   }
 
   /* ── Form card ─────────────────────────────────────── */
-  .register-form {
+  .login-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -175,11 +156,21 @@ export default function Login() {
   const [success, setSuccess]   = useState('');
   const [loading, setLoading]   = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    const theme = document.getElementById("theme");
+    theme.volume = 0.3; // Chỉnh âm lượng nhỏ vừa phải
+    
+    // Kiểm tra nếu nhạc chưa chạy thì mới cho chạy
+    if (theme.paused) {
+        theme.play();
+        theme.volume = 0.3; // Chỉnh âm lượng nhỏ vừa phải
+    }
 
     // 1. Validate kiểm tra rỗng
     if (email.trim() === '' || password.trim() === '') {
@@ -190,60 +181,37 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // 2. GỌI API LÊN BACKEND THỰC TẾ
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // CHÚ Ý: Nếu Database của bạn dùng 'email' thay vì 'username' để đăng nhập, 
-        // hãy đổi chữ 'username:' ở dòng dưới thành 'email:'
-        body: JSON.stringify({ 
-          email: email.trim(), 
-          password: password 
-        }),
-      });
-
-      // Lấy dữ liệu Backend trả về
-      const data = await response.json();
-
-      // 3. KIỂM TRA PHẢN HỒI TỪ BACKEND
-      if (response.ok) {
-        // Đăng nhập thành công -> Lưu trạng thái vào localStorage
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('currentUser', email.trim());
-        
-        // Lưu Token bảo mật do Backend cấp
-        if (data.token) {
-          localStorage.setItem('accessToken', data.token);
-        }
-
+      // Sử dụng AuthContext login để đồng bộ lưu trữ
+      const result = await login(email.trim(), password);
+      
+      if (result.success) {
         setSuccess('Login successfully!');
-        
-        // Chuyển hướng sang trang chủ sau 0.8 giây
         setTimeout(() => navigate('/'), 800);
       } else {
-        // Backend báo lỗi (sai mật khẩu, tài khoản không tồn tại...)
-        setError(data.message || 'Username or password is wrong or does not exist!');
+        setError(result.message || 'Username or password is wrong or does not exist!');
       }
     } catch (err) {
       console.error("Login Error: ", err);
       setError('Cannot connect to the server. Please make sure your backend is running.');
     } finally {
-      // Tắt trạng thái loading dù thành công hay thất bại
       setLoading(false);
     }
   };
 
   return (
     <>
+
+
       <style>{styles}</style>
+
+      <audio id = "theme" src="/sparkle.mp3" autoPlay loop></audio>
+
       <div className="login-body">
         <div className="login-container">
           <h1>Welcome to Study Tracker</h1>
         </div>
 
-        <form className="register-form" onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={handleSubmit}>
           {error   && <div className="login-error">{error}</div>}
           {success && <div className="login-success">{success}</div>}
 

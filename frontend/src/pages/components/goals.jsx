@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { loadJSON, saveJSON } from '../../utils/storage';
+import { useAuth } from '../../context/AuthContext';
+import { loadUserJSON, saveUserJSON } from '../../utils/storage';
 import { recalculateGoalsWithTasks, TASKS_STORAGE_KEY, GOALS_STORAGE_KEY } from '../../utils/goalProgress';
 import './Goals.css';
 
@@ -166,35 +167,34 @@ function GoalModal({ isOpen, isEditing, form, setForm, onSave, onCancel, tasks }
 
 // ── Goals Page ────────────────────────────────────────
 export default function Goals() {
-  const [goals, setGoals]       = useState(() => loadJSON(GOALS_STORAGE_KEY, INITIAL_GOALS));
-  const [tasks, setTasks]       = useState(() => loadJSON(TASKS_STORAGE_KEY, INITIAL_TASKS));
+  const { user } = useAuth();
+  const userId = user?.id || user?.email;
+  const [goals, setGoals]       = useState(() => loadUserJSON(GOALS_STORAGE_KEY, userId, INITIAL_GOALS));
+  const [tasks, setTasks]       = useState(() => loadUserJSON(TASKS_STORAGE_KEY, userId, INITIAL_TASKS));
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm]           = useState(EMPTY_FORM);
   const [menuOpen, setMenuOpen]   = useState(null);
 
   useEffect(() => {
-    saveJSON(GOALS_STORAGE_KEY, recalculateGoalsWithTasks(goals, tasks));
-  }, [goals]);
-
-  useEffect(() => {
     const updatedGoals = recalculateGoalsWithTasks(goals, tasks);
+    saveUserJSON(GOALS_STORAGE_KEY, userId, updatedGoals);
     if (JSON.stringify(updatedGoals) !== JSON.stringify(goals)) {
       setGoals(updatedGoals);
     }
-  }, [tasks]);
+  }, [goals, tasks, userId]);
 
   useEffect(() => {
     const onStorage = (e) => {
       if (!e?.detail) return;
-      if (e.detail.key === TASKS_STORAGE_KEY) {
-        setTasks(loadJSON(TASKS_STORAGE_KEY, INITIAL_TASKS));
+      if (e.detail.key === `${TASKS_STORAGE_KEY}__${userId}`) {
+        setTasks(loadUserJSON(TASKS_STORAGE_KEY, userId, INITIAL_TASKS));
       }
     };
 
     window.addEventListener('local-storage', onStorage);
     return () => window.removeEventListener('local-storage', onStorage);
-  }, []);
+  }, [userId]);
 
   const openNew = () => {
     setEditingId(null);
@@ -248,8 +248,8 @@ export default function Goals() {
     const updatedGoals = recalculateGoalsWithTasks(goals, updatedTasks);
     setTasks(updatedTasks);
     setGoals(updatedGoals);
-    saveJSON(TASKS_STORAGE_KEY, updatedTasks);
-    saveJSON(GOALS_STORAGE_KEY, updatedGoals);
+    saveUserJSON(TASKS_STORAGE_KEY, userId, updatedTasks);
+    saveUserJSON(GOALS_STORAGE_KEY, userId, updatedGoals);
   };
 
   const formatDate = (str) => {
